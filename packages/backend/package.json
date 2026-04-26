@@ -1,0 +1,20 @@
+{
+  "name": "@katieeitak/backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest run",
+    "build": "npx tsc && tsc-alias",
+    "start": "node dist/index.js",
+    "dev": "tsx watch --env-file=.env src/server.ts",
+    "lint": "eslint ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.33.2",
+  "dependencies": {
+    "@katieeitak/shared": "workspace:*"
+  }
+}

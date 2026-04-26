@@ -1,0 +1,22 @@
+html {
+  box-sizing: border-box;
+  height: 100%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  height: 100%;
+  font-family: sans-serif;
+}
+
+#root {
+  height: 100%;
+  isolation: isolate;
+}
