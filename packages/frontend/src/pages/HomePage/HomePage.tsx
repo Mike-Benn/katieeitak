@@ -1,10 +1,11 @@
 import { LogoutButton } from '@/components/Buttons/LogoutButton';
+import { PageWrapper } from '@/components/PageWrapper';
 
 export function HomePage() {
   return (
-    <div>
+    <PageWrapper>
       <h1>Hey</h1>
       <LogoutButton />
-    </div>
+    </PageWrapper>
   );
 }
