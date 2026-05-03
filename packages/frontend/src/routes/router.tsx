@@ -2,15 +2,26 @@ import { createRootRoute, createRoute, createRouter, Outlet, Link } from '@tanst
 import { HomePage } from '@/pages/HomePage';
 import { ErrorPage } from '@/pages/ErrorPage';
 import { Root } from '@/components/Root';
+import { MainLayout } from '@/components/Layouts/MainLayout';
 const rootRoute = createRootRoute({
   component: Root,
 });
 
-const indexRoute = createRoute({
+// Protected routes
+
+const mainLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
+  id: 'MainLayout',
+  component: MainLayout,
+});
+
+const indexRoute = createRoute({
+  getParentRoute: () => mainLayoutRoute,
   path: '/',
   component: HomePage,
 });
+
+// Misc routes
 
 const errorRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -18,7 +29,9 @@ const errorRoute = createRoute({
   component: ErrorPage,
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, errorRoute]);
+// Route trees
+const protectedRouteTree = mainLayoutRoute.addChildren([indexRoute]);
+const routeTree = rootRoute.addChildren([protectedRouteTree, errorRoute]);
 
 export const router = createRouter({ routeTree });
 
