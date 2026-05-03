@@ -1,8 +1,9 @@
-import { createRootRoute, createRoute, createRouter, Outlet, Link } from '@tanstack/react-router';
+import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router';
 import { HomePage } from '@/pages/HomePage';
 import { ErrorPage } from '@/pages/ErrorPage';
 import { Root } from '@/components/Root';
 import { MainLayout } from '@/components/Layouts/MainLayout';
+import { PaycheckPage } from '@/pages/PaycheckPage';
 const rootRoute = createRootRoute({
   component: Root,
 });
@@ -15,10 +16,20 @@ const mainLayoutRoute = createRoute({
   component: MainLayout,
 });
 
+// Home routes
+
 const indexRoute = createRoute({
   getParentRoute: () => mainLayoutRoute,
   path: '/',
   component: HomePage,
+});
+
+// Paycheck routes
+
+const paycheckRoute = createRoute({
+  getParentRoute: () => mainLayoutRoute,
+  path: '/paycheck',
+  component: PaycheckPage,
 });
 
 // Misc routes
@@ -30,7 +41,7 @@ const errorRoute = createRoute({
 });
 
 // Route trees
-const protectedRouteTree = mainLayoutRoute.addChildren([indexRoute]);
+const protectedRouteTree = mainLayoutRoute.addChildren([indexRoute, paycheckRoute]);
 const routeTree = rootRoute.addChildren([protectedRouteTree, errorRoute]);
 
 export const router = createRouter({ routeTree });

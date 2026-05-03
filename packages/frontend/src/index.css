@@ -2,16 +2,16 @@
 
 html {
   box-sizing: border-box;
-  height: 100%;
+  min-height: 100%;
 }
 
 body {
-  height: 100%;
+  min-height: 100%;
   font-family: sans-serif;
 }
 
 #root {
-  height: 100%;
+  min-height: 100%;
   isolation: isolate;
 }
 
@@ -22,4 +22,6 @@ body {
 }
 @theme {
   --color-lightgray: #00000033;
+  --color-muted-input: rgb(246, 248, 250);
+  --color-muted-border: rgb(227, 233, 237);
 }
