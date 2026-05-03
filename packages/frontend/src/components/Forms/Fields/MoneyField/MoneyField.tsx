@@ -18,7 +18,7 @@ export function MoneyField({
   const hasError = field.state.meta.errors.length > 0;
   return (
     <Field.Root>
-      <Field.Label>{label}</Field.Label>
+      {label && <Field.Label>{label}</Field.Label>}
       <Field.Control
         placeholder={placeholder}
         required={isRequired}
@@ -37,7 +37,7 @@ export function MoneyField({
         }}
       />
       {hasError && <Field.Error>{field.state.meta.errors[0]}</Field.Error>}
-      <Field.Description>{description}</Field.Description>
+      {description && <Field.Description>{description}</Field.Description>}
     </Field.Root>
   );
 }
