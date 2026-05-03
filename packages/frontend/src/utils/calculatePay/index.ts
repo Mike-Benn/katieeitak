@@ -1,0 +1,1 @@
+export { calculatePay } from './calculatePay';

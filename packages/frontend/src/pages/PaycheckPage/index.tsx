@@ -1,0 +1,1 @@
+export { PaycheckPage } from './PaycheckPage';

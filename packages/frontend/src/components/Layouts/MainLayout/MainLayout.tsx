@@ -5,7 +5,7 @@ export function MainLayout() {
   return (
     <>
       <AppHeader />
-      <main className="h-full flex flex-col">
+      <main className="min-h-full flex flex-col">
         <Outlet />
       </main>
     </>
