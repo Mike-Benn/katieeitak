@@ -5,6 +5,8 @@ const envSchema = z.object({
   CORS_ORIGINS: z.string(),
   DB_URL: z.string(),
   PORT: z.string().transform(Number),
+  AUDIENCE: z.string(),
+  AUTH0_DOMAIN: z.string(),
 });
 
 export const BACKEND_ENV = envSchema.parse(process.env);
