@@ -36,7 +36,7 @@ export function CompleteAuth({ children }: CompleteAuthProps) {
   if (!isComplete)
     return (
       <PageWrapper>
-        <div className="flex flex-col justify-center items-center min-h-full">
+        <div className="flex flex-col justify-center items-center min-h-dvh">
           <SvgSpinner />
         </div>
       </PageWrapper>
