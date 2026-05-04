@@ -7,9 +7,15 @@ interface SelectFieldProps {
   items: SelectOption[];
   description?: string;
   label?: string;
+  isRequired?: boolean;
 }
 
-export function SelectField({ items, description = '', label = '' }: SelectFieldProps) {
+export function SelectField({
+  items,
+  description = '',
+  label = '',
+  isRequired = true,
+}: SelectFieldProps) {
   const field = useFieldContext<string>();
   const hasError = field.state.meta.errors.length > 0;
   return (
@@ -19,6 +25,7 @@ export function SelectField({ items, description = '', label = '' }: SelectField
         items={items}
         value={field.state.value}
         onValueChange={(value) => field.handleChange(value ?? '')}
+        required={isRequired}
       >
         <Select.Trigger className="flex rounded-sm border border-muted-border bg-muted-input select-none">
           <Select.Value placeholder="Select type" className="data-placeholder:opacity-60" />
