@@ -19,7 +19,7 @@ export function PaycheckPage() {
   const pay = calculatePay(formValues);
   return (
     <PageWrapper className="p-6 items-center gap-6">
-      <h2 className="text-2xl font-semibold">Paycheck Calculator</h2>
+      <h1 className="text-2xl font-semibold">Paycheck Calculator</h1>
       <form
         className="w-full flex flex-col gap-8"
         onSubmit={(e) => {
