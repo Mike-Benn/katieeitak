@@ -4,7 +4,7 @@ import { ErrorPage } from '@/pages/ErrorPage';
 import { Root } from '@/components/Root';
 import { MainLayout } from '@/components/Layouts/MainLayout';
 import { PaycheckPage } from '@/pages/PaycheckPage';
-import { AnxietyPage } from '@/pages/AnxietyPage';
+import { AnxietyPage } from '@/pages/Anxiety/AnxietyPage';
 const rootRoute = createRootRoute({
   component: Root,
 });
