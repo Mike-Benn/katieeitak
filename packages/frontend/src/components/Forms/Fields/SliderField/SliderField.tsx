@@ -23,7 +23,7 @@ export function SliderField({
   const field = useFieldContext<number>();
   const hasError = field.state.meta.errors.length > 0;
   return (
-    <Field.Root>
+    <Field.Root className="flex flex-col items-center">
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}
       <Slider.Root
         className="flex gap-4"

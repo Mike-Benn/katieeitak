@@ -19,7 +19,7 @@ export function SelectField({
   const field = useFieldContext<string>();
   const hasError = field.state.meta.errors.length > 0;
   return (
-    <Field.Root>
+    <Field.Root className="flex flex-col gap-1">
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}
       <Select.Root
         items={items}

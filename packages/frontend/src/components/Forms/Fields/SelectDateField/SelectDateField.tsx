@@ -25,7 +25,7 @@ export function SelectDateField({
     ? format(field.state.value, 'MMM d, yyyy')
     : (placeholder ?? 'Date');
   return (
-    <Field.Root className="flex flex-col">
+    <Field.Root className="flex flex-col gap-1">
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}
       <Popover.Root open={open} onOpenChange={setOpen}>
         <Popover.Trigger className="flex flex-row gap-2 w-full border border-muted-border bg-muted-input rounded-sm pt-2 pb-2 pl-3 pr-3">
