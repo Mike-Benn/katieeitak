@@ -18,8 +18,8 @@ export function PaycheckPage() {
   const formValues = useStore(form.store, (state) => state.values);
   const pay = calculatePay(formValues);
   return (
-    <PageWrapper className="p-6 items-center gap-8">
-      <h2 className="text-2xl">Paycheck Calculator</h2>
+    <PageWrapper className="p-6 items-center gap-6">
+      <h2 className="text-2xl font-semibold">Paycheck Calculator</h2>
       <form
         className="w-full flex flex-col gap-8"
         onSubmit={(e) => {
