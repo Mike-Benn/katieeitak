@@ -27,7 +27,7 @@ export function SelectField({
         onValueChange={(value) => field.handleChange(value ?? '')}
         required={isRequired}
       >
-        <Select.Trigger className="flex justify-between rounded-sm border border-muted-border bg-muted-input select-none pt-2 pb-2 pl-3 pr-3 min-w-35">
+        <Select.Trigger className="flex justify-between w-full rounded-sm border border-muted-border bg-muted-input select-none pt-2 pb-2 pl-3 pr-3">
           <Select.Value placeholder="Select type" className="data-placeholder:opacity-60" />
           <Select.Icon>
             <ChevronDown />
