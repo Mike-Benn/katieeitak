@@ -20,7 +20,7 @@ export function MoneyField({
     <Field.Root className="flex flex-col gap-1">
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}
       <Field.Control
-        className="bg-muted-input rounded-sm pl-4 pr-4 pt-2 pb-2 border border-muted-border"
+        className="bg-muted-input rounded-sm pl-3 pr-3 pt-2 pb-2 border border-muted-border"
         placeholder={placeholder}
         required={isRequired}
         value={field.state.value}
