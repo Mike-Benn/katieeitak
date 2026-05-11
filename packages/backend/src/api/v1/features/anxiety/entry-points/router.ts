@@ -19,7 +19,7 @@ anxietyRouter.post('/', validateToken, setupLocals, async (req: Request, res: Re
   );
 });
 
-anxietyRouter.get('/', validateToken, setupLocals, async (req: Request, res: Response) => {
+anxietyRouter.get('/', validateToken, setupLocals, async (_req: Request, res: Response) => {
   const userId = res.locals.userId as string;
   const anxietyEvents = await AnxietyService.getEventsByUserId({ userId });
   res.status(200).json(
