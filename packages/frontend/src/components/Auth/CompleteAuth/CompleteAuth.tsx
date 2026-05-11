@@ -12,7 +12,7 @@ interface CompleteAuthProps {
 
 export function CompleteAuth({ children }: CompleteAuthProps) {
   const navigate = useNavigate();
-  const { isComplete, setIsComplete, setUser, user } = useStore();
+  const { isComplete, setIsComplete, setUser } = useStore();
 
   const { data, isSuccess, isError, error } = useQuery({
     queryKey: ['auth-complete'],
