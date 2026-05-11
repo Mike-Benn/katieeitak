@@ -5,5 +5,4 @@ import { anxietyEventTypeOptions } from '../../constants/options.js';
 export const AnxietyEventDateSchema = z.date();
 export const AnxietyEventTypeSchema = z.enum(anxietyEventTypeOptions.map((option) => option.value));
 export const AnxietyEventSliderSchema = z.number().min(0).max(10);
-export const AnxietyEventNotesSchema = z.string().min(0).max(300);
-export type AnxietyEventType = z.infer<typeof AnxietyEventTypeSchema>;
+export const AnxietyEventNotesSchema = z.string().max(300).optional();
