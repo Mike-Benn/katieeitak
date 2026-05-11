@@ -1,4 +1,3 @@
-import { Button } from '@base-ui/react';
 import { createFormHook, createFormHookContexts } from '@tanstack/react-form';
 import { MoneyField } from '@/components/Forms/Fields/MoneyField';
 import { SliderField } from '@/components/Forms/Fields/SliderField';
@@ -16,9 +15,7 @@ const { useAppForm } = createFormHook({
     TextAreaField,
     SelectDateField,
   },
-  formComponents: {
-    Button,
-  },
+  formComponents: {},
   fieldContext,
   formContext,
 });
