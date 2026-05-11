@@ -4,7 +4,7 @@ import { useFieldContext } from '@/hooks/useAppForm';
 import type { SelectOption } from '@katieeitak/shared';
 
 interface SelectFieldProps {
-  items: SelectOption[];
+  items: readonly SelectOption[];
   description?: string;
   label?: string;
   isRequired?: boolean;
