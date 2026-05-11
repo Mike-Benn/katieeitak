@@ -1,5 +1,4 @@
-import type { SelectOption } from '../types/options.js';
-export const anxietyEventTypeOptions: SelectOption[] = [
+export const anxietyEventTypeOptions = [
   {
     label: 'Work',
     value: 'work',
