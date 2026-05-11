@@ -7,3 +7,5 @@ export {
   AnxietyEventSliderSchema,
   AnxietyEventNotesSchema,
 } from './schemas/forms/validators.js';
+export type { AnxietyEventBody } from './schemas/forms/bodies.js';
+export { AnxietyEventBodySchema } from './schemas/forms/bodies.js';
