@@ -72,6 +72,7 @@ export default defineConfig([
       'import-x/no-cycle': 'warn',
       'no-console': 'off',
       'no-process-exit': 'error',
+      'no-restricted-imports': ['error', { patterns: ['../**/'] }],
     },
   },
 ]);
