@@ -1,7 +1,11 @@
 import { Check, ChevronDown } from 'lucide-react';
 import { Select, Field } from '@base-ui/react';
 import { useFieldContext } from '@/hooks/useAppForm';
-import type { SelectOption } from '@katieeitak/shared';
+
+type SelectOption = {
+  label: string;
+  value: string;
+};
 
 interface SelectFieldProps {
   items: readonly SelectOption[];
