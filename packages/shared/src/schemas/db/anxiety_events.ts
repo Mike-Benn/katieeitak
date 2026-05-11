@@ -8,9 +8,11 @@ import { z } from 'zod';
 
 export const DBAnxietyEventSchema = z.object({
   id: z.string(),
-  type: AnxietyEventTypeSchema,
+  event_type: AnxietyEventTypeSchema,
   notes: AnxietyEventNotesSchema,
   anxiety_level: AnxietyEventSliderSchema,
   excitement_level: AnxietyEventSliderSchema,
-  date: AnxietyEventDateSchema,
+  date_occurred: AnxietyEventDateSchema,
+  created_at: z.date(),
+  updated_at: z.date(),
 });
