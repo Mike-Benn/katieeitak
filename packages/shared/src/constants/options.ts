@@ -4,6 +4,10 @@ export const anxietyEventTypeOptions = [
     value: 'work',
   },
   {
+    label: 'Bugs',
+    value: 'bugs',
+  },
+  {
     label: 'Restaurant',
     value: 'restaurant',
   },
