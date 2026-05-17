@@ -89,7 +89,7 @@ export function NewAnxietyEventPage() {
         />
         <form.AppField
           name="eventNotes"
-          children={(field) => <field.TextAreaField label="Notes" isRequired={false} />}
+          children={(field) => <field.TextAreaField label="Notes" maxLength={300} />}
         />
         <div className="flex flex-row justify-end">
           <SubmitButton isSubmitting={isPending} />
