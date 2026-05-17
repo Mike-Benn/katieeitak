@@ -14,6 +14,6 @@ export const DBAnxietyEventSchema = z.object({
   anxiety_level: AnxietyEventSliderSchema,
   excitement_level: AnxietyEventSliderSchema,
   date_occurred: AnxietyEventDateSchema,
-  created_at: z.date(),
-  updated_at: z.date(),
+  created_at: z.iso.datetime(),
+  updated_at: z.iso.datetime(),
 });
