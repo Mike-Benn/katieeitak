@@ -28,8 +28,7 @@ export function CompleteAuth({ children }: CompleteAuthProps) {
 
   useEffect(() => {
     if (isError) {
-      console.log(error);
-      void navigate({ to: '/error' });
+      void navigate({ to: '/error', replace: true });
     }
   }, [isError]);
 
