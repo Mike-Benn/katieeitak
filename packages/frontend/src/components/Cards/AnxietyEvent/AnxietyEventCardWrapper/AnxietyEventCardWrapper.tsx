@@ -26,7 +26,7 @@ export function AnxietyEventCardWrapper() {
 
   if (isSuccess && data.length < 1) {
     return (
-      <div className="flex flex-col flex-1 items-center justify-center bg-white">
+      <div className="flex flex-col flex-1 items-center justify-center">
         <Ghost size={42} />
         <span>No events found.</span>
       </div>
@@ -39,10 +39,11 @@ export function AnxietyEventCardWrapper() {
         data.map((event) => (
           <AnxietyEventCard
             key={event.id}
-            eventType={_.capitalize(event.event_type)}
+            eventType={event.event_type}
             dateString={event.date_occurred}
             anxietyLevel={event.anxiety_level}
             excitementLevel={event.excitement_level}
+            eventTitle={event.title}
           />
         ))}
     </div>

@@ -1,15 +1,34 @@
-import { PartyPopper, Meh, Frown, Smile, Clock } from 'lucide-react';
+import {
+  PartyPopper,
+  Meh,
+  Frown,
+  Smile,
+  Bug,
+  Briefcase,
+  ChefHat,
+  ShoppingCart,
+  CircleQuestionMark,
+  Handshake,
+  Heart,
+  Hospital,
+  Tickets,
+  Atom,
+  type LucideIcon,
+} from 'lucide-react';
 import { formatInTimeZone } from 'date-fns-tz';
 import type { ReactNode } from 'react';
+import type { AnxietyEventType } from '@katieeitak/shared';
 interface AnxietyEventCardProps {
   dateString?: string;
   anxietyLevel?: number;
   excitementLevel?: number;
-  eventType?: string;
+  eventType?: AnxietyEventType;
+  eventTitle?: string;
 }
 
 export function AnxietyEventCard({
-  eventType = 'Unknown',
+  eventType,
+  eventTitle = 'Unknown',
   dateString,
   anxietyLevel = -1,
   excitementLevel = -1,
@@ -23,17 +42,36 @@ export function AnxietyEventCard({
     ) : (
       <Frown size={14} />
     );
+  const EVENT_ICON_MAP: Record<AnxietyEventType, LucideIcon> = {
+    bugs: Bug,
+    health: Hospital,
+    work: Briefcase,
+    restaurant: ChefHat,
+    event: Tickets,
+    family: Heart,
+    friends: Handshake,
+    shopping: ShoppingCart,
+    future: Atom,
+  };
+
+  let typeIcon: ReactNode;
+  if (!eventType) {
+    typeIcon = <CircleQuestionMark size={14} />;
+  } else {
+    const Icon = EVENT_ICON_MAP[eventType];
+    typeIcon = <Icon size={14} />;
+  }
   return (
-    <div className="flex flex-col shadow-md rounded-md p-6 bg-white">
-      <div className="flex flex-row justify-between items-center">
-        <span className="font-semibold text-lg">{eventType}</span>
+    <div className="flex flex-col shadow-md rounded-md p-6 bg-white gap-2">
+      <div className="flex flex-row items-center">
+        <span className="font-semibold flex-1">{eventTitle}</span>
         {date && (
-          <div className="flex flex-row gap-1 items-center">
-            <Clock color="#d7d7d7" size={16} />
+          <div className="flex flex-rowi items-center justify-end min-w-22">
             <span className="text-gray-400 text-sm">{date}</span>
           </div>
         )}
       </div>
+
       <div className="flex flex-row gap-2">
         <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm">
           {anxietyIcon}
@@ -42,6 +80,9 @@ export function AnxietyEventCard({
         <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm">
           <PartyPopper size={14} />
           <span className="text-sm">{excitementLevel}</span>
+        </div>
+        <div className="rounded-md pl-2 pr-2 pt-1 pb-1 bg-muted-input shadow-sm flex items-center justify-center">
+          {typeIcon}
         </div>
       </div>
     </div>
