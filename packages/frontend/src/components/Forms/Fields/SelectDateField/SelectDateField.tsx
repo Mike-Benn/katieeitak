@@ -11,7 +11,6 @@ interface SelectDateFieldProps {
   placeholder?: string;
   description?: string;
 }
-
 export function SelectDateField({
   label = '',
   description = '',
@@ -19,16 +18,19 @@ export function SelectDateField({
 }: SelectDateFieldProps) {
   const [open, setOpen] = useState(false);
   const [monthSelected, setMonthSelected] = useState<Date>(new Date());
-  const field = useFieldContext<Date | undefined>();
+  const field = useFieldContext<string | undefined>();
   const hasError = field.state.meta.errors.length > 0;
-  const displayText: string = field.state.value
-    ? format(field.state.value, 'MMM d, yyyy')
+  const dateValue = field.state.value ? new Date(field.state.value) : undefined;
+  const displayText: string = dateValue
+    ? format(dateValue, 'MMM d, yyyy')
     : (placeholder ?? 'Date');
   return (
     <Field.Root className="flex flex-col gap-1">
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}
       <Popover.Root open={open} onOpenChange={setOpen}>
-        <Popover.Trigger className="flex flex-row gap-2 w-full border border-muted-border bg-muted-input rounded-sm pt-2 pb-2 pl-3 pr-3">
+        <Popover.Trigger
+          className={`flex flex-row gap-2 w-full border ${hasError ? 'border-red-500' : 'border-muted-border'} bg-muted-input rounded-sm pt-2 pb-2 pl-3 pr-3`}
+        >
           <CalendarDays />
           <span>{displayText}</span>
         </Popover.Trigger>
@@ -40,10 +42,10 @@ export function SelectDateField({
                 month={monthSelected}
                 onMonthChange={setMonthSelected}
                 mode="single"
-                selected={field.state.value}
+                selected={dateValue}
                 onSelect={(date) => {
                   if (date) {
-                    field.handleChange(date);
+                    field.handleChange(date.toISOString());
                     setOpen(false);
                     setMonthSelected(date);
                   }
@@ -70,7 +72,9 @@ export function SelectDateField({
           </Popover.Positioner>
         </Popover.Portal>
       </Popover.Root>
-      {hasError && <Field.Error>{field.state.meta.errors[0]}</Field.Error>}
+      {hasError && (
+        <span className="text-red-500 text-sm">{field.state.meta.errors[0].message}</span>
+      )}
       {description && <Field.Description>{description}</Field.Description>}
     </Field.Root>
   );
