@@ -4,7 +4,7 @@ import {
   AnxietyEventSliderSchema,
   AnxietyEventTypeSchema,
   AnxietyEventNotesSchema,
-  AnxietyEventDescriptionSchema,
+  AnxietyEventTitleSchema,
 } from './validators.js';
 
 // New anxiety even form body
@@ -14,6 +14,6 @@ export const AnxietyEventBodySchema = z.object({
   eventType: AnxietyEventTypeSchema,
   eventNotes: AnxietyEventNotesSchema,
   eventDate: AnxietyEventDateSchema,
-  eventDescription: AnxietyEventDescriptionSchema,
+  eventTitle: AnxietyEventTitleSchema,
 });
 export type AnxietyEventBody = z.infer<typeof AnxietyEventBodySchema>;

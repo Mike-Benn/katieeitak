@@ -19,10 +19,9 @@ export const AnxietyRepository = {
   createEvent: async ({ userId, body, client }: CreateEventParams) => {
     const connection = client ?? pool;
     const query = `
-            INSERT INTO anxiety_events (user_id, event_type, notes, anxiety_level, excitement_level, date_occurred)
-            VALUES ($1, $2, $3, $4, $5, $6)
+            INSERT INTO anxiety_events (user_id, event_type, notes, anxiety_level, excitement_level, date_occurred, title)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING *
-
         `;
     const values = [
       userId,
@@ -31,6 +30,7 @@ export const AnxietyRepository = {
       body.anxietyLevel,
       body.excitementLevel,
       body.eventDate,
+      body.eventTitle,
     ];
     const { rows } = await connection.query<AnxietyEvent>(query, values);
     const anxietyEvent = rows[0];
