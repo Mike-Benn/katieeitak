@@ -14,12 +14,7 @@ interface SelectFieldProps {
   isRequired?: boolean;
 }
 
-export function SelectField({
-  items,
-  description = '',
-  label = '',
-  isRequired = true,
-}: SelectFieldProps) {
+export function SelectField({ items, description = '', label = '' }: SelectFieldProps) {
   const field = useFieldContext<string>();
   const hasError = field.state.meta.errors.length > 0;
   return (
@@ -29,9 +24,10 @@ export function SelectField({
         items={items}
         value={field.state.value}
         onValueChange={(value) => field.handleChange(value ?? '')}
-        required={isRequired}
       >
-        <Select.Trigger className="flex justify-between w-full rounded-sm border border-muted-border bg-muted-input select-none pt-2 pb-2 pl-3 pr-3">
+        <Select.Trigger
+          className={`flex justify-between w-full rounded-sm border ${hasError ? 'border-red-500' : 'border-muted-border'} bg-muted-input select-none pt-2 pb-2 pl-3 pr-3`}
+        >
           <Select.Value placeholder="Select type" className="data-placeholder:opacity-60" />
           <Select.Icon>
             <ChevronDown />
@@ -58,7 +54,9 @@ export function SelectField({
           </Select.Positioner>
         </Select.Portal>
       </Select.Root>
-      {hasError && <Field.Error>{field.state.meta.errors[0]}</Field.Error>}
+      {hasError && (
+        <span className="text-red-500 text-sm">{field.state.meta.errors[0].message}</span>
+      )}
       {description && <Field.Description>{description}</Field.Description>}
     </Field.Root>
   );
