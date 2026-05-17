@@ -50,6 +50,8 @@ export const AnxietyRepository = {
     const query = `
       SELECT * FROM anxiety_events
       WHERE user_id = $1
+      ORDER BY date_occurred DESC
+      LIMIT 10
     `;
     const values = [userId];
     const { rows } = await connection.query<AnxietyEvent>(query, values);
