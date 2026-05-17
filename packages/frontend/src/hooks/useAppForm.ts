@@ -4,6 +4,7 @@ import { SliderField } from '@/components/Forms/Fields/SliderField';
 import { SelectField } from '@/components/Forms/Fields/SelectField';
 import { TextAreaField } from '@/components/Forms/Fields/TextAreaField';
 import { SelectDateField } from '@/components/Forms/Fields/SelectDateField';
+import { TextField } from '@/components/Forms/Fields/TextField';
 
 const { fieldContext, formContext, useFieldContext, useFormContext } = createFormHookContexts();
 
@@ -14,6 +15,7 @@ const { useAppForm } = createFormHook({
     SelectField,
     TextAreaField,
     SelectDateField,
+    TextField,
   },
   formComponents: {},
   fieldContext,

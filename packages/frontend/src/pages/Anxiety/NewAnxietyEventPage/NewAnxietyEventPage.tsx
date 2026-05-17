@@ -26,6 +26,7 @@ export function NewAnxietyEventPage() {
       excitementLevel: 5,
       eventType: '',
       eventNotes: '',
+      eventDescription: '',
       eventDate: undefined as string | undefined,
     },
     onSubmit: async ({ value }) => {
@@ -61,6 +62,11 @@ export function NewAnxietyEventPage() {
             <field.SelectField items={anxietyEventTypeOptions} label="Event Type" />
           )}
         />
+        <form.AppField
+          name="eventDescription"
+          children={(field) => <field.TextField label="Description" maxLength={30} />}
+        />
+
         <form.AppField
           name="anxietyLevel"
           children={(field) => (
