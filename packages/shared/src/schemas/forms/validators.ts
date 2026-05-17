@@ -12,4 +12,5 @@ export const AnxietyEventTypeSchema = z.enum(eventTypes, {
 });
 export const AnxietyEventSliderSchema = z.number().min(0).max(10);
 export const AnxietyEventNotesSchema = z.string().max(300);
+export const AnxietyEventDescriptionSchema = z.string().max(30);
 export type AnxietyEventType = z.infer<typeof AnxietyEventTypeSchema>;
