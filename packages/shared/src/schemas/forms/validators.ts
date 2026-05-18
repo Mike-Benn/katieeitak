@@ -18,5 +18,6 @@ export const AnxietyEventTitleSchema = z
   .string({
     error: 'Please enter a short title for the event.',
   })
-  .max(20, 'Title must be 20 characters or less.');
+  .max(20, 'Title must be 20 characters or less.')
+  .min(1, 'Please enter a title.');
 export type AnxietyEventType = z.infer<typeof AnxietyEventTypeSchema>;
