@@ -3,15 +3,11 @@ import { toast } from 'sonner';
 import { SvgSpinner } from '@/components/Loading/SvgSpinner';
 import { Ghost } from 'lucide-react';
 import { AnxietyEventCard } from '@/components/Cards/AnxietyEvent/AnxietyEventCard/AnxietyEventCard';
-import _ from 'lodash';
 
 export function AnxietyEventCardWrapper() {
-  const { isPending, isError, isFetching, isLoading, isSuccess, data, error } = useAnxietyEvents();
+  const { isPending, isError, isFetching, isLoading, isSuccess, data } = useAnxietyEvents();
   if (isError) {
     toast.error('There was an error fetching Anxiety Events');
-  }
-  if (!isFetching && !isLoading) {
-    console.log(data);
   }
 
   const isContentReady = !isPending && !isLoading && !isFetching;
@@ -35,17 +31,7 @@ export function AnxietyEventCardWrapper() {
 
   return (
     <div className="flex flex-col flex-1 gap-6">
-      {isSuccess &&
-        data.map((event) => (
-          <AnxietyEventCard
-            key={event.id}
-            eventType={event.event_type}
-            dateString={event.date_occurred}
-            anxietyLevel={event.anxiety_level}
-            excitementLevel={event.excitement_level}
-            eventTitle={event.title}
-          />
-        ))}
+      {isSuccess && data.map((event) => <AnxietyEventCard key={event.id} anxietyEvent={event} />)}
     </div>
   );
 }
