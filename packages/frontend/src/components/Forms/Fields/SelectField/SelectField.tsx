@@ -23,22 +23,33 @@ export function SelectField({
 }: SelectFieldProps) {
   const field = useFieldContext<string>();
   const hasError = field.state.meta.errors.length > 0;
+
   return (
     <Field.Root className="flex flex-col gap-1" disabled={isDisabled}>
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}
+
       <Select.Root
         items={items}
         value={field.state.value}
         onValueChange={(value) => field.handleChange(value ?? '')}
+        disabled={isDisabled}
       >
         <Select.Trigger
-          className={`flex justify-between w-full rounded-sm border ${hasError ? 'border-red-500' : 'border-muted-border'} bg-muted-input select-none pt-2 pb-2 pl-3 pr-3`}
+          className={`flex justify-between w-full rounded-sm border select-none pt-2 pb-2 pl-3 pr-3
+            ${hasError ? 'border-red-500' : 'border-muted-border'} 
+            bg-muted-input 
+            disabled:opacity-70 disabled:bg-gray-100 disabled:text-gray-500
+          `}
         >
-          <Select.Value placeholder="Select type" className="data-placeholder:opacity-60" />
+          <Select.Value
+            placeholder="Select type"
+            className="data-placeholder:opacity-60 group-disabled:opacity-100"
+          />
           <Select.Icon>
-            <ChevronDown />
+            <ChevronDown className="text-inherit" />
           </Select.Icon>
         </Select.Trigger>
+
         <Select.Portal>
           <Select.Positioner className="select-none z-10" alignItemWithTrigger={false}>
             <Select.Popup className="group min-w-(--anchor-width) origin-(--transform-origin) bg-clip-padding border border-muted-border rounded-sm bg-[canvas] shadow-lg shadow-gray-200 transition-[transform,scale,opacity] data-ending-style:scale-90 data-ending-style:opacity-0">
@@ -60,6 +71,7 @@ export function SelectField({
           </Select.Positioner>
         </Select.Portal>
       </Select.Root>
+
       {hasError && (
         <span className="text-red-500 text-sm">{field.state.meta.errors[0].message}</span>
       )}

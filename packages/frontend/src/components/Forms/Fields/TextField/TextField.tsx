@@ -22,14 +22,19 @@ export function TextField({
   return (
     <Field.Root className="flex flex-col gap-1" disabled={isDisabled}>
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}
+
       <Input
         placeholder={placeholder}
         value={field.state.value}
         onChange={(e) => field.handleChange(e.target.value)}
-        className="border border-muted-border rounded-sm bg-muted-input pl-3 pr-3 pt-2 pb-2"
+        className={`
+          border border-muted-border rounded-sm bg-muted-input pl-3 pr-3 pt-2 pb-2
+          disabled:opacity-70 disabled:bg-gray-100 disabled:text-gray-500
+        `}
         type="text"
         maxLength={maxLength}
       />
+
       {hasError && (
         <span className="text-red-500 text-sm">{field.state.meta.errors[0].message}</span>
       )}

@@ -26,7 +26,7 @@ export function TextAreaField({
         placeholder={placeholder}
         value={field.state.value}
         onChange={(e) => field.handleChange(e.target.value)}
-        className="min-h-25 border border-muted-border rounded-sm bg-muted-input pl-3 pr-3 pt-2 pb-2"
+        className="min-h-25 border border-muted-border rounded-sm bg-muted-input pl-3 pr-3 pt-2 pb-2 disabled:opacity-70 disabled:bg-gray-100 disabled:text-gray-500"
         render={<textarea />}
         maxLength={maxLength}
       />

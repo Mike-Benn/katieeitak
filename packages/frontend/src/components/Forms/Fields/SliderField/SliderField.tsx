@@ -24,24 +24,30 @@ export function SliderField({
 }: SliderFieldProps) {
   const field = useFieldContext<number>();
   const hasError = field.state.meta.errors.length > 0;
+
   return (
     <Field.Root className="flex flex-col items-center" disabled={isDisabled}>
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}
+
       <Slider.Root
-        className="flex gap-4"
+        className="flex gap-4 data-disabled:opacity-60 data-disabled:pointer-events-none"
         min={min}
         max={max}
         step={step}
         value={field.state.value}
         onValueChange={(value) => field.handleChange(value)}
+        disabled={isDisabled} // Explicitly disable the slider logic
       >
-        <span>{minLabel}</span>
+        <span className="text-gray-700 data-disabled:text-gray-500">{minLabel}</span>
+
         <Slider.Control className="flex gap-4 w-54 touch-none items-center select-none">
           <Slider.Track className="h-1 w-full rounded-sm bg-gray-200 shadow-[inset_0_0_0_1px] shadow-gray-200 select-none">
-            <Slider.Indicator className="rounded-sm bg-gray-700 select-none" />
+            {/* Soften the active indicator bar when disabled */}
+            <Slider.Indicator className="rounded-sm bg-gray-700 data-disabled:bg-gray-400 select-none" />
+
             <Slider.Thumb
               aria-label="Anxiety"
-              className="group relative size-4 rounded-full bg-white outline-1 outline-gray-300 select-none data-focus-visible:outline-2 ata-focus-visible:outline-blue-800"
+              className="group relative size-4 rounded-full bg-white outline-1 outline-gray-300 select-none data-focus-visible:outline-2 data-focus-visible:outline-blue-800 data-disabled:bg-gray-100"
             >
               <Slider.Value
                 className="absolute -top-6.75 left-1/2 -translate-x-1/2
@@ -60,8 +66,10 @@ export function SliderField({
             </Slider.Thumb>
           </Slider.Track>
         </Slider.Control>
-        <span>{maxLabel}</span>
+
+        <span className="text-gray-700 data-disabled:text-gray-500">{maxLabel}</span>
       </Slider.Root>
+
       {hasError && <Field.Error>{field.state.meta.errors[0]}</Field.Error>}
       {description && <Field.Description>{description}</Field.Description>}
     </Field.Root>

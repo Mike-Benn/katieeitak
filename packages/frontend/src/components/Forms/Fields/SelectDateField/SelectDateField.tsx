@@ -12,6 +12,7 @@ interface SelectDateFieldProps {
   description?: string;
   isDisabled?: boolean;
 }
+
 export function SelectDateField({
   label = '',
   description = '',
@@ -22,21 +23,31 @@ export function SelectDateField({
   const [monthSelected, setMonthSelected] = useState<Date>(new Date());
   const field = useFieldContext<string | undefined>();
   const hasError = field.state.meta.errors.length > 0;
+
   const dateValue = field.state.value ? new Date(field.state.value) : undefined;
   const displayText: string = dateValue
     ? format(dateValue, 'MMM d, yyyy')
     : (placeholder ?? 'Date');
+
   return (
     <Field.Root className="flex flex-col gap-1" disabled={isDisabled}>
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}
-      <Popover.Root open={open} onOpenChange={setOpen}>
+
+      {/* We only want the popover to open if the field is NOT disabled */}
+      <Popover.Root open={open && !isDisabled} onOpenChange={setOpen}>
         <Popover.Trigger
-          className={`flex flex-row gap-2 w-full border ${hasError ? 'border-red-500' : 'border-muted-border'} bg-muted-input rounded-sm pt-2 pb-2 pl-3 pr-3`}
+          className={`flex flex-row gap-2 w-full border rounded-sm pt-2 pb-2 pl-3 pr-3
+            ${hasError ? 'border-red-500' : 'border-muted-border'} 
+            bg-muted-input 
+            disabled:opacity-70 disabled:bg-gray-100 disabled:text-gray-500
+          `}
           disabled={isDisabled}
         >
-          <CalendarDays />
-          <span>{displayText}</span>
+          <CalendarDays className="text-inherit" />
+
+          <span className={!dateValue ? 'opacity-60' : ''}>{displayText}</span>
         </Popover.Trigger>
+
         <Popover.Portal>
           <Popover.Positioner>
             <Popover.Popup className="bg-muted-input border border-muted-border w-(--anchor-width) flex flex-col gap-4">
@@ -75,6 +86,7 @@ export function SelectDateField({
           </Popover.Positioner>
         </Popover.Portal>
       </Popover.Root>
+
       {hasError && (
         <span className="text-red-500 text-sm">{field.state.meta.errors[0].message}</span>
       )}
