@@ -1,5 +1,10 @@
 import { apiClient } from './apiClient';
-import type { User, AnxietyEvent, AnxietyEventBody } from '@katieeitak/shared';
+import type {
+  User,
+  AnxietyEvent,
+  AnxietyEventBody,
+  UpdateAnxietyEventBody,
+} from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
 
@@ -22,7 +27,14 @@ export const api = {
   },
   getAnxietyEvents: async (signal: AbortSignal) => {
     const response = await apiClient.get<SuccessResponse<AnxietyEvent[]>>('/anxiety', { signal });
-
+    return response.data.data;
+  },
+  updateAnxietyEvent: async (id: string, body: UpdateAnxietyEventBody) => {
+    const response = await apiClient.patch<
+      SuccessResponse<AnxietyEvent>,
+      AxiosResponse<SuccessResponse<AnxietyEvent>>,
+      UpdateAnxietyEventBody
+    >(`/anxiety/${id}`, body);
     return response.data.data;
   },
 };

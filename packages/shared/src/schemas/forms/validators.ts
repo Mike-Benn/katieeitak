@@ -5,6 +5,7 @@ import { anxietyEventTypeOptions } from '../../constants/options.js';
 export const AnxietyEventDateSchema = z.iso.datetime({
   error: 'Please select a date.',
 });
+export const AnxietyEventIdSchema = z.string().min(1, 'Id is required.');
 
 export const AnxietyEventTypeSchema = z.enum(
   anxietyEventTypeOptions.map((option) => option.value),
