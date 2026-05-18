@@ -3,8 +3,12 @@ import { PageWrapper } from '@/components/PageWrapper';
 import { useAppForm } from '@/hooks/useAppForm';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { anxietyEventTypeOptions, AnxietyEventBodySchema } from '@katieeitak/shared';
-import { SubmitButton } from '@/components/Buttons/SubmitButton';
+import {
+  anxietyEventTypeOptions,
+  AnxietyEventBodySchema,
+  type AnxietyEventBody,
+  type AnxietyEventType,
+} from '@katieeitak/shared';
 import { toast } from 'sonner';
 
 export function NewAnxietyEventPage() {
@@ -24,18 +28,14 @@ export function NewAnxietyEventPage() {
     defaultValues: {
       anxietyLevel: 5,
       excitementLevel: 5,
-      eventType: '',
+      eventType: '' as AnxietyEventType,
       eventNotes: '',
       eventTitle: '',
       eventDate: undefined as string | undefined,
     },
     onSubmit: async ({ value }) => {
-      const parsedValue = AnxietyEventBodySchema.safeParse(value);
-      if (parsedValue.success) {
-        mutate(parsedValue.data);
-      } else {
-        throw new Error('Submit error');
-      }
+      const parsedValue = value as AnxietyEventBody;
+      mutate(parsedValue);
     },
     validators: {
       onSubmit: AnxietyEventBodySchema,
@@ -43,10 +43,10 @@ export function NewAnxietyEventPage() {
   });
 
   return (
-    <PageWrapper className="p-6 gap-6">
-      <h1 className="text-2xl font-semibold">Create new event</h1>
+    <PageWrapper className="p-6 gap-6 bg-muted-bg">
+      <h2 className="text-2xl font-semibold">Create new event</h2>
       <form
-        className="flex flex-col gap-8"
+        className="flex flex-col p-6 rounded-md gap-8 bg-white"
         onSubmit={(e) => {
           e.preventDefault();
           void form.handleSubmit();
@@ -100,7 +100,9 @@ export function NewAnxietyEventPage() {
           children={(field) => <field.TextAreaField label="Notes" maxLength={300} />}
         />
         <div className="flex flex-row justify-end">
-          <SubmitButton isSubmitting={isPending} />
+          <form.AppForm>
+            <form.SubscribeButton buttonText="Submit" isPending={isPending} />
+          </form.AppForm>
         </div>
       </form>
     </PageWrapper>
