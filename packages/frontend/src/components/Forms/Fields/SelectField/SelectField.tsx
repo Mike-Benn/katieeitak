@@ -12,13 +12,19 @@ interface SelectFieldProps {
   description?: string;
   label?: string;
   isRequired?: boolean;
+  isDisabled?: boolean;
 }
 
-export function SelectField({ items, description = '', label = '' }: SelectFieldProps) {
+export function SelectField({
+  items,
+  description = '',
+  label = '',
+  isDisabled = false,
+}: SelectFieldProps) {
   const field = useFieldContext<string>();
   const hasError = field.state.meta.errors.length > 0;
   return (
-    <Field.Root className="flex flex-col gap-1">
+    <Field.Root className="flex flex-col gap-1" disabled={isDisabled}>
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}
       <Select.Root
         items={items}

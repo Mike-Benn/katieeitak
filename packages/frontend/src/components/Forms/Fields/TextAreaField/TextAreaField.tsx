@@ -7,6 +7,7 @@ interface TextAreaFieldProps {
   description?: string;
   isRequired?: boolean;
   maxLength?: number;
+  isDisabled?: boolean;
 }
 
 export function TextAreaField({
@@ -14,11 +15,12 @@ export function TextAreaField({
   placeholder = '',
   description = '',
   maxLength,
+  isDisabled = false,
 }: TextAreaFieldProps) {
   const field = useFieldContext<string>();
   const hasError = field.state.meta.errors.length > 0;
   return (
-    <Field.Root className="flex flex-col gap-1">
+    <Field.Root className="flex flex-col gap-1" disabled={isDisabled}>
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}
       <Input
         placeholder={placeholder}

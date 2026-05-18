@@ -9,6 +9,7 @@ interface SliderFieldProps {
   label?: string;
   minLabel?: string;
   maxLabel?: string;
+  isDisabled?: boolean;
 }
 
 export function SliderField({
@@ -19,11 +20,12 @@ export function SliderField({
   label = '',
   minLabel = '',
   maxLabel = '',
+  isDisabled = false,
 }: SliderFieldProps) {
   const field = useFieldContext<number>();
   const hasError = field.state.meta.errors.length > 0;
   return (
-    <Field.Root className="flex flex-col items-center">
+    <Field.Root className="flex flex-col items-center" disabled={isDisabled}>
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}
       <Slider.Root
         className="flex gap-4"

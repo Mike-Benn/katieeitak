@@ -10,11 +10,13 @@ interface SelectDateFieldProps {
   label?: string;
   placeholder?: string;
   description?: string;
+  isDisabled?: boolean;
 }
 export function SelectDateField({
   label = '',
   description = '',
   placeholder = undefined,
+  isDisabled = false,
 }: SelectDateFieldProps) {
   const [open, setOpen] = useState(false);
   const [monthSelected, setMonthSelected] = useState<Date>(new Date());
@@ -25,11 +27,12 @@ export function SelectDateField({
     ? format(dateValue, 'MMM d, yyyy')
     : (placeholder ?? 'Date');
   return (
-    <Field.Root className="flex flex-col gap-1">
+    <Field.Root className="flex flex-col gap-1" disabled={isDisabled}>
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}
       <Popover.Root open={open} onOpenChange={setOpen}>
         <Popover.Trigger
           className={`flex flex-row gap-2 w-full border ${hasError ? 'border-red-500' : 'border-muted-border'} bg-muted-input rounded-sm pt-2 pb-2 pl-3 pr-3`}
+          disabled={isDisabled}
         >
           <CalendarDays />
           <span>{displayText}</span>

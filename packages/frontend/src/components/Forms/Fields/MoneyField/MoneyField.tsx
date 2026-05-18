@@ -6,6 +6,7 @@ interface NumberFieldProps {
   placeholder?: string;
   description?: string;
   isRequired?: boolean;
+  isDisabled?: boolean;
 }
 
 export function MoneyField({
@@ -13,11 +14,12 @@ export function MoneyField({
   placeholder = '',
   description = '',
   isRequired = true,
+  isDisabled = false,
 }: NumberFieldProps) {
   const field = useFieldContext<string>();
   const hasError = field.state.meta.errors.length > 0;
   return (
-    <Field.Root className="flex flex-col gap-1">
+    <Field.Root className="flex flex-col gap-1" disabled={isDisabled}>
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}
       <Field.Control
         className="bg-muted-input rounded-sm pl-3 pr-3 pt-2 pb-2 border border-muted-border"
