@@ -23,7 +23,6 @@ export function SelectField({
 }: SelectFieldProps) {
   const field = useFieldContext<string>();
   const hasError = field.state.meta.errors.length > 0;
-
   return (
     <Field.Root className="flex flex-col gap-1" disabled={isDisabled}>
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}

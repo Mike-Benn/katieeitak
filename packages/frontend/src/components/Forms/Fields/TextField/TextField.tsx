@@ -28,7 +28,7 @@ export function TextField({
         value={field.state.value}
         onChange={(e) => field.handleChange(e.target.value)}
         className={`
-          border border-muted-border rounded-sm bg-muted-input pl-3 pr-3 pt-2 pb-2
+          border ${hasError ? 'border-red-500' : 'border-muted-border'} rounded-sm bg-muted-input pl-3 pr-3 pt-2 pb-2
           disabled:opacity-70 disabled:bg-gray-100 disabled:text-gray-500
         `}
         type="text"
