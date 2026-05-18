@@ -5,6 +5,7 @@ import { SelectField } from '@/components/Forms/Fields/SelectField';
 import { TextAreaField } from '@/components/Forms/Fields/TextAreaField';
 import { SelectDateField } from '@/components/Forms/Fields/SelectDateField';
 import { TextField } from '@/components/Forms/Fields/TextField';
+import { SubscribeButton } from '@/components/Buttons/SubscribeButton';
 
 const { fieldContext, formContext, useFieldContext, useFormContext } = createFormHookContexts();
 
@@ -17,7 +18,9 @@ const { useAppForm } = createFormHook({
     SelectDateField,
     TextField,
   },
-  formComponents: {},
+  formComponents: {
+    SubscribeButton,
+  },
   fieldContext,
   formContext,
 });
