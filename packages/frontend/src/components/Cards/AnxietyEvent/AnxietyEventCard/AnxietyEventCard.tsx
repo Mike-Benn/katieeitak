@@ -1,23 +1,8 @@
-import {
-  PartyPopper,
-  Meh,
-  Frown,
-  Smile,
-  Bug,
-  Briefcase,
-  ChefHat,
-  ShoppingCart,
-  CircleQuestionMark,
-  Handshake,
-  Heart,
-  Hospital,
-  Tickets,
-  Atom,
-  type LucideIcon,
-} from 'lucide-react';
+import { PartyPopper, Meh, Frown, Smile } from 'lucide-react';
 import { formatInTimeZone } from 'date-fns-tz';
 import type { ReactNode } from 'react';
 import type { AnxietyEventType } from '@katieeitak/shared';
+import { getAnxietyEventTypeIcon } from '@/utils/getAnxietyEventTypeIcon';
 interface AnxietyEventCardProps {
   dateString?: string;
   anxietyLevel?: number;
@@ -42,25 +27,8 @@ export function AnxietyEventCard({
     ) : (
       <Frown size={14} />
     );
-  const EVENT_ICON_MAP: Record<AnxietyEventType, LucideIcon> = {
-    bugs: Bug,
-    health: Hospital,
-    work: Briefcase,
-    restaurant: ChefHat,
-    event: Tickets,
-    family: Heart,
-    friends: Handshake,
-    shopping: ShoppingCart,
-    future: Atom,
-  };
 
-  let typeIcon: ReactNode;
-  if (!eventType) {
-    typeIcon = <CircleQuestionMark size={14} />;
-  } else {
-    const Icon = EVENT_ICON_MAP[eventType];
-    typeIcon = <Icon size={14} />;
-  }
+  const typeIcon = getAnxietyEventTypeIcon({ eventType });
   return (
     <div className="flex flex-col shadow-md rounded-md p-6 bg-white gap-2">
       <div className="flex flex-row items-center">
