@@ -8,6 +8,10 @@ import type {
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
 
+interface UpdateAnxietyEventParams {
+  id: string;
+  body: UpdateAnxietyEventBody;
+}
 // TODO - Error handling
 export const api = {
   completeAuth: async (signal: AbortSignal) => {
@@ -29,7 +33,7 @@ export const api = {
     const response = await apiClient.get<SuccessResponse<AnxietyEvent[]>>('/anxiety', { signal });
     return response.data.data;
   },
-  updateAnxietyEvent: async (id: string, body: UpdateAnxietyEventBody) => {
+  updateAnxietyEvent: async ({ id, body }: UpdateAnxietyEventParams) => {
     const response = await apiClient.patch<
       SuccessResponse<AnxietyEvent>,
       AxiosResponse<SuccessResponse<AnxietyEvent>>,
