@@ -7,7 +7,7 @@ import { globalErrorHandler } from '@/middleware/globalErrorHandler/globalErrorH
 const createApp = (): Express => {
   const corsOptions = {
     origin: BACKEND_ENV.CORS_ORIGINS.split(','),
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   };
   const app = express();
