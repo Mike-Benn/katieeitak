@@ -12,7 +12,7 @@ interface CompleteAuthProps {
 
 export function CompleteAuth({ children }: CompleteAuthProps) {
   const navigate = useNavigate();
-  const { isComplete, setIsComplete, setUser, user } = useStore();
+  const { isComplete, setIsComplete, setUser } = useStore();
 
   const { data, isSuccess, isError, error } = useQuery({
     queryKey: ['auth-complete'],
@@ -28,15 +28,14 @@ export function CompleteAuth({ children }: CompleteAuthProps) {
 
   useEffect(() => {
     if (isError) {
-      console.log(error);
-      void navigate({ to: '/error' });
+      void navigate({ to: '/error', replace: true });
     }
   }, [isError]);
 
   if (!isComplete)
     return (
       <PageWrapper>
-        <div className="flex flex-col justify-center items-center min-h-full">
+        <div className="flex flex-col justify-center items-center min-h-dvh">
           <SvgSpinner />
         </div>
       </PageWrapper>

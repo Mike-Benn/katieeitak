@@ -7,7 +7,7 @@ export const IdentityRepository = {
   findUserByAuthId: async (auth0_id: string, client?: PoolClient) => {
     const connection = client ?? pool;
     const query = `
-            SELECT name
+            SELECT id, name
             FROM users
             WHERE auth0_id = $1
         `;
@@ -20,7 +20,7 @@ export const IdentityRepository = {
     const query = `
         INSERT INTO users (auth0_id)
         VALUES ($1)
-        RETURNING name
+        RETURNING id, name
     `;
     const values = [auth0_id];
     const { rows } = await connection.query<User>(query, values);

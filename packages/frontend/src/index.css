@@ -2,17 +2,18 @@
 
 html {
   box-sizing: border-box;
-  min-height: 100%;
 }
 
 body {
-  min-height: 100%;
   font-family: sans-serif;
 }
 
 #root {
-  min-height: 100%;
   isolation: isolate;
+}
+
+:root {
+  --nav-height: 57px;
 }
 
 @layer components {
@@ -24,4 +25,6 @@ body {
   --color-lightgray: #00000033;
   --color-muted-input: rgb(246, 248, 250);
   --color-muted-border: rgb(227, 233, 237);
+  --color-offwhite: rgb(232, 231, 228);
+  --color-muted-bg: rgb(236, 238, 241);
 }
