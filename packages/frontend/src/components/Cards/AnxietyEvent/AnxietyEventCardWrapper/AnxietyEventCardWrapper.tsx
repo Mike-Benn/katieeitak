@@ -5,12 +5,13 @@ import { Ghost } from 'lucide-react';
 import { AnxietyEventCard } from '@/components/Cards/AnxietyEvent/AnxietyEventCard/AnxietyEventCard';
 
 export function AnxietyEventCardWrapper() {
-  const { isPending, isError, isFetching, isLoading, isSuccess, data } = useAnxietyEvents();
+  const { isPending, isError, isFetching, isLoading, isSuccess, data, isRefetching } =
+    useAnxietyEvents();
   if (isError) {
     toast.error('There was an error fetching Anxiety Events');
   }
 
-  const isContentReady = !isPending && !isLoading && !isFetching;
+  const isContentReady = !isPending && !isLoading && !isFetching && !isRefetching;
 
   if (!isContentReady) {
     return (
