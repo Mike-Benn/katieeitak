@@ -1,0 +1,6 @@
+[build]
+builder = "nixpacks"
+buildCommand = "pnpm --filter @katieeitak/shared build && pnpm --filter @katieeitak/backend build"
+
+[deploy]
+startCommand = "node packages/backend/dist/index.js"

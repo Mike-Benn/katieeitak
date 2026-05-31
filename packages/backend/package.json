@@ -30,6 +30,7 @@
     "@types/express-serve-static-core": "^5.1.1",
     "@types/pg": "^8.20.0",
     "@types/qs": "^6.15.0",
+    "tsc-alias": "^1.8.17",
     "tsx": "^4.21.0"
   }
 }
