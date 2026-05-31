@@ -1,4 +1,4 @@
-import type { ERROR_NAMES } from '@/constants/errors.js';
+import type { ERROR_NAMES } from '@/api/v1/constants/errors.js';
 
 // Constants and types
 
