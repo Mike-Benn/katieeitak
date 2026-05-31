@@ -1,5 +1,5 @@
 import { AnxietyRepository } from '@/api/v1/features/anxiety/data-access/repository.js';
-import type { AnxietyEventBody } from '@katieeitak/shared';
+import type { AnxietyEventBody, UpdateAnxietyEventBody } from '@katieeitak/shared';
 
 interface CreateEventParams {
   userId: string;
@@ -7,6 +7,12 @@ interface CreateEventParams {
 }
 interface GetEventsByUserIdParams {
   userId: string;
+}
+
+interface UpdateAnxietyEventsByEventIdParams {
+  userId: string;
+  eventId: number;
+  eventChanges: UpdateAnxietyEventBody;
 }
 
 export const AnxietyService = {
@@ -17,5 +23,17 @@ export const AnxietyService = {
   getEventsByUserId: async ({ userId }: GetEventsByUserIdParams) => {
     const anxietyEvents = await AnxietyRepository.getEventsByUserId({ userId });
     return anxietyEvents;
+  },
+  updateAnxietyEventByEventId: async ({
+    userId,
+    eventId,
+    eventChanges,
+  }: UpdateAnxietyEventsByEventIdParams) => {
+    const anxietyEvent = await AnxietyRepository.updateAnxietyEventByEventId({
+      userId,
+      eventId,
+      eventChanges,
+    });
+    return anxietyEvent;
   },
 };
