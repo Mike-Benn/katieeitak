@@ -1,20 +1,35 @@
-import type { AnxietyEvent } from '@katieeitak/shared';
+import type { AnxietyEvent, UpdateAnxietyEventBody } from '@katieeitak/shared';
 import { Button, Dialog, Separator } from '@base-ui/react';
 import { formatInTimeZone } from 'date-fns-tz';
 import { useState, type ReactNode } from 'react';
 import { Smile, Meh, Frown, PartyPopper, X, Pencil } from 'lucide-react';
 import { getAnxietyEventTypeIcon } from '@/utils/getAnxietyEventTypeIcon';
-import { anxietyEventTypeOptions } from '@katieeitak/shared';
+import { anxietyEventTypeOptions, UpdateAnxietyEventBodySchema } from '@katieeitak/shared';
 import { useAppForm } from '@/hooks/useAppForm';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '@/api/api';
+import { toast } from 'sonner';
 
-interface EditAnxietyEventViewProps {
+interface AnxietyEventCardProps {
   anxietyEvent: AnxietyEvent;
 }
 
-export function AnxietyEventCard({ anxietyEvent }: EditAnxietyEventViewProps) {
+export function AnxietyEventCard({ anxietyEvent }: AnxietyEventCardProps) {
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-
+  const { mutate, isPending } = useMutation({
+    mutationFn: (body: UpdateAnxietyEventBody) =>
+      api.updateAnxietyEvent({ id: anxietyEvent.id, body }),
+    onError: () => {
+      toast.error('There was an error updating anxiety event, please try again.');
+    },
+    onSuccess: async () => {
+      setOpen(false);
+      setIsEditing(false);
+      await queryClient.invalidateQueries({ queryKey: ['anxietyEvents'] });
+    },
+  });
   const form = useAppForm({
     defaultValues: {
       anxietyLevel: anxietyEvent.anxiety_level,
@@ -23,6 +38,23 @@ export function AnxietyEventCard({ anxietyEvent }: EditAnxietyEventViewProps) {
       eventNotes: anxietyEvent.notes,
       eventTitle: anxietyEvent.title,
       eventDate: anxietyEvent.date_occurred,
+    },
+    onSubmit: ({ value: formValues, formApi }) => {
+      const defaultFormValues = formApi.options.defaultValues;
+      if (!defaultFormValues) return;
+      const changedFormValues: Record<string, unknown> = {};
+      for (const [key, value] of Object.entries(formValues)) {
+        const typedKey = key as keyof typeof defaultFormValues;
+        if (value !== defaultFormValues[typedKey]) {
+          changedFormValues[typedKey] = value;
+        }
+      }
+      const parsedChangedFormValues = UpdateAnxietyEventBodySchema.safeParse(changedFormValues);
+      if (parsedChangedFormValues.error || !parsedChangedFormValues.data) {
+        toast.error('There was an error updating anxiety event, please try again.');
+        return;
+      }
+      mutate(parsedChangedFormValues.data);
     },
   });
 
@@ -40,7 +72,16 @@ export function AnxietyEventCard({ anxietyEvent }: EditAnxietyEventViewProps) {
 
   const typeIcon = getAnxietyEventTypeIcon({ eventType: anxietyEvent.event_type });
   return (
-    <Dialog.Root open={open} onOpenChange={setOpen}>
+    <Dialog.Root
+      open={open}
+      onOpenChange={(open) => {
+        setOpen(open);
+        if (open) {
+          form.reset();
+          setIsEditing(false);
+        }
+      }}
+    >
       <Dialog.Trigger>
         <div className="flex flex-col shadow-md rounded-md p-6 bg-white gap-2">
           <div className="flex flex-row items-center">
@@ -52,17 +93,19 @@ export function AnxietyEventCard({ anxietyEvent }: EditAnxietyEventViewProps) {
             )}
           </div>
 
-          <div className="flex flex-row gap-2">
-            <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm">
-              {anxietyIcon}
-              <span className="text-sm">{anxietyEvent.anxiety_level}</span>
-            </div>
-            <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm">
-              <PartyPopper size={14} />
-              <span className="text-sm">{anxietyEvent.excitement_level}</span>
-            </div>
-            <div className="rounded-md pl-2 pr-2 pt-1 pb-1 bg-muted-input shadow-sm flex items-center justify-center">
-              {typeIcon}
+          <div className="flex justify-between">
+            <div className="flex flex-row gap-2">
+              <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm">
+                {anxietyIcon}
+                <span className="text-sm">{anxietyEvent.anxiety_level}</span>
+              </div>
+              <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm">
+                <PartyPopper size={14} />
+                <span className="text-sm">{anxietyEvent.excitement_level}</span>
+              </div>
+              <div className="rounded-md pl-2 pr-2 pt-1 pb-1 bg-muted-input shadow-sm flex items-center justify-center">
+                {typeIcon}
+              </div>
             </div>
           </div>
         </div>
@@ -174,11 +217,12 @@ export function AnxietyEventCard({ anxietyEvent }: EditAnxietyEventViewProps) {
             </div>
             <Separator orientation="horizontal" className="h-px w-full bg-lightgray shrink-0" />
             <form.AppForm>
-              <div className="flex flex-row pl-6 pr-6 pt-4 pb-4 justify-end">
+              <div className="flex flex-row pl-6 pr-6 pt-4 pb-4 justify-end gap-2">
                 <form.SubscribeButton
                   buttonText="Save"
                   textColor="text-white"
                   bgColor="bg-green-700"
+                  isPending={isPending}
                 />
               </div>
             </form.AppForm>
