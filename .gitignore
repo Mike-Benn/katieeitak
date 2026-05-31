@@ -28,6 +28,7 @@ pnpm-debug.log*
 *.sln
 *.sw?
 *.http
+todo.txt
 
 # OS
 .DS_Store
