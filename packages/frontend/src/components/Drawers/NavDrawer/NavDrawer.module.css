@@ -26,10 +26,10 @@
   left: 0;
   width: 19rem;
   max-width: calc(100vw - 3rem);
-  height: 100%;
+  height: calc(100dvh - 57px);
   touch-action: none;
   display: flex;
   flex-direction: column;
-  padding: 1rem 1rem 0rem 1rem;
+  padding: 1rem 1rem 1rem 1rem;
   background-color: white;
 }
