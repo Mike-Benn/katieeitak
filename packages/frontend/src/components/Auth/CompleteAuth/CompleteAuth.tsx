@@ -14,7 +14,7 @@ export function CompleteAuth({ children }: CompleteAuthProps) {
   const navigate = useNavigate();
   const { isComplete, setIsComplete, setUser } = useStore();
 
-  const { data, isSuccess, isError, error } = useQuery({
+  const { data, isSuccess, isError } = useQuery({
     queryKey: ['auth-complete'],
     queryFn: ({ signal }) => api.completeAuth(signal),
   });
