@@ -20,11 +20,14 @@ export function SelectDateField({
   isDisabled = false,
 }: SelectDateFieldProps) {
   const [open, setOpen] = useState(false);
-  const [monthSelected, setMonthSelected] = useState<Date>(new Date());
   const field = useFieldContext<string | undefined>();
   const hasError = field.state.meta.errors.length > 0;
+  const [monthSelected, setMonthSelected] = useState<Date>(
+    field.state.value ? new Date(field.state.value) : new Date(),
+  );
 
   const dateValue = field.state.value ? new Date(field.state.value) : undefined;
+
   const displayText: string = dateValue
     ? format(dateValue, 'MMM d, yyyy')
     : (placeholder ?? 'Date');
@@ -32,8 +35,6 @@ export function SelectDateField({
   return (
     <Field.Root className="flex flex-col gap-1" disabled={isDisabled}>
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}
-
-      {/* We only want the popover to open if the field is NOT disabled */}
       <Popover.Root open={open && !isDisabled} onOpenChange={setOpen}>
         <Popover.Trigger
           className={`flex flex-row gap-2 w-full border rounded-sm pt-2 pb-2 pl-3 pr-3
