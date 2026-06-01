@@ -4,7 +4,6 @@ const envSchema = z.object({
   NODE_ENV: z.string(),
   CORS_ORIGINS: z.string(),
   DB_URL: z.string(),
-  PORT: z.string().transform(Number),
   AUDIENCE: z.string(),
   AUTH0_DOMAIN: z.string(),
 });

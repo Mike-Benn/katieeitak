@@ -1,8 +1,7 @@
 import { createApp } from './loaders/express/express.js';
-import { BACKEND_ENV } from './env.js';
 import { logger } from './utils/logger/logger.js';
 
-const port = BACKEND_ENV.PORT;
+const port = process.env.PORT || 3000;
 const app = createApp();
 const server = app.listen(port, () =>
   console.log(`[server]: Server is running at http://localhost:${port}`),
