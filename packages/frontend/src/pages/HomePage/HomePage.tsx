@@ -4,7 +4,7 @@ import { Link } from '@tanstack/react-router';
 
 export function HomePage() {
   return (
-    <PageWrapper className="p-6 bg-muted-bg min-h-[calc(100dvh-var(--nav-height))]">
+    <PageWrapper className="p-6 min-h-[calc(100dvh-var(--nav-height))]">
       <div className="grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-4 justify-center">
         <Link
           to="/paycheck"
