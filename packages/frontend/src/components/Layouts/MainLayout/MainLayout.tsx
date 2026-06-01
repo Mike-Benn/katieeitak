@@ -5,7 +5,7 @@ export function MainLayout() {
   return (
     <>
       <AppHeader />
-      <main className="flex flex-col bg-muted-bg">
+      <main className="flex flex-col">
         <Outlet />
       </main>
     </>
