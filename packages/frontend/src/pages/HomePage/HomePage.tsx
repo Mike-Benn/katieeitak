@@ -1,10 +1,10 @@
 import { PageWrapper } from '@/components/PageWrapper';
-import { BadgeDollarSign, Leaf } from 'lucide-react';
+import { BadgeDollarSign, Leaf, BookMarked } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 
 export function HomePage() {
   return (
-    <PageWrapper className="p-6 min-h-[calc(100dvh-var(--nav-height))]">
+    <PageWrapper className="p-6">
       <div className="grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-4 justify-center">
         <Link
           to="/paycheck"
@@ -19,6 +19,13 @@ export function HomePage() {
         >
           <Leaf size={36} />
           <span className="font-semibold text-lg">Anxiety</span>
+        </Link>
+        <Link
+          to="/books"
+          className="no-underline visited:text-inherit flex flex-col bg-white aspect-square justify-center items-center shadow-md rounded-md p-6 gap-2"
+        >
+          <BookMarked size={36} />
+          <span className="font-semibold text-lg">Books</span>
         </Link>
       </div>
     </PageWrapper>

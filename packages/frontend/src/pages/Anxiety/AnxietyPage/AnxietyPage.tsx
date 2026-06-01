@@ -5,7 +5,7 @@ import { AnxietyEventCardWrapper } from '@/components/Cards/AnxietyEvent/Anxiety
 
 export function AnxietyPage() {
   return (
-    <PageWrapper className="p-6 flex flex-col min-h-[calc(100dvh-var(--nav-height))] gap-6">
+    <PageWrapper className="p-6 flex flex-col gap-6">
       <div className="flex flex-row justify-between items-center">
         <h1 className="text-2xl font-semibold">Events summary</h1>
         <Link to="/anxiety/new">
