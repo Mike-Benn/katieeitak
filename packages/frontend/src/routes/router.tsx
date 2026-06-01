@@ -6,6 +6,7 @@ import { MainLayout } from '@/components/Layouts/MainLayout';
 import { PaycheckPage } from '@/pages/PaycheckPage';
 import { AnxietyPage } from '@/pages/Anxiety/AnxietyPage';
 import { NewAnxietyEventPage } from '@/pages/Anxiety/NewAnxietyEventPage';
+import { BooksDashboard } from '@/pages/Books/BooksDashboard';
 const rootRoute = createRootRoute({
   component: Root,
 });
@@ -48,6 +49,14 @@ const newAnxietyEventRoute = createRoute({
   component: NewAnxietyEventPage,
 });
 
+// Books routes
+
+const booksDashboardRoute = createRoute({
+  getParentRoute: () => mainLayoutRoute,
+  path: '/books',
+  component: BooksDashboard,
+});
+
 // Misc routes
 
 const errorRoute = createRoute({
@@ -62,6 +71,7 @@ const protectedRouteTree = mainLayoutRoute.addChildren([
   paycheckRoute,
   anxietyRoute,
   newAnxietyEventRoute,
+  booksDashboardRoute,
 ]);
 const routeTree = rootRoute.addChildren([protectedRouteTree, errorRoute]);
 
