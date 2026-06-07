@@ -5,4 +5,5 @@ export const ERROR_NAMES = {
   MALFORMED_REQUEST: 'MALFORMED_REQUEST',
   RESOURCE_NOT_FOUND: 'RESOURCE_NOT_FOUND',
   BAD_GATEWAY: 'BAD_GATEWAY',
+  OL_SCHEMA_ERROR: 'OL_SCHEMA_ERROR', // Open Library response schema mismatch
 } as const;
