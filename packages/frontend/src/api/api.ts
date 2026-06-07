@@ -4,7 +4,7 @@ import type {
   AnxietyEvent,
   AnxietyEventBody,
   UpdateAnxietyEventBody,
-  Book,
+  BookSearchResults,
 } from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
@@ -50,9 +50,12 @@ export const api = {
   },
   searchBooksByQueryString: async ({ query, signal }: SearchBooksByQueryStringParams) => {
     const params = new URLSearchParams({ q: query, limit: '10' });
-    const response = await apiClient.get<SuccessResponse<Book[]>>(`/books/search?${params}`, {
-      signal,
-    });
+    const response = await apiClient.get<SuccessResponse<BookSearchResults>>(
+      `/books/search?${params}`,
+      {
+        signal,
+      },
+    );
     return response.data.data;
   },
 };
