@@ -22,7 +22,7 @@ Average rating
 
 export function BooksDashboard() {
   return (
-    <PageWrapper className="p-6 flex flex-col gap-6">
+    <PageWrapper className="p-6 gap-6">
       <BookStatsCard />
       <div className="flex flex-row justify-between items-center">
         <h1 className="text-2xl font-semibold">Latest</h1>
@@ -32,7 +32,7 @@ export function BooksDashboard() {
               <ChartBar />
             </div>
           </Link>
-          <Link to="/books">
+          <Link to="/books/search">
             <div className="border border-muted-border p-2 rounded-md bg-muted-input shadow-md">
               <Search />
             </div>
