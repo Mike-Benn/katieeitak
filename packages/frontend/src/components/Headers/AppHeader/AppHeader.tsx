@@ -3,7 +3,7 @@ import { NavDrawer } from '@/components/Drawers/NavDrawer';
 
 export function AppHeader() {
   return (
-    <header className="flex flex-row justify-between items-center border-b border-lightgray p-4 pl-4 pr-4">
+    <header className="flex flex-row justify-between items-center border-b border-lightgray p-4 pl-4 pr-4 bg-white">
       <div className="flex flex-row gap-2">
         <NavDrawer />
         <h1>Katieeitak</h1>

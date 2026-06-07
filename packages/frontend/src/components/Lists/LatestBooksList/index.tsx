@@ -1,0 +1,1 @@
+export { LatestBooksList } from './LatestBooksList';

@@ -2,7 +2,7 @@ import type { ERROR_NAMES } from '@/api/v1/constants/errors.js';
 
 // Constants and types
 
-type HttpErrorCode = 400 | 401 | 404 | 500;
+type HttpErrorCode = 400 | 401 | 404 | 500 | 502;
 type ErrorName = (typeof ERROR_NAMES)[keyof typeof ERROR_NAMES];
 
 // AppError

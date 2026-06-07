@@ -4,6 +4,7 @@ import type {
   AnxietyEvent,
   AnxietyEventBody,
   UpdateAnxietyEventBody,
+  BookSearchResults,
 } from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
@@ -12,6 +13,12 @@ interface UpdateAnxietyEventParams {
   id: string;
   body: UpdateAnxietyEventBody;
 }
+
+interface SearchBooksByQueryStringParams {
+  query: string;
+  signal: AbortSignal;
+}
+
 // TODO - Error handling
 export const api = {
   completeAuth: async (signal: AbortSignal) => {
@@ -39,6 +46,16 @@ export const api = {
       AxiosResponse<SuccessResponse<AnxietyEvent>>,
       UpdateAnxietyEventBody
     >(`/anxiety/${id}`, body);
+    return response.data.data;
+  },
+  searchBooksByQueryString: async ({ query, signal }: SearchBooksByQueryStringParams) => {
+    const params = new URLSearchParams({ q: query, limit: '10' });
+    const response = await apiClient.get<SuccessResponse<BookSearchResults>>(
+      `/books/search?${params}`,
+      {
+        signal,
+      },
+    );
     return response.data.data;
   },
 };

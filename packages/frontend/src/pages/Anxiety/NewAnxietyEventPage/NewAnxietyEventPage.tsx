@@ -43,7 +43,7 @@ export function NewAnxietyEventPage() {
   });
 
   return (
-    <PageWrapper className="p-6 gap-6 bg-muted-bg">
+    <PageWrapper className="p-6 gap-6">
       <h2 className="text-2xl font-semibold">Create new event</h2>
       <form
         className="flex flex-col p-6 rounded-md gap-8 bg-white"

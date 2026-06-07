@@ -9,9 +9,17 @@ export const ErrorHandler = {
   handleError: async (error: unknown, res: Response) => {
     if (error instanceof AppError) {
       if (error.isOperational) {
-        return res
-          .status(error.statusCode)
-          .json(ApiResponse.fail({ data: error.responseData, message: error.safeMessage }));
+        if (error.statusCode >= 500) {
+          return res.status(error.statusCode).json(
+            ApiResponse.error({
+              message: error.safeMessage,
+            }),
+          );
+        } else {
+          return res
+            .status(error.statusCode)
+            .json(ApiResponse.fail({ data: error.responseData, message: error.safeMessage }));
+        }
       } else {
         logger.error(error);
         res.status(error.statusCode).json(ApiResponse.error({ message: error.safeMessage }));

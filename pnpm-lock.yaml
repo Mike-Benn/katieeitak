@@ -60,6 +60,9 @@ importers:
       '@katieeitak/shared':
         specifier: workspace:*
         version: link:../shared
+      axios:
+        specifier: ^1.15.2
+        version: 1.15.2
       cors:
         specifier: ^2.8.6
         version: 2.8.6

@@ -1,5 +1,5 @@
 import { Drawer, Button } from '@base-ui/react';
-import { Menu, House, BadgeDollarSign, Leaf, LogOut } from 'lucide-react';
+import { Menu, House, BadgeDollarSign, Leaf, LogOut, BookMarked } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import styles from './NavDrawer.module.css';
@@ -53,6 +53,16 @@ export function NavDrawer() {
                       >
                         <Leaf />
                         <span>Anxiety</span>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/books"
+                        onClick={handleLinkClick}
+                        className="nav-drawer-link visited:text-inherit"
+                      >
+                        <BookMarked />
+                        <span>Books</span>
                       </Link>
                     </li>
                   </div>

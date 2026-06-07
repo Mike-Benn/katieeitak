@@ -17,6 +17,7 @@
   "packageManager": "pnpm@10.33.2",
   "dependencies": {
     "@katieeitak/shared": "workspace:*",
+    "axios": "^1.15.2",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "express-oauth2-jwt-bearer": "^1.8.0",
