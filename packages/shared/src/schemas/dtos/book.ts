@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const BookSchema = z.object({
+export const GeneralBookSchema = z.object({
   author_key: z.array(z.string()).optional(),
   author_name: z.array(z.string()).optional(),
   cover_i: z.number().int().positive().optional(),
@@ -8,11 +8,11 @@ export const BookSchema = z.object({
   title: z.string(),
   first_publish_year: z.number().int().positive().optional(),
 });
-export type Book = z.infer<typeof BookSchema>;
+export type GeneralBook = z.infer<typeof GeneralBookSchema>;
 
 export const BookSearchResultsSchema = z.object({
   num_found: z.number().int().nonnegative(),
-  books: z.array(BookSchema),
+  books: z.array(GeneralBookSchema),
 });
 
 export type BookSearchResults = z.infer<typeof BookSearchResultsSchema>;

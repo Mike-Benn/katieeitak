@@ -11,8 +11,8 @@ export { AnxietyEventBodySchema, UpdateAnxietyEventBodySchema } from './schemas/
 export type { AnxietyEvent } from './schemas/dtos/anxietyEvent.js';
 export type { AnxietyEventType } from './schemas/forms/validators.js';
 export {
-  BookSchema,
+  GeneralBookSchema,
   BookSearchResultsSchema,
-  type Book,
+  type GeneralBook,
   type BookSearchResults,
 } from './schemas/dtos/book.js';
