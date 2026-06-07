@@ -32,7 +32,7 @@ export class BookService {
           safeMessage: 'Unable to fetch results, please try again.',
         });
       }
-      return parsedData.data.docs;
+      return parsedData.data;
     } catch (error: unknown) {
       if (error instanceof AppError) {
         throw error;

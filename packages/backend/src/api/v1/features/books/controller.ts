@@ -3,7 +3,7 @@ import { AppError } from '@/api/v1/errors/AppError.js';
 import type { BookService } from '@/api/v1/features/books/service.js';
 import type { Request, Response } from 'express';
 import { ApiResponse } from '@/api/v1/responses/ApiResponse.js';
-import type { Book } from '@katieeitak/shared';
+import type { BookSearchResults } from '@katieeitak/shared';
 
 export class BookController {
   private bookService: BookService;
@@ -22,13 +22,16 @@ export class BookController {
         safeMessage: 'Malformed request',
       });
     }
-    const books = await this.bookService.searchBooksByQueryString({
+    const data = await this.bookService.searchBooksByQueryString({
       q,
       limit: limit && typeof limit === 'string' ? limit : undefined,
     });
     return res.status(200).json(
-      ApiResponse.success<Book[]>({
-        data: books,
+      ApiResponse.success<BookSearchResults>({
+        data: {
+          books: data.docs,
+          num_found: data.num_found,
+        },
       }),
     );
   };
