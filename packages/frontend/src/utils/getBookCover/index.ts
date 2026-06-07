@@ -1,0 +1,1 @@
+export { getBookCoverString } from './getBookCoverString';
