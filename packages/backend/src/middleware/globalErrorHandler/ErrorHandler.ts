@@ -36,6 +36,7 @@ export const ErrorHandler = {
       };
       return res.status(400).json(ApiResponse.fail({ data }));
     }
+
     logger.error(error);
     res.status(500).json(ApiResponse.error({ message: 'Internal Server Error' }));
     gracefulShutdown();
