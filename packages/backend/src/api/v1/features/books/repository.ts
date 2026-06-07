@@ -5,4 +5,8 @@ export class BookRepository {
   constructor(pool: Pool) {
     this.pool = pool;
   }
+  // TODO
+  public test() {
+    console.log(this.pool);
+  }
 }

@@ -14,6 +14,10 @@ export class BookService {
   constructor(bookRepository: BookRepository) {
     this.bookRepository = bookRepository;
   }
+  // TODO
+  public test() {
+    console.log(this.bookRepository);
+  }
 
   public searchBooksByQueryString = async ({ q, limit }: SearchBooksByQueryStringParams) => {
     const params = new URLSearchParams({ q });
