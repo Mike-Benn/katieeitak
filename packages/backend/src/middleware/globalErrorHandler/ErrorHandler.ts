@@ -4,6 +4,7 @@ import type { Response } from 'express';
 import { logger } from '@/utils/logger/logger.js';
 import { gracefulShutdown } from '@/server.js';
 import { ZodError } from 'zod';
+import { UnauthorizedError } from 'express-oauth2-jwt-bearer';
 
 export const ErrorHandler = {
   handleError: async (error: unknown, res: Response) => {
@@ -35,6 +36,9 @@ export const ErrorHandler = {
         })),
       };
       return res.status(400).json(ApiResponse.fail({ data }));
+    }
+    if (error instanceof UnauthorizedError) {
+      return res.status(401).json(ApiResponse.fail({ data: null, message: 'Unauthorized' }));
     }
 
     logger.error(error);

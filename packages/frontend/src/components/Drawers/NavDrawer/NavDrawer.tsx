@@ -71,7 +71,7 @@ export function NavDrawer() {
                       type="button"
                       onClick={() =>
                         void logout({
-                          logoutParams: { returnTo: window.location.origin, federated: true },
+                          logoutParams: { returnTo: window.location.origin },
                         })
                       }
                       className="nav-drawer-link"
