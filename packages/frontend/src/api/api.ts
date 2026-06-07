@@ -49,7 +49,7 @@ export const api = {
     return response.data.data;
   },
   searchBooksByQueryString: async ({ query, signal }: SearchBooksByQueryStringParams) => {
-    const params = new URLSearchParams({ q: query, limit: '10' });
+    const params = new URLSearchParams({ q: query, limit: '20' });
     const response = await apiClient.get<SuccessResponse<BookSearchResults>>(
       `/books/search?${params}`,
       {
