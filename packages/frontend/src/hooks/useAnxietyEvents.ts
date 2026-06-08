@@ -6,5 +6,6 @@ export function useAnxietyEvents() {
     queryKey: ['anxietyEvents'],
     queryFn: ({ signal }) => api.getAnxietyEvents(signal),
     staleTime: 10_000,
+    refetchOnWindowFocus: false,
   });
 }

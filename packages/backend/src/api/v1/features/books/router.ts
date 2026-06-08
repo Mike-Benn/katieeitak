@@ -10,5 +10,6 @@ const bookController = new BookController(bookService);
 const bookRouter = Router();
 
 bookRouter.get('/search', bookController.searchBooksByQueryString);
+bookRouter.get('/:key', bookController.getBookByKey);
 
 export { bookRouter };

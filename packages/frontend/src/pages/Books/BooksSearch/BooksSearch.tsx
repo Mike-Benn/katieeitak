@@ -16,13 +16,13 @@ export function BooksSearch() {
     queryKey: ['bookSearch', searchString],
     queryFn: ({ signal }) => api.searchBooksByQueryString({ query: searchString, signal }),
     enabled: !!searchString,
+    refetchOnWindowFocus: false,
   });
   useEffect(() => {
     if (isError) {
       toast.error('There was an error searching for books, please wait a moment and try again.');
     }
   }, [isError]);
-
   return (
     <PageWrapper className="p-6 gap-6">
       <div className="rounded-full flex flex-row bg-white items-center shadow-sm focus-within:outline focus-within:outline-blue-500 pl-3">
@@ -30,7 +30,10 @@ export function BooksSearch() {
         <Input
           onValueChange={(val) => setInputVal(val)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') setSearchString(inputVal);
+            if (e.key === 'Enter') {
+              setSearchString(inputVal);
+              e.currentTarget.blur();
+            }
           }}
           autoComplete="off"
           placeholder="Search by title"
