@@ -12,7 +12,13 @@ export type { AnxietyEvent } from './schemas/dtos/anxietyEvent.js';
 export type { AnxietyEventType } from './schemas/forms/validators.js';
 export {
   GeneralBookSchema,
-  BookSearchResultsSchema,
+  GeneralBooksSearchResultsSchema,
+  DetailedBookSchema,
+  DetailedBookResponseSchema,
+  DetailedAuthorSchema,
   type GeneralBook,
-  type BookSearchResults,
+  type GeneralBooksSearchResults,
+  type DetailedBook,
+  type DetailedBookResponse,
+  type DetailedAuthor,
 } from './schemas/dtos/book.js';
