@@ -11,6 +11,7 @@ export const ErrorHandler = {
     if (error instanceof AppError) {
       if (error.isOperational) {
         if (error.statusCode >= 500) {
+          logger.error(error);
           return res.status(error.statusCode).json(
             ApiResponse.error({
               message: error.safeMessage,
