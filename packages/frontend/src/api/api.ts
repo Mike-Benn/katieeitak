@@ -25,6 +25,12 @@ interface GetBookByKeyParams {
   signal: AbortSignal;
 }
 
+interface PaginatedSearchBooksByQueryStringParams {
+  pageParam: string;
+  query: string;
+  signal: AbortSignal;
+}
+
 // TODO - Error handling
 export const api = {
   completeAuth: async (signal: AbortSignal) => {
@@ -56,6 +62,20 @@ export const api = {
   },
   searchBooksByQueryString: async ({ query, signal }: SearchBooksByQueryStringParams) => {
     const params = new URLSearchParams({ q: query, limit: '20' });
+    const response = await apiClient.get<SuccessResponse<GeneralBooksSearchResults>>(
+      `/books/search?${params}`,
+      {
+        signal,
+      },
+    );
+    return response.data.data;
+  },
+  paginatedSearchBooksByQueryString: async ({
+    query,
+    pageParam,
+    signal,
+  }: PaginatedSearchBooksByQueryStringParams) => {
+    const params = new URLSearchParams({ q: query, limit: '20', offset: pageParam });
     const response = await apiClient.get<SuccessResponse<GeneralBooksSearchResults>>(
       `/books/search?${params}`,
       {
