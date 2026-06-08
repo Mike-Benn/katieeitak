@@ -4,7 +4,8 @@ import type {
   AnxietyEvent,
   AnxietyEventBody,
   UpdateAnxietyEventBody,
-  BookSearchResults,
+  GeneralBooksSearchResults,
+  DetailedBookResponse,
 } from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
@@ -16,6 +17,11 @@ interface UpdateAnxietyEventParams {
 
 interface SearchBooksByQueryStringParams {
   query: string;
+  signal: AbortSignal;
+}
+
+interface GetBookByKeyParams {
+  key: string;
   signal: AbortSignal;
 }
 
@@ -50,12 +56,18 @@ export const api = {
   },
   searchBooksByQueryString: async ({ query, signal }: SearchBooksByQueryStringParams) => {
     const params = new URLSearchParams({ q: query, limit: '20' });
-    const response = await apiClient.get<SuccessResponse<BookSearchResults>>(
+    const response = await apiClient.get<SuccessResponse<GeneralBooksSearchResults>>(
       `/books/search?${params}`,
       {
         signal,
       },
     );
+    return response.data.data;
+  },
+  getBookByKey: async ({ key, signal }: GetBookByKeyParams) => {
+    const response = await apiClient.get<SuccessResponse<DetailedBookResponse>>(`/books/${key}`, {
+      signal,
+    });
     return response.data.data;
   },
 };
