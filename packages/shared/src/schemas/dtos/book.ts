@@ -21,7 +21,15 @@ export const DetailedBookSchema = z.object({
   subjects: z.array(z.string()).optional(),
   key: z.string().optional(),
   title: z.string().optional(),
-  description: z.string().optional(),
+  description: z
+    .string()
+    .or(
+      z.object({
+        type: z.string(),
+        value: z.string(),
+      }),
+    )
+    .optional(),
   covers: z.array(z.number().int().nonnegative()).optional(),
   authors: z
     .array(
