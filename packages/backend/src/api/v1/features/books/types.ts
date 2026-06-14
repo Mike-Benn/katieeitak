@@ -6,4 +6,5 @@ export const OpenLibraryResponseSchema = z.object({
   num_found: z.number().int().nonnegative(),
   docs: z.array(GeneralBookSchema),
   start: z.number().int().nonnegative(),
+  offset: z.number().int().nonnegative(),
 });

@@ -15,18 +15,13 @@ interface UpdateAnxietyEventParams {
   body: UpdateAnxietyEventBody;
 }
 
-interface SearchBooksByQueryStringParams {
-  query: string;
-  signal: AbortSignal;
-}
-
 interface GetBookByKeyParams {
   key: string;
   signal: AbortSignal;
 }
 
-interface PaginatedSearchBooksByQueryStringParams {
-  pageParam: string;
+interface searchBooksByQueryStringParams {
+  pageParam: number;
   query: string;
   signal: AbortSignal;
 }
@@ -60,22 +55,13 @@ export const api = {
     >(`/anxiety/${id}`, body);
     return response.data.data;
   },
-  searchBooksByQueryString: async ({ query, signal }: SearchBooksByQueryStringParams) => {
-    const params = new URLSearchParams({ q: query, limit: '20' });
-    const response = await apiClient.get<SuccessResponse<GeneralBooksSearchResults>>(
-      `/books/search?${params}`,
-      {
-        signal,
-      },
-    );
-    return response.data.data;
-  },
-  paginatedSearchBooksByQueryString: async ({
+
+  searchBooksByQueryString: async ({
     query,
     pageParam,
     signal,
-  }: PaginatedSearchBooksByQueryStringParams) => {
-    const params = new URLSearchParams({ q: query, limit: '20', offset: pageParam });
+  }: searchBooksByQueryStringParams) => {
+    const params = new URLSearchParams({ q: query, limit: '20', offset: `${pageParam}` });
     const response = await apiClient.get<SuccessResponse<GeneralBooksSearchResults>>(
       `/books/search?${params}`,
       {

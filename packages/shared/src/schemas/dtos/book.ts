@@ -12,6 +12,7 @@ export type GeneralBook = z.infer<typeof GeneralBookSchema>;
 
 export const GeneralBooksSearchResultsSchema = z.object({
   num_found: z.number().int().nonnegative(),
+  offset: z.number().int().nonnegative(),
   books: z.array(GeneralBookSchema),
 });
 
