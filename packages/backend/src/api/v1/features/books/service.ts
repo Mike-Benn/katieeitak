@@ -39,7 +39,6 @@ export class BookService {
       const response = await openLibraryApiClient.get(`/search.json?${params}`);
       const parsedData = OpenLibraryResponseSchema.safeParse(response.data);
       if (!parsedData.success) {
-        console.log(parsedData.error);
         throw new AppError({
           message: 'OpenLibraryResponseSchema parsing error, payload mismatched with schema.',
           statusCode: 500,
@@ -83,7 +82,6 @@ export class BookService {
       if (error instanceof AppError) {
         throw error;
       } else {
-        console.log('BOOK ERROR:', error);
         throw new AppError({
           message: 'There was an error communicating with the Open Library API.',
           statusCode: 502,
@@ -115,7 +113,6 @@ export class BookService {
       if (error instanceof AppError) {
         throw error;
       } else {
-        console.log('AUTHOR ERROR:', error);
         throw new AppError({
           message: 'There was an error communicating with the Open Library API.',
           statusCode: 502,
