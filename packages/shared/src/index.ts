@@ -8,7 +8,7 @@ export {
 } from './schemas/forms/validators.js';
 export type { AnxietyEventBody, UpdateAnxietyEventBody } from './schemas/forms/bodies.js';
 export { AnxietyEventBodySchema, UpdateAnxietyEventBodySchema } from './schemas/forms/bodies.js';
-export type { AnxietyEvent } from './schemas/dtos/anxietyEvent.js';
+export type { AnxietyEvent, GetAnxietyEventsResponse } from './schemas/dtos/anxietyEvent.js';
 export type { AnxietyEventType } from './schemas/forms/validators.js';
 export {
   GeneralBookSchema,
@@ -22,3 +22,4 @@ export {
   type DetailedBookResponse,
   type DetailedAuthor,
 } from './schemas/dtos/book.js';
+export { GetAnxietyEventsResponseSchema } from './schemas/dtos/anxietyEvent.js';
