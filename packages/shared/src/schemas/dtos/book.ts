@@ -31,7 +31,12 @@ export const DetailedBookSchema = z.object({
       }),
     )
     .optional(),
-  covers: z.array(z.number().int().nonnegative()).optional(),
+  covers: z
+    .preprocess(
+      (val) => (Array.isArray(val) ? val.filter((id) => id > 0) : val),
+      z.array(z.number()).catch([]),
+    )
+    .optional(),
   authors: z
     .array(
       z
