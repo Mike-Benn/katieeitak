@@ -7,7 +7,8 @@ import { DetailedAuthorSchema, DetailedBookSchema } from '@katieeitak/shared';
 
 interface SearchBooksByQueryStringParams {
   q: string;
-  limit: string | undefined;
+  limit: number;
+  offset: number;
 }
 
 interface GetBookByKeyParams {
@@ -28,15 +29,17 @@ export class BookService {
     console.log(this.bookRepository);
   }
 
-  public searchBooksByQueryString = async ({ q, limit }: SearchBooksByQueryStringParams) => {
-    const params = new URLSearchParams({ q });
-    if (limit) {
-      params.set('limit', limit);
-    }
+  public searchBooksByQueryString = async ({
+    q,
+    limit,
+    offset,
+  }: SearchBooksByQueryStringParams) => {
+    const params = new URLSearchParams({ q, limit: limit.toString(), offset: offset.toString() });
     try {
       const response = await openLibraryApiClient.get(`/search.json?${params}`);
       const parsedData = OpenLibraryResponseSchema.safeParse(response.data);
       if (!parsedData.success) {
+        console.log(parsedData.error);
         throw new AppError({
           message: 'OpenLibraryResponseSchema parsing error, payload mismatched with schema.',
           statusCode: 500,

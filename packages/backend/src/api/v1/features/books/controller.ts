@@ -4,6 +4,13 @@ import type { BookService } from '@/api/v1/features/books/service.js';
 import type { Request, Response } from 'express';
 import { ApiResponse } from '@/api/v1/responses/ApiResponse.js';
 import type { GeneralBooksSearchResults, DetailedBookResponse } from '@katieeitak/shared';
+import { z } from 'zod';
+
+const SearchBooksByQueryStringParamsSchema = z.object({
+  q: z.string(),
+  limit: z.coerce.number().int().positive(),
+  offset: z.coerce.number().int().nonnegative(),
+});
 
 export class BookController {
   private bookService: BookService;
@@ -12,10 +19,11 @@ export class BookController {
   }
 
   public searchBooksByQueryString = async (req: Request, res: Response) => {
-    const { q, limit } = req.query;
-    if (!q || typeof q !== 'string') {
+    const parsedParams = SearchBooksByQueryStringParamsSchema.safeParse(req.query);
+    if (!parsedParams.success) {
+      const errorKeys = parsedParams.error.issues.map((err) => err.path[0]).join(', ');
       throw new AppError({
-        message: "Missing or invalid 'q' query parameter, must be a string.",
+        message: `${errorKeys} are missing or invalid in query parameter.`,
         statusCode: 400,
         isOperational: true,
         name: ERROR_NAMES.MALFORMED_REQUEST,
@@ -23,14 +31,16 @@ export class BookController {
       });
     }
     const data = await this.bookService.searchBooksByQueryString({
-      q,
-      limit: limit && typeof limit === 'string' ? limit : undefined,
+      q: parsedParams.data.q,
+      limit: parsedParams.data.limit,
+      offset: parsedParams.data.offset,
     });
     return res.status(200).json(
       ApiResponse.success<GeneralBooksSearchResults>({
         data: {
           books: data.docs,
           num_found: data.num_found,
+          offset: data.offset,
         },
       }),
     );
