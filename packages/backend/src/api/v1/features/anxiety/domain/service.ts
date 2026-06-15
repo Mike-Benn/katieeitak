@@ -5,9 +5,6 @@ interface CreateEventParams {
   userId: string;
   body: AnxietyEventBody;
 }
-interface GetEventsByUserIdParams {
-  userId: string;
-}
 
 interface UpdateAnxietyEventsByEventIdParams {
   userId: string;
@@ -15,15 +12,18 @@ interface UpdateAnxietyEventsByEventIdParams {
   eventChanges: UpdateAnxietyEventBody;
 }
 
+interface GetEventsByUserIdParams {
+  limit: number;
+  offset: number;
+  userId: string;
+}
+
 export const AnxietyService = {
   createEvent: async ({ userId, body }: CreateEventParams) => {
     const anxietyEvent = await AnxietyRepository.createEvent({ userId, body });
     return anxietyEvent;
   },
-  getEventsByUserId: async ({ userId }: GetEventsByUserIdParams) => {
-    const anxietyEvents = await AnxietyRepository.getEventsByUserId({ userId });
-    return anxietyEvents;
-  },
+
   updateAnxietyEventByEventId: async ({
     userId,
     eventId,
@@ -35,5 +35,14 @@ export const AnxietyService = {
       eventChanges,
     });
     return anxietyEvent;
+  },
+  getEventsByUserId: async ({ limit, offset, userId }: GetEventsByUserIdParams) => {
+    const num_found = await AnxietyRepository.countEventsByUserId({ userId: userId });
+    const anxietyEvents = await AnxietyRepository.getEventsByUserId({ userId, limit, offset });
+    return {
+      num_found,
+      anxietyEvents,
+      offset,
+    };
   },
 };
