@@ -22,6 +22,7 @@ export const AnxietyEventSchema = z.object({
 export type AnxietyEvent = z.infer<typeof AnxietyEventSchema>;
 export const GetAnxietyEventsResponseSchema = z.object({
   num_found: z.number().int().nonnegative(),
+  offset: z.number().int().nonnegative(),
   anxietyEvents: z.array(AnxietyEventSchema),
 });
 export type GetAnxietyEventsResponse = z.infer<typeof GetAnxietyEventsResponseSchema>;
