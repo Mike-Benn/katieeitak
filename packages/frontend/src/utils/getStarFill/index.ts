@@ -1,0 +1,1 @@
+export { getStarFill } from './getStarFill';
