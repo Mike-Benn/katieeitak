@@ -3,6 +3,7 @@ import type { PoolClient } from 'pg';
 import { pool } from '@/db/db.js';
 import { AppError } from '@/api/v1/errors/AppError.js';
 import { ERROR_NAMES } from '@/api/v1/constants/errors.js';
+import { convertStringToNumber } from '@/utils/convertStringToNumber/convertStringToNumber.js';
 
 interface CreateEventParams {
   userId: string;
@@ -10,8 +11,15 @@ interface CreateEventParams {
   client?: PoolClient;
 }
 
+interface CountEventsByUserIdParams {
+  userId: string;
+  client?: PoolClient;
+}
+
 interface GetEventsByUserIdParams {
   userId: string;
+  limit: number;
+  offset: number;
   client?: PoolClient;
 }
 
@@ -52,15 +60,26 @@ export const AnxietyRepository = {
     }
     return anxietyEvent;
   },
-  getEventsByUserId: async ({ userId, client }: GetEventsByUserIdParams) => {
+  countEventsByUserId: async ({ userId, client }: CountEventsByUserIdParams) => {
+    const connection = client ?? pool;
+    const query = `
+      SELECT COUNT(*) AS num_found
+      FROM anxiety_events
+      WHERE user_id = $1
+    `;
+    const values = [userId];
+    const { rows } = await connection.query<{ num_found: string }>(query, values);
+    return convertStringToNumber({ str: rows[0]?.num_found });
+  },
+  getEventsByUserId: async ({ userId, limit, offset, client }: GetEventsByUserIdParams) => {
     const connection = client ?? pool;
     const query = `
       SELECT * FROM anxiety_events
       WHERE user_id = $1
       ORDER BY date_occurred DESC
-      LIMIT 10
+      LIMIT $2 OFFSET $3
     `;
-    const values = [userId];
+    const values = [userId, limit, offset];
     const { rows } = await connection.query<AnxietyEvent>(query, values);
     return rows;
   },
