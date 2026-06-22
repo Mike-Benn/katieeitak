@@ -1,7 +1,7 @@
 import { Field } from '@base-ui/react';
 import { useFieldContext } from '@/hooks/useAppForm';
 
-interface NumberFieldProps {
+interface MoneyFieldProps {
   label?: string;
   placeholder?: string;
   description?: string;
@@ -15,7 +15,7 @@ export function MoneyField({
   description = '',
   isRequired = true,
   isDisabled = false,
-}: NumberFieldProps) {
+}: MoneyFieldProps) {
   const field = useFieldContext<string>();
   const hasError = field.state.meta.errors.length > 0;
   return (
