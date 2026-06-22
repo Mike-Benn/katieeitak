@@ -18,9 +18,9 @@ export function SaveBookDialog({ markedBookProfileData, bookProfileData }: SaveB
 
   const form = useAppForm({
     defaultValues: {
-      pagesRead: '',
-      wordsRead: '',
-      rating: undefined as number | undefined,
+      pagesRead: markedBookProfileData?.page_count ? String(markedBookProfileData.page_count) : '',
+      wordsRead: markedBookProfileData?.word_count ? String(markedBookProfileData.word_count) : '',
+      rating: markedBookProfileData?.rating ?? undefined,
     },
     onSubmit: async ({ value }) => {
       const parsedValue = MarkBookReadFormSchema.safeParse(value);
@@ -58,7 +58,15 @@ export function SaveBookDialog({ markedBookProfileData, bookProfileData }: SaveB
       onOpenChange={(open) => {
         setOpen(open);
         if (open) {
-          form.reset();
+          form.reset({
+            pagesRead: markedBookProfileData?.page_count
+              ? String(markedBookProfileData.page_count)
+              : '',
+            wordsRead: markedBookProfileData?.word_count
+              ? String(markedBookProfileData.word_count)
+              : '',
+            rating: markedBookProfileData?.rating ?? undefined,
+          });
         }
       }}
     >
@@ -82,7 +90,9 @@ export function SaveBookDialog({ markedBookProfileData, bookProfileData }: SaveB
                 <X size={16} />
               </Button>
             </div>
-            <h2 className="text-lg font-semibold">Mark book as read</h2>
+            <h2 className="text-lg font-semibold">
+              {markedBookProfileData ? 'Edit book details' : 'Mark book as read'}
+            </h2>
             <form.AppForm>
               <div>
                 <form.SaveButton className="w-7 h-7 flex justify-center items-center rounded-md disabled:opacity-50">
