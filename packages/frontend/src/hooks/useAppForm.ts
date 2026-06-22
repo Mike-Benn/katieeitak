@@ -6,6 +6,9 @@ import { TextAreaField } from '@/components/Forms/Fields/TextAreaField';
 import { SelectDateField } from '@/components/Forms/Fields/SelectDateField';
 import { TextField } from '@/components/Forms/Fields/TextField';
 import { SubscribeButton } from '@/components/Buttons/SubscribeButton';
+import { StarRatingField } from '@/components/Forms/Fields/StarRatingField/StarRatingField';
+import { NumberField } from '@/components/Forms/Fields/NumberField';
+import { SaveButton } from '@/components/Buttons/SaveButton';
 
 const { fieldContext, formContext, useFieldContext, useFormContext } = createFormHookContexts();
 
@@ -17,9 +20,12 @@ const { useAppForm } = createFormHook({
     TextAreaField,
     SelectDateField,
     TextField,
+    StarRatingField,
+    NumberField,
   },
   formComponents: {
     SubscribeButton,
+    SaveButton,
   },
   fieldContext,
   formContext,
