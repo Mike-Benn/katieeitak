@@ -16,10 +16,28 @@ export {
   DetailedBookSchema,
   DetailedBookResponseSchema,
   DetailedAuthorSchema,
+  MarkedBookSchema,
+  GetMarkedBookResponseSchema,
+  MarkedBookReadPayloadSchema,
+  MarkedBookReadResponseSchema,
+  GetMarkedBookQueryResultSchema,
+  MarkedBookReadQueryResultSchema,
   type GeneralBook,
   type GeneralBooksSearchResults,
   type DetailedBook,
   type DetailedBookResponse,
   type DetailedAuthor,
+  type MarkedBook,
+  type GetMarkedBookResponse,
+  type MarkedBookReadPayload,
+  type MarkedBookReadResponse,
+  type GetMarkedBookQueryResult,
+  type MarkedBookReadQueryResult,
 } from './schemas/dtos/book.js';
 export { GetAnxietyEventsResponseSchema } from './schemas/dtos/anxietyEvent.js';
+export {
+  MarkBookReadFormSchema,
+  MarkBookReadPagesFieldSchema,
+  MarkBookReadRatingFieldSchema,
+  MarkBookReadWordsFieldSchema,
+} from './schemas/forms/validators.js';

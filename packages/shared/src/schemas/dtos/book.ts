@@ -20,7 +20,7 @@ export type GeneralBooksSearchResults = z.infer<typeof GeneralBooksSearchResults
 
 export const DetailedBookSchema = z.object({
   subjects: z.array(z.string()).optional(),
-  key: z.string().optional(),
+  key: z.string(),
   title: z.string().optional(),
   description: z
     .string()
@@ -66,3 +66,66 @@ export const DetailedAuthorSchema = z.object({
 });
 
 export type DetailedAuthor = z.infer<typeof DetailedAuthorSchema>;
+
+// Marked books
+export const MarkedBookSchema = z.object({
+  id: z.string(),
+  user_id: z.string(),
+  ol_book_key: z.string(),
+  title: z.string().nullable(),
+  ol_author_key: z.string().nullable(),
+  author_name: z.string().nullable(),
+  cover_i: z.number().int().positive().nullable(),
+  word_count: z.number().int().nonnegative().nullable(),
+  page_count: z.number().int().nonnegative().nullable(),
+  rating: z.number().min(0.5).max(5).multipleOf(0.5),
+  created_at: z.iso.datetime(),
+  updated_at: z.iso.datetime(),
+});
+export type MarkedBook = z.infer<typeof MarkedBookSchema>;
+
+//  markBookRead types
+export const MarkedBookReadPayloadSchema = MarkedBookSchema.pick({
+  ol_book_key: true,
+  title: true,
+  ol_author_key: true,
+  author_name: true,
+  cover_i: true,
+  word_count: true,
+  page_count: true,
+  rating: true,
+});
+
+export type MarkedBookReadPayload = z.infer<typeof MarkedBookReadPayloadSchema>;
+
+export const MarkedBookReadQueryResultSchema = MarkedBookSchema.pick({
+  id: true,
+  word_count: true,
+  page_count: true,
+  rating: true,
+});
+
+export type MarkedBookReadQueryResult = z.infer<typeof MarkedBookReadQueryResultSchema>;
+
+export const MarkedBookReadResponseSchema = MarkedBookSchema.pick({
+  id: true,
+  word_count: true,
+  page_count: true,
+  rating: true,
+});
+
+export type MarkedBookReadResponse = z.infer<typeof MarkedBookReadResponseSchema>;
+
+// getMarkedBook types
+export const GetMarkedBookQueryResultSchema = MarkedBookSchema.pick({
+  id: true,
+  word_count: true,
+  page_count: true,
+  rating: true,
+});
+
+export type GetMarkedBookQueryResult = z.infer<typeof GetMarkedBookQueryResultSchema>;
+
+export const GetMarkedBookResponseSchema = GetMarkedBookQueryResultSchema.nullable();
+
+export type GetMarkedBookResponse = z.infer<typeof GetMarkedBookResponseSchema>;

@@ -22,3 +22,24 @@ export const AnxietyEventTitleSchema = z
   .max(20, 'Title must be 20 characters or less.')
   .min(1, 'Please enter a title.');
 export type AnxietyEventType = z.infer<typeof AnxietyEventTypeSchema>;
+
+// Mark book read field validators
+export const MarkBookReadPagesFieldSchema = z
+  .string()
+  .transform((val) => (val === '' ? null : Number(val)))
+  .pipe(z.number().int().nonnegative().nullable());
+export const MarkBookReadWordsFieldSchema = z
+  .string()
+  .transform((val) => (val === '' ? null : Number(val)))
+  .pipe(z.number().int().nonnegative().nullable());
+export const MarkBookReadRatingFieldSchema = z
+  .number()
+  .min(0.5, 'Must be at least 0.5')
+  .max(5, 'Cannot exceed 5 stars')
+  .multipleOf(0.5, 'Must be in half-star increments');
+
+export const MarkBookReadFormSchema = z.object({
+  pagesRead: MarkBookReadPagesFieldSchema,
+  wordsRead: MarkBookReadWordsFieldSchema,
+  rating: MarkBookReadRatingFieldSchema,
+});

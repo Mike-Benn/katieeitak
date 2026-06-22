@@ -2,23 +2,6 @@ import { PageWrapper } from '@/components/PageWrapper';
 import { Search, ChartBar } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { BookStatsCard } from '@/components/Cards/Books/BookStatsCard';
-import { LatestBooksList } from '@/components/Lists/LatestBooksList';
-
-/*
-Total books
-Pages read
-words read
-Total Genres
-Average rating
-<div className="flex flex-row justify-end items-center">
-        <Link to="/books">
-          <div className="border border-muted-border p-2 rounded-md bg-muted-input shadow-md">
-            <BookPlus />
-          </div>
-        </Link>
-      </div>
-
-*/
 
 export function BooksDashboard() {
   return (
@@ -39,7 +22,6 @@ export function BooksDashboard() {
           </Link>
         </div>
       </div>
-      <LatestBooksList />
     </PageWrapper>
   );
 }
