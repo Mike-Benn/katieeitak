@@ -1,12 +1,15 @@
 import { apiClient } from './apiClient';
-import type {
-  User,
-  AnxietyEvent,
-  AnxietyEventBody,
-  UpdateAnxietyEventBody,
-  GeneralBooksSearchResults,
-  DetailedBookResponse,
-  GetAnxietyEventsResponse,
+import {
+  type User,
+  type AnxietyEvent,
+  type AnxietyEventBody,
+  type UpdateAnxietyEventBody,
+  type GeneralBooksSearchResults,
+  type DetailedBookResponse,
+  type GetAnxietyEventsResponse,
+  type MarkedBookReadResponse,
+  type GetMarkedBookResponse,
+  type MarkedBookReadPayload,
 } from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
@@ -26,9 +29,14 @@ interface GetAnxietyEventsParams {
   signal: AbortSignal;
 }
 
-interface searchBooksByQueryStringParams {
+interface SearchBooksByQueryStringParams {
   pageParam: number;
   query: string;
+  signal: AbortSignal;
+}
+
+interface GetMarkedBookParams {
+  key: string;
   signal: AbortSignal;
 }
 
@@ -70,7 +78,7 @@ export const api = {
     query,
     pageParam,
     signal,
-  }: searchBooksByQueryStringParams) => {
+  }: SearchBooksByQueryStringParams) => {
     const params = new URLSearchParams({ q: query, limit: '20', offset: `${pageParam}` });
     const response = await apiClient.get<SuccessResponse<GeneralBooksSearchResults>>(
       `/books/search?${params}`,
@@ -84,6 +92,20 @@ export const api = {
     const response = await apiClient.get<SuccessResponse<DetailedBookResponse>>(`/books/${key}`, {
       signal,
     });
+    return response.data.data;
+  },
+  markBookRead: async (body: MarkedBookReadPayload) => {
+    const response = await apiClient.post<SuccessResponse<MarkedBookReadResponse>>(
+      '/library',
+      body,
+    );
+    return response.data.data;
+  },
+  getMarkedBook: async ({ key, signal }: GetMarkedBookParams) => {
+    const response = await apiClient.get<SuccessResponse<GetMarkedBookResponse>>(
+      `/library/${key}`,
+      { signal },
+    );
     return response.data.data;
   },
 };
