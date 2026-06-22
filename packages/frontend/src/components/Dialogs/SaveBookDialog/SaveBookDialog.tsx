@@ -1,4 +1,3 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAppForm } from '@/hooks/useAppForm';
 import { toast } from 'sonner';
 import { Button, Dialog, Separator } from '@base-ui/react';
@@ -7,7 +6,6 @@ import { X, CircleCheck, Trash2 } from 'lucide-react';
 import type { DetailedBookResponse, GetMarkedBookResponse } from '@katieeitak/shared';
 import { useMarkBookReadMutation } from '@/hooks/mutations/useMarkBookReadMutation';
 import { MarkBookReadFormSchema } from '@katieeitak/shared';
-import { api } from '@/api/api';
 
 interface SaveBookDialogProps {
   markedBookProfileData: GetMarkedBookResponse | null;
@@ -15,22 +13,9 @@ interface SaveBookDialogProps {
 }
 
 export function SaveBookDialog({ markedBookProfileData, bookProfileData }: SaveBookDialogProps) {
-  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
-  const { mutate } = useMutation({
-    mutationFn: api.markBookRead,
-    onSuccess: (newMarkedBook) => {
-      queryClient.setQueryData(
-        ['readStatus', bookProfileData.book.key.split('/works/')[1]],
-        newMarkedBook,
-      );
-      setOpen(false);
-      toast.success('Book marked as read!');
-    },
-    onError: () => {
-      toast.error('Something went wrong, please try again.');
-    },
-  });
+  const { mutate } = useMarkBookReadMutation();
+
   const form = useAppForm({
     defaultValues: {
       pagesRead: '',
@@ -40,17 +25,25 @@ export function SaveBookDialog({ markedBookProfileData, bookProfileData }: SaveB
     onSubmit: async ({ value }) => {
       const parsedValue = MarkBookReadFormSchema.safeParse(value);
       if (parsedValue.success) {
-        mutate({
-          ol_book_key: bookProfileData.book.key.split('/works/')[1],
-          title: bookProfileData.book.title ?? null,
-          ol_author_key:
-            bookProfileData.book.authors?.[0]?.author?.key?.split('/authors/')[1] ?? null,
-          author_name: bookProfileData.author_name ?? null,
-          cover_i: bookProfileData.book.covers?.[0] ?? null,
-          page_count: parsedValue.data.pagesRead,
-          word_count: parsedValue.data.wordsRead,
-          rating: parsedValue.data.rating,
-        });
+        mutate(
+          {
+            ol_book_key: bookProfileData.book.key.split('/works/')[1],
+            title: bookProfileData.book.title ?? null,
+            ol_author_key:
+              bookProfileData.book.authors?.[0]?.author?.key?.split('/authors/')[1] ?? null,
+            author_name: bookProfileData.author_name ?? null,
+            cover_i: bookProfileData.book.covers?.[0] ?? null,
+            page_count: parsedValue.data.pagesRead,
+            word_count: parsedValue.data.wordsRead,
+            rating: parsedValue.data.rating,
+          },
+          {
+            onSuccess: () => {
+              setOpen(false);
+              toast.success('Book marked as read!');
+            },
+          },
+        );
       } else {
         toast.error('Something went wrong, please try again.');
       }
