@@ -13,16 +13,16 @@ export function StarRatingField({ label = undefined, size = 32 }: StarRatingFiel
   return (
     <Field.Root>
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}
-      {[1, 2, 3, 4, 5].map((starIndex) => (
+      {[2, 4, 6, 8, 10].map((starIndex) => (
         <span key={starIndex} className="relative inline-block">
           <SvgStar size={size} fill={getStarFill({ starIndex, currRating: field.state.value })} />
           <label className="absolute left-0 top-0 w-1/2 h-full cursor-pointer">
             <Input
               type="radio"
               name="rating"
-              value={starIndex - 0.5}
+              value={starIndex - 1}
               className="hidden"
-              checked={field.state.value === starIndex - 0.5}
+              checked={field.state.value === starIndex - 1}
               onValueChange={(value) => field.handleChange(Number(value))}
             />
           </label>

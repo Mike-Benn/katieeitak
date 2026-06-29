@@ -32,11 +32,12 @@ export const MarkBookReadWordsFieldSchema = z
   .string()
   .transform((val) => (val === '' ? null : Number(val)))
   .pipe(z.number().int().nonnegative().nullable());
+
 export const MarkBookReadRatingFieldSchema = z
-  .number()
-  .min(0.5, 'Must be at least 0.5')
-  .max(5, 'Cannot exceed 5 stars')
-  .multipleOf(0.5, 'Must be in half-star increments');
+  .number('Rating is required')
+  .int('Rating is required')
+  .min(1, 'Rating is required')
+  .max(10, 'Rating is required');
 
 export const MarkBookReadFormSchema = z.object({
   pagesRead: MarkBookReadPagesFieldSchema,
