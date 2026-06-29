@@ -147,3 +147,12 @@ export const PatchMarkedBookByIdPayloadSchema = MarkedBookSchema.pick({
   );
 
 export type PatchMarkedBookByIdPayload = z.infer<typeof PatchMarkedBookByIdPayloadSchema>;
+
+export const PatchMarkedBookQueryResultSchema = MarkedBookSchema.pick({
+  id: true,
+  word_count: true,
+  page_count: true,
+  rating: true,
+});
+
+export type PatchMarkedBookQueryResult = z.infer<typeof PatchMarkedBookQueryResultSchema>;
