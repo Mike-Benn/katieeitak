@@ -7,3 +7,8 @@ export const ERROR_NAMES = {
   BAD_GATEWAY: 'BAD_GATEWAY',
   OL_SCHEMA_ERROR: 'OL_SCHEMA_ERROR', // Open Library response schema mismatch
 } as const;
+
+export const ERROR_MESSAGES = {
+  INVALID_ID_PATH_PARAMETER_FORMAT:
+    'Incorrect path parameter format, must be a numerically, positive, integer string',
+} as const;
