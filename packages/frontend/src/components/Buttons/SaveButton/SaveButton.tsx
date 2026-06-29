@@ -12,7 +12,6 @@ export function SaveButton({ children, className }: SaveButtonProps) {
     <form.Subscribe selector={(state) => [state.isDefaultValue, state.canSubmit]}>
       {([isDefaultValue, canSubmit]) => (
         <Button
-          type="submit"
           onClick={() => void form.handleSubmit()}
           className={className}
           disabled={isDefaultValue || !canSubmit}
