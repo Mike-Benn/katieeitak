@@ -78,7 +78,7 @@ export const MarkedBookSchema = z.object({
   cover_i: z.number().int().positive().nullable(),
   word_count: z.number().int().nonnegative().nullable(),
   page_count: z.number().int().nonnegative().nullable(),
-  rating: z.number().min(0.5).max(5).multipleOf(0.5),
+  rating: z.number().int().min(1).max(10),
   created_at: z.iso.datetime(),
   updated_at: z.iso.datetime(),
 });
@@ -130,7 +130,7 @@ export const GetMarkedBookResponseSchema = GetMarkedBookQueryResultSchema.nullab
 
 export type GetMarkedBookResponse = z.infer<typeof GetMarkedBookResponseSchema>;
 
-export const PatchMarkedBookByIdPayloadSchema = MarkedBookSchema.pick({
+export const PatchReadBookByIdPayloadSchema = MarkedBookSchema.pick({
   word_count: true,
   page_count: true,
   rating: true,
@@ -146,22 +146,22 @@ export const PatchMarkedBookByIdPayloadSchema = MarkedBookSchema.pick({
     },
   );
 
-export type PatchMarkedBookByIdPayload = z.infer<typeof PatchMarkedBookByIdPayloadSchema>;
+export type PatchReadBookByIdPayload = z.infer<typeof PatchReadBookByIdPayloadSchema>;
 
-export const PatchMarkedBookQueryResultSchema = MarkedBookSchema.pick({
+export const PatchReadBookByIdQueryResultSchema = MarkedBookSchema.pick({
   id: true,
   word_count: true,
   page_count: true,
   rating: true,
 });
 
-export type PatchMarkedBookQueryResult = z.infer<typeof PatchMarkedBookQueryResultSchema>;
+export type PatchReadBookByIdQueryResult = z.infer<typeof PatchReadBookByIdQueryResultSchema>;
 
-export const PatchMarkedBookResponseSchema = MarkedBookSchema.pick({
+export const PatchReadBookByIdResponseSchema = MarkedBookSchema.pick({
   id: true,
   word_count: true,
   page_count: true,
   rating: true,
 });
 
-export type PatchMarkedBookResponse = z.infer<typeof PatchMarkedBookResponseSchema>;
+export type PatchReadBookByIdResponse = z.infer<typeof PatchReadBookByIdResponseSchema>;
