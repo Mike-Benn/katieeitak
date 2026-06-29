@@ -129,3 +129,21 @@ export type GetMarkedBookQueryResult = z.infer<typeof GetMarkedBookQueryResultSc
 export const GetMarkedBookResponseSchema = GetMarkedBookQueryResultSchema.nullable();
 
 export type GetMarkedBookResponse = z.infer<typeof GetMarkedBookResponseSchema>;
+
+export const PatchMarkedBookByIdPayloadSchema = MarkedBookSchema.pick({
+  word_count: true,
+  page_count: true,
+  rating: true,
+})
+  .partial()
+  .refine(
+    (data) => {
+      const definedValues = Object.values(data).filter((val) => val !== undefined);
+      return definedValues.length > 0;
+    },
+    {
+      message: 'You must provide at least one valid field to update.',
+    },
+  );
+
+export type PatchMarkedBookByIdPayload = z.infer<typeof PatchMarkedBookByIdPayloadSchema>;

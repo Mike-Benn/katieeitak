@@ -22,6 +22,7 @@ export {
   MarkedBookReadResponseSchema,
   GetMarkedBookQueryResultSchema,
   MarkedBookReadQueryResultSchema,
+  PatchMarkedBookByIdPayloadSchema,
   type GeneralBook,
   type GeneralBooksSearchResults,
   type DetailedBook,
@@ -33,6 +34,7 @@ export {
   type MarkedBookReadResponse,
   type GetMarkedBookQueryResult,
   type MarkedBookReadQueryResult,
+  type PatchMarkedBookByIdPayload,
 } from './schemas/dtos/book.js';
 export { GetAnxietyEventsResponseSchema } from './schemas/dtos/anxietyEvent.js';
 export {
