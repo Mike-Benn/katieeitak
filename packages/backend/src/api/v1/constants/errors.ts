@@ -11,4 +11,13 @@ export const ERROR_NAMES = {
 export const ERROR_MESSAGES = {
   INVALID_ID_PATH_PARAMETER_FORMAT:
     'Incorrect path parameter format, must be a numerically, positive, integer string',
+  EMPTY_PATCH_PAYLOAD:
+    'Payload object has no defined keys, this is an impossible state and signifies an error with the schema or missing parser statement.',
+  RESOURCE_NOT_FOUND:
+    'No resource found or current user does not have permission to update this resource.',
 } as const;
+
+export const SAFE_ERROR_MESSAGES = {
+  INTERNAL_SERVER_ERROR: 'Internal Server Error',
+  RESOURCE_NOT_FOUND: 'Resource not found',
+};
