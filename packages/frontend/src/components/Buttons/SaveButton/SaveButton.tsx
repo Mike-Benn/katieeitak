@@ -9,12 +9,12 @@ interface SaveButtonProps {
 export function SaveButton({ children, className }: SaveButtonProps) {
   const form = useFormContext();
   return (
-    <form.Subscribe selector={(state) => [state.isDefaultValue, state.canSubmit]}>
-      {([isDefaultValue, canSubmit]) => (
+    <form.Subscribe selector={(state) => [state.canSubmit]}>
+      {([canSubmit]) => (
         <Button
           onClick={() => void form.handleSubmit()}
           className={className}
-          disabled={isDefaultValue || !canSubmit}
+          disabled={!canSubmit}
         >
           {children}
         </Button>
