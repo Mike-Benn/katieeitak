@@ -10,6 +10,7 @@ interface StarRatingFieldProps {
 
 export function StarRatingField({ label = undefined, size = 32 }: StarRatingFieldProps) {
   const field = useFieldContext<number | undefined>();
+  const hasError = field.state.meta.errors.length > 0;
   return (
     <Field.Root>
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}
@@ -39,6 +40,13 @@ export function StarRatingField({ label = undefined, size = 32 }: StarRatingFiel
           </label>
         </span>
       ))}
+      <div className="min-h-5">
+        {hasError && (
+          <p className="text-sm text-red-500 text-center">
+            {field.state.meta.errors[0]?.message ?? field.state.meta.errors[0]}
+          </p>
+        )}
+      </div>
     </Field.Root>
   );
 }
