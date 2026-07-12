@@ -153,6 +153,7 @@ export const PatchReadBookByIdQueryResultSchema = MarkedBookSchema.pick({
   word_count: true,
   page_count: true,
   rating: true,
+  ol_book_key: true,
 });
 
 export type PatchReadBookByIdQueryResult = z.infer<typeof PatchReadBookByIdQueryResultSchema>;
@@ -162,6 +163,7 @@ export const PatchReadBookByIdResponseSchema = MarkedBookSchema.pick({
   word_count: true,
   page_count: true,
   rating: true,
+  ol_book_key: true,
 });
 
 export type PatchReadBookByIdResponse = z.infer<typeof PatchReadBookByIdResponseSchema>;

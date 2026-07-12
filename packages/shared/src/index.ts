@@ -46,4 +46,5 @@ export {
   MarkBookReadPagesFieldSchema,
   MarkBookReadRatingFieldSchema,
   MarkBookReadWordsFieldSchema,
+  PatchReadBookFormSchema,
 } from './schemas/forms/validators.js';
