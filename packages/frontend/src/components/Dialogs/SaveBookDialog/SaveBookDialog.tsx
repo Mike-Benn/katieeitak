@@ -5,7 +5,8 @@ import { useState } from 'react';
 import { X, CircleCheck, Trash2 } from 'lucide-react';
 import type { DetailedBookResponse, GetMarkedBookResponse } from '@katieeitak/shared';
 import { useMarkBookReadMutation } from '@/hooks/mutations/useMarkBookReadMutation';
-import { MarkBookReadFormSchema } from '@katieeitak/shared';
+import { usePatchReadBookByIdMutation } from '@/hooks/mutations/usePatchReadBookByIdMutation';
+import { MarkBookReadFormSchema, PatchReadBookFormSchema } from '@katieeitak/shared';
 
 interface SaveBookDialogProps {
   markedBookProfileData: GetMarkedBookResponse | null;
@@ -14,38 +15,78 @@ interface SaveBookDialogProps {
 
 export function SaveBookDialog({ markedBookProfileData, bookProfileData }: SaveBookDialogProps) {
   const [open, setOpen] = useState(false);
-  const { mutate } = useMarkBookReadMutation();
-
+  const { mutate: mutateMarkBookRead } = useMarkBookReadMutation();
+  const { mutate: mutatePatchReadBook } = usePatchReadBookByIdMutation();
   const form = useAppForm({
     defaultValues: {
       pagesRead: markedBookProfileData?.page_count ? String(markedBookProfileData.page_count) : '',
       wordsRead: markedBookProfileData?.word_count ? String(markedBookProfileData.word_count) : '',
       rating: markedBookProfileData?.rating ?? undefined,
     },
-    onSubmit: async ({ value }) => {
-      const parsedValue = MarkBookReadFormSchema.safeParse(value);
-      if (parsedValue.success) {
-        mutate(
+    onSubmit: async ({ value: formValues, formApi }) => {
+      const isDefaultValue = formApi.state.isDefaultValue;
+      if (isDefaultValue) {
+        setOpen(false);
+        toast.success('Book status successfully updated!');
+        return;
+      }
+      if (!markedBookProfileData) {
+        const parsedFormValues = MarkBookReadFormSchema.safeParse(formValues);
+        if (parsedFormValues.success) {
+          mutateMarkBookRead(
+            {
+              ol_book_key: bookProfileData.book.key.split('/works/')[1],
+              title: bookProfileData.book.title ?? null,
+              ol_author_key:
+                bookProfileData.book.authors?.[0]?.author?.key?.split('/authors/')[1] ?? null,
+              author_name: bookProfileData.author_name ?? null,
+              cover_i: bookProfileData.book.covers?.[0] ?? null,
+              page_count: parsedFormValues.data.pagesRead,
+              word_count: parsedFormValues.data.wordsRead,
+              rating: parsedFormValues.data.rating,
+            },
+            {
+              onSuccess: () => {
+                setOpen(false);
+                toast.success('Book marked as read!');
+              },
+            },
+          );
+        } else {
+          toast.error('Something went wrong, please try again.');
+        }
+      } else {
+        const defaultFormValues = formApi.options.defaultValues;
+        if (!defaultFormValues) return;
+        const changedFormValues: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(formValues)) {
+          const typedKey = key as keyof typeof defaultFormValues;
+          if (value !== defaultFormValues[typedKey]) {
+            changedFormValues[typedKey] = value;
+          }
+        }
+        const parsedChangedFormValues = PatchReadBookFormSchema.safeParse(changedFormValues);
+        if (!parsedChangedFormValues.success) {
+          toast.error('There was an error updating book status, please try again.');
+          return;
+        }
+
+        mutatePatchReadBook(
           {
-            ol_book_key: bookProfileData.book.key.split('/works/')[1],
-            title: bookProfileData.book.title ?? null,
-            ol_author_key:
-              bookProfileData.book.authors?.[0]?.author?.key?.split('/authors/')[1] ?? null,
-            author_name: bookProfileData.author_name ?? null,
-            cover_i: bookProfileData.book.covers?.[0] ?? null,
-            page_count: parsedValue.data.pagesRead,
-            word_count: parsedValue.data.wordsRead,
-            rating: parsedValue.data.rating,
+            id: markedBookProfileData.id,
+            payload: {
+              word_count: parsedChangedFormValues.data.wordsRead,
+              page_count: parsedChangedFormValues.data.pagesRead,
+              rating: parsedChangedFormValues.data.rating,
+            },
           },
           {
             onSuccess: () => {
               setOpen(false);
-              toast.success('Book marked as read!');
+              toast.success('Book status successfully updated!');
             },
           },
         );
-      } else {
-        toast.error('Something went wrong, please try again.');
       }
     },
     validators: {
@@ -112,13 +153,13 @@ export function SaveBookDialog({ markedBookProfileData, bookProfileData }: SaveB
             <div className="pt-6 pl-6 pr-6">
               <form.AppField
                 name="pagesRead"
-                children={(field) => <field.NumberField label="Pages read" />}
+                children={(field) => <field.NumberField label="Pages read (optional)" />}
               />
             </div>
             <div className="pt-6 pl-6 pr-6">
               <form.AppField
                 name="wordsRead"
-                children={(field) => <field.NumberField label="Words read" />}
+                children={(field) => <field.NumberField label="Words read (optional)" />}
               />
             </div>
             <div className="p-6 flex justify-center">
