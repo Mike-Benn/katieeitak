@@ -12,6 +12,7 @@ const libraryController = new LibraryController(libraryService);
 const libraryRouter = Router();
 
 libraryRouter.post('/', validateToken, setupLocals, libraryController.markBookRead);
-libraryRouter.get('/:key', validateToken, setupLocals, libraryController.getMarkedBook);
+libraryRouter.get('/book/:key', validateToken, setupLocals, libraryController.getMarkedBook);
+libraryRouter.patch('/:id', validateToken, setupLocals, libraryController.patchReadBookById);
 
 export { libraryRouter };

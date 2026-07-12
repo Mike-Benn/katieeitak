@@ -1,5 +1,5 @@
 import type { LibraryRepository } from '@/api/v1/features/library/repository.js';
-import type { MarkedBookReadPayload } from '@katieeitak/shared';
+import type { MarkedBookReadPayload, PatchReadBookByIdPayload } from '@katieeitak/shared';
 
 interface MarkBookReadParams {
   markedBookPayload: MarkedBookReadPayload;
@@ -9,6 +9,12 @@ interface MarkBookReadParams {
 interface GetReadBookParams {
   user_id: string;
   ol_book_key: string;
+}
+
+interface PatchReadBookParams {
+  user_id: string;
+  id: string;
+  payload: PatchReadBookByIdPayload;
 }
 
 export class LibraryService {
@@ -24,7 +30,11 @@ export class LibraryService {
 
   public getMarkedBook = async ({ user_id, ol_book_key }: GetReadBookParams) => {
     const markedBook = await this.libraryRepository.getMarkedBook({ user_id, ol_book_key });
-    console.log(markedBook);
     return markedBook;
+  };
+
+  public patchReadBookById = async ({ user_id, id, payload }: PatchReadBookParams) => {
+    const readBook = await this.libraryRepository.patchReadBookById({ id, user_id, payload });
+    return readBook;
   };
 }
