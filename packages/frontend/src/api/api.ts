@@ -10,6 +10,8 @@ import {
   type MarkedBookReadResponse,
   type GetMarkedBookResponse,
   type MarkedBookReadPayload,
+  type PatchReadBookByIdPayload,
+  type PatchReadBookByIdResponse,
 } from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
@@ -38,6 +40,11 @@ interface SearchBooksByQueryStringParams {
 interface GetMarkedBookParams {
   key: string;
   signal: AbortSignal;
+}
+
+interface PatchMarkedBookParams {
+  id: string;
+  payload: PatchReadBookByIdPayload;
 }
 
 // TODO - Error handling
@@ -73,6 +80,14 @@ export const api = {
     >(`/anxiety/${id}`, body);
     return response.data.data;
   },
+  patchReadBookById: async ({ id, payload }: PatchMarkedBookParams) => {
+    const response = await apiClient.patch<
+      SuccessResponse<PatchReadBookByIdResponse>,
+      AxiosResponse<SuccessResponse<PatchReadBookByIdResponse>>,
+      PatchReadBookByIdPayload
+    >(`/library/${id}`, payload);
+    return response.data.data;
+  },
 
   searchBooksByQueryString: async ({
     query,
@@ -103,7 +118,7 @@ export const api = {
   },
   getMarkedBook: async ({ key, signal }: GetMarkedBookParams) => {
     const response = await apiClient.get<SuccessResponse<GetMarkedBookResponse>>(
-      `/library/${key}`,
+      `/library/book/${key}`,
       { signal },
     );
     return response.data.data;
