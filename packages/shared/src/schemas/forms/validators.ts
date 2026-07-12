@@ -22,3 +22,46 @@ export const AnxietyEventTitleSchema = z
   .max(20, 'Title must be 20 characters or less.')
   .min(1, 'Please enter a title.');
 export type AnxietyEventType = z.infer<typeof AnxietyEventTypeSchema>;
+
+// Mark book read field validators
+export const MarkBookReadPagesFieldSchema = z
+  .string('Pages read must be a whole number')
+  .transform((val) => (val === '' ? null : Number(val)))
+  .pipe(
+    z
+      .number('Pages read must be a whole number')
+      .int('Pages read must be a whole number')
+      .nonnegative('Pages read must be a whole number')
+      .nullable(),
+  );
+export const MarkBookReadWordsFieldSchema = z
+  .string('Words read must be a whole number')
+  .transform((val) => (val === '' ? null : Number(val)))
+  .pipe(
+    z
+      .number('Words read must be a whole number')
+      .int('Words read must be a whole number')
+      .nonnegative('Words read must be a whole number')
+      .nullable(),
+  );
+
+export const MarkBookReadRatingFieldSchema = z
+  .number('Rating is required')
+  .int('Rating is required')
+  .min(1, 'Rating must be between 1-5 stars')
+  .max(10, 'Rating must be between 1-5 stars');
+
+export const MarkBookReadFormSchema = z.object({
+  pagesRead: MarkBookReadPagesFieldSchema,
+  wordsRead: MarkBookReadWordsFieldSchema,
+  rating: MarkBookReadRatingFieldSchema,
+});
+
+export const PatchReadBookFormSchema = MarkBookReadFormSchema.partial().refine(
+  (data) => Object.keys(data).length > 0,
+  {
+    message: 'You must provide at least one field to update.',
+  },
+);
+
+export type MarkBookReadForm = z.infer<typeof MarkBookReadFormSchema>;

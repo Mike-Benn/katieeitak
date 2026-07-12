@@ -43,7 +43,10 @@ export function BookSearchList({
           // eslint-disable-next-line react/no-array-index-key
           <React.Fragment key={index}>
             {page.books.map((book) => (
-              <li className="pt-5 pb-5 min-h-44 border-b border-gray-500" key={book.key}>
+              <li
+                className="pt-5 pb-5 min-h-44 border-b border-gray-500 w-full overflow-x-auto"
+                key={book.key}
+              >
                 <Link
                   to="/books/$key"
                   params={{ key: book.key.split('/works/')[1] }}

@@ -1,12 +1,17 @@
 import { apiClient } from './apiClient';
-import type {
-  User,
-  AnxietyEvent,
-  AnxietyEventBody,
-  UpdateAnxietyEventBody,
-  GeneralBooksSearchResults,
-  DetailedBookResponse,
-  GetAnxietyEventsResponse,
+import {
+  type User,
+  type AnxietyEvent,
+  type AnxietyEventBody,
+  type UpdateAnxietyEventBody,
+  type GeneralBooksSearchResults,
+  type DetailedBookResponse,
+  type GetAnxietyEventsResponse,
+  type MarkedBookReadResponse,
+  type GetMarkedBookResponse,
+  type MarkedBookReadPayload,
+  type PatchReadBookByIdPayload,
+  type PatchReadBookByIdResponse,
 } from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
@@ -26,10 +31,20 @@ interface GetAnxietyEventsParams {
   signal: AbortSignal;
 }
 
-interface searchBooksByQueryStringParams {
+interface SearchBooksByQueryStringParams {
   pageParam: number;
   query: string;
   signal: AbortSignal;
+}
+
+interface GetMarkedBookParams {
+  key: string;
+  signal: AbortSignal;
+}
+
+interface PatchMarkedBookParams {
+  id: string;
+  payload: PatchReadBookByIdPayload;
 }
 
 // TODO - Error handling
@@ -65,12 +80,20 @@ export const api = {
     >(`/anxiety/${id}`, body);
     return response.data.data;
   },
+  patchReadBookById: async ({ id, payload }: PatchMarkedBookParams) => {
+    const response = await apiClient.patch<
+      SuccessResponse<PatchReadBookByIdResponse>,
+      AxiosResponse<SuccessResponse<PatchReadBookByIdResponse>>,
+      PatchReadBookByIdPayload
+    >(`/library/${id}`, payload);
+    return response.data.data;
+  },
 
   searchBooksByQueryString: async ({
     query,
     pageParam,
     signal,
-  }: searchBooksByQueryStringParams) => {
+  }: SearchBooksByQueryStringParams) => {
     const params = new URLSearchParams({ q: query, limit: '20', offset: `${pageParam}` });
     const response = await apiClient.get<SuccessResponse<GeneralBooksSearchResults>>(
       `/books/search?${params}`,
@@ -84,6 +107,20 @@ export const api = {
     const response = await apiClient.get<SuccessResponse<DetailedBookResponse>>(`/books/${key}`, {
       signal,
     });
+    return response.data.data;
+  },
+  markBookRead: async (body: MarkedBookReadPayload) => {
+    const response = await apiClient.post<SuccessResponse<MarkedBookReadResponse>>(
+      '/library',
+      body,
+    );
+    return response.data.data;
+  },
+  getMarkedBook: async ({ key, signal }: GetMarkedBookParams) => {
+    const response = await apiClient.get<SuccessResponse<GetMarkedBookResponse>>(
+      `/library/book/${key}`,
+      { signal },
+    );
     return response.data.data;
   },
 };

@@ -1,0 +1,1 @@
+export { SvgStar } from './SvgStar';

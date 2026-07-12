@@ -5,6 +5,7 @@ import type { Request, Response } from 'express';
 import { ApiResponse } from '@/api/v1/responses/ApiResponse.js';
 import type { GeneralBooksSearchResults, DetailedBookResponse } from '@katieeitak/shared';
 import { z } from 'zod';
+import { verifyBookKey } from '@/utils/verifyBookKey/verifyBookKey.js';
 
 const SearchBooksByQueryStringParamsSchema = z.object({
   q: z.string(),
@@ -48,24 +49,7 @@ export class BookController {
 
   public getBookByKey = async (req: Request, res: Response) => {
     const { key } = req.params;
-    if (!key || typeof key !== 'string') {
-      throw new AppError({
-        message: "Missing or invalid 'key' query parameter, must be a string.",
-        statusCode: 404,
-        isOperational: true,
-        name: ERROR_NAMES.MALFORMED_REQUEST,
-        safeMessage: 'Resource not found',
-      });
-    }
-    if (!key.endsWith('W')) {
-      throw new AppError({
-        message: "Missing or invalid 'key' query parameter, must be a string and end with 'W'.",
-        statusCode: 404,
-        isOperational: true,
-        name: ERROR_NAMES.MALFORMED_REQUEST,
-        safeMessage: 'Resource not found',
-      });
-    }
+    verifyBookKey(key);
     const book = await this.bookService.getBookByKey({ key });
     let authorKey: string | undefined;
     if (book.authors && book.authors[0]) {
