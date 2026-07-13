@@ -76,7 +76,7 @@ export const AnxietyRepository = {
     const query = `
       SELECT * FROM anxiety_events
       WHERE user_id = $1
-      ORDER BY date_occurred DESC
+      ORDER BY date_occurred ASC
       LIMIT $2 OFFSET $3
     `;
     const values = [userId, limit, offset];
