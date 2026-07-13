@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { identityRouter } from './features/identity/entry-points/router.js';
-import { anxietyRouter } from '@/api/v1/features/anxiety/entry-points/router.js';
+import { anxietyRouter } from '@/api/v1/features/anxiety/router.js';
 import { bookRouter } from '@/api/v1/features/books/router.js';
 import { libraryRouter } from '@/api/v1/features/library/router.js';
 
