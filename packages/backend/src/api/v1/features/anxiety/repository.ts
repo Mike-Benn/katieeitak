@@ -1,15 +1,14 @@
-import {
-  type AnxietyEventBody,
-  type AnxietyEvent,
-  type UpdateAnxietyEventBody,
-  type CompleteAnxietyEventByIdPayload,
-  type CompleteAnxietyEventByIdQueryResult,
-  type AnxietyEventCursor,
-} from '@katieeitak/shared';
-import type { PoolClient } from 'pg';
-import { pool } from '@/db/db.js';
-import { AppError } from '@/api/v1/errors/AppError.js';
 import { ERROR_MESSAGES, ERROR_NAMES, SAFE_ERROR_MESSAGES } from '@/api/v1/constants/errors.js';
+import { AppError } from '@/api/v1/errors/AppError.js';
+import type {
+  AnxietyEvent,
+  AnxietyEventBody,
+  AnxietyEventCursor,
+  CompleteAnxietyEventByIdPayload,
+  CompleteAnxietyEventByIdQueryResult,
+  UpdateAnxietyEventBody,
+} from '@katieeitak/shared';
+import type { Pool, PoolClient } from 'pg';
 import { convertStringToNumber } from '@/utils/convertStringToNumber/convertStringToNumber.js';
 
 interface CreateEventParams {
@@ -22,14 +21,7 @@ interface CountEventsByUserIdParams {
   userId: string;
   client?: PoolClient;
 }
-/*
-interface GetEventsByUserIdParams {
-  userId: string;
-  limit?: number;
-  offset: number;
-  client?: PoolClient;
-}
-*/
+
 interface GetAnxietyEventsByUserIdParams {
   limit: number;
   client?: PoolClient;
@@ -50,9 +42,14 @@ interface CompleteAnxietyEventByIdParams {
   client?: PoolClient;
 }
 
-export const AnxietyRepository = {
-  createEvent: async ({ userId, body, client }: CreateEventParams) => {
-    const connection = client ?? pool;
+export class AnxietyRepository {
+  private pool: Pool;
+  constructor(pool: Pool) {
+    this.pool = pool;
+  }
+
+  public createEvent = async ({ userId, body, client }: CreateEventParams) => {
+    const connection = client ?? this.pool;
     const query = `
             INSERT INTO anxiety_events (user_id, event_type, pre_notes, pre_anxiety_level, pre_excitement_level, date_occurred, title)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -79,9 +76,10 @@ export const AnxietyRepository = {
       });
     }
     return anxietyEvent;
-  },
-  countEventsByUserId: async ({ userId, client }: CountEventsByUserIdParams) => {
-    const connection = client ?? pool;
+  };
+
+  public countEventsByUserId = async ({ userId, client }: CountEventsByUserIdParams) => {
+    const connection = client ?? this.pool;
     const query = `
       SELECT COUNT(*) AS num_found
       FROM anxiety_events
@@ -90,14 +88,15 @@ export const AnxietyRepository = {
     const values = [userId];
     const { rows } = await connection.query<{ num_found: string }>(query, values);
     return convertStringToNumber({ str: rows[0]?.num_found });
-  },
-  getAnxietyEventsByUserId: async ({
+  };
+
+  public getAnxietyEventsByUserId = async ({
     limit,
     client,
     userId,
     cursor,
   }: GetAnxietyEventsByUserIdParams) => {
-    const connection = client ?? pool;
+    const connection = client ?? this.pool;
     const values: unknown[] = [userId];
     let cursorClause = '';
     if (cursor) {
@@ -120,14 +119,15 @@ export const AnxietyRepository = {
       items,
       nextCursor: hasMore && last ? { date: last.date_occurred, id: last.id } : null,
     };
-  },
-  updateAnxietyEventByEventId: async ({
+  };
+
+  public updateAnxietyEventByEventId = async ({
     userId,
     eventId,
     eventChanges,
     client,
   }: UpdateAnxietyEventByEventIdParams) => {
-    const connection = client ?? pool;
+    const connection = client ?? this.pool;
     let paramIndex = 1;
     const values = [];
     const setClauses: string[] = [];
@@ -186,14 +186,15 @@ export const AnxietyRepository = {
       });
     }
     return anxietyEvent;
-  },
-  CompleteAnxietyEventById: async ({
+  };
+
+  public completeAnxietyEventById = async ({
     userId,
     id,
     payload,
     client,
   }: CompleteAnxietyEventByIdParams) => {
-    const connection = client ?? pool;
+    const connection = client ?? this.pool;
     const query = `
       UPDATE anxiety_events
       SET post_notes = $1, post_anxiety_level = $2, post_excitement_level = $3
@@ -219,5 +220,5 @@ export const AnxietyRepository = {
       });
     }
     return anxietyEvent;
-  },
-};
+  };
+}
