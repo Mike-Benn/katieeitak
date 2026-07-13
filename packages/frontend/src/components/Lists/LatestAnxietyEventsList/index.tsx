@@ -1,1 +1,0 @@
-export { LatestAnxietyEventsList } from './LatestAnxietyEventsList';
