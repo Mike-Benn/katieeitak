@@ -25,3 +25,11 @@ export const UpdateAnxietyEventBodySchema = AnxietyEventBodySchema.partial()
     message: 'You must provide at least one field to update.',
   });
 export type UpdateAnxietyEventBody = z.infer<typeof UpdateAnxietyEventBodySchema>;
+
+// CompleteAnxietyEventById form schema
+
+export const CompleteAnxietyEventByIdFormSchema = z.object({
+  postNotes: AnxietyEventNotesSchema,
+  postAnxietyLevel: AnxietyEventSliderSchema,
+  postExcitementLevel: AnxietyEventSliderSchema,
+});

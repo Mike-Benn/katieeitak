@@ -23,14 +23,37 @@ export const AnxietyEventSchema = z.object({
   updated_at: z.iso.datetime(),
 });
 export type AnxietyEvent = z.infer<typeof AnxietyEventSchema>;
+
+export const AnxietyEventCursorSchema = z.object({
+  date: z.string(),
+  id: z.string(),
+});
+
+export type AnxietyEventCursor = z.infer<typeof AnxietyEventCursorSchema>;
+
+export const GetAnxietyEventsRequestQuerySchema = z
+  .object({
+    cursorDate: z.iso.datetime().optional(),
+    cursorId: z
+      .string()
+      .regex(/^\d+$/, {
+        message: 'Invalid ID format. Expcted a numeric database ID.',
+      })
+      .optional(),
+    limit: z.coerce.number().int().positive().max(50).optional(),
+  })
+  .refine((data) => (data.cursorDate === null) === (data.cursorId === null), {
+    message: 'cursorDate and cursorId must be provided together',
+  });
+export type GetAnxietyEventsRequestQuery = z.infer<typeof GetAnxietyEventsRequestQuerySchema>;
+
 export const GetAnxietyEventsResponseSchema = z.object({
-  num_found: z.number().int().nonnegative(),
-  offset: z.number().int().nonnegative(),
   anxietyEvents: z.array(AnxietyEventSchema),
+  nextCursor: AnxietyEventCursorSchema.nullable(),
 });
 export type GetAnxietyEventsResponse = z.infer<typeof GetAnxietyEventsResponseSchema>;
 
-// CompleteAnxietyEvent
+// CompleteAnxietyEvent //
 export const CompleteAnxietyEventByIdPayloadSchema = z.object({
   postNotes: AnxietyEventNotesSchema,
   postAnxietyLevel: AnxietyEventSliderSchema,
