@@ -30,6 +30,7 @@ export const GetAnxietyEventsResponseSchema = z.object({
 });
 export type GetAnxietyEventsResponse = z.infer<typeof GetAnxietyEventsResponseSchema>;
 
+// CompleteAnxietyEvent
 export const CompleteAnxietyEventByIdPayloadSchema = z.object({
   postNotes: AnxietyEventNotesSchema,
   postAnxietyLevel: AnxietyEventSliderSchema,
@@ -37,3 +38,19 @@ export const CompleteAnxietyEventByIdPayloadSchema = z.object({
 });
 
 export type CompleteAnxietyEventByIdPayload = z.infer<typeof CompleteAnxietyEventByIdPayloadSchema>;
+
+export const CompleteAnxietyEventByIdQueryResultSchema = AnxietyEventSchema.pick({
+  id: true,
+});
+
+export type CompleteAnxietyEventByIdQueryResult = z.infer<
+  typeof CompleteAnxietyEventByIdQueryResultSchema
+>;
+
+export const CompleteAnxietyEventByIdResponseSchema = AnxietyEventSchema.pick({
+  id: true,
+});
+
+export type CompleteAnxietyEventByIdResponse = z.infer<
+  typeof CompleteAnxietyEventByIdResponseSchema
+>;

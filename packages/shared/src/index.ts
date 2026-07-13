@@ -43,7 +43,11 @@ export {
 export {
   GetAnxietyEventsResponseSchema,
   CompleteAnxietyEventByIdPayloadSchema,
+  CompleteAnxietyEventByIdQueryResultSchema,
+  CompleteAnxietyEventByIdResponseSchema,
   type CompleteAnxietyEventByIdPayload,
+  type CompleteAnxietyEventByIdQueryResult,
+  type CompleteAnxietyEventByIdResponse,
 } from './schemas/dtos/anxietyEvent.js';
 export {
   MarkBookReadFormSchema,
