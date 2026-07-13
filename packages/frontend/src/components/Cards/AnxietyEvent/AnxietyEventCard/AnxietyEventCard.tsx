@@ -15,9 +15,9 @@ export function AnxietyEventCard({ anxietyEvent }: AnxietyEventCardProps) {
     ? formatInTimeZone(anxietyEvent.date_occurred, 'UTC', 'MMM dd, yyyy')
     : 'Unknown';
   const anxietyIcon: ReactNode =
-    anxietyEvent.anxiety_level <= 3 ? (
+    anxietyEvent.pre_anxiety_level <= 3 ? (
       <Smile size={14} />
-    ) : anxietyEvent.anxiety_level <= 6 ? (
+    ) : anxietyEvent.pre_anxiety_level <= 6 ? (
       <Meh size={14} />
     ) : (
       <Frown size={14} />
@@ -38,11 +38,11 @@ export function AnxietyEventCard({ anxietyEvent }: AnxietyEventCardProps) {
         <div className="flex flex-row gap-2">
           <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm">
             {anxietyIcon}
-            <span className="text-sm">{anxietyEvent.anxiety_level}</span>
+            <span className="text-sm">{anxietyEvent.pre_anxiety_level}</span>
           </div>
           <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm">
             <PartyPopper size={14} />
-            <span className="text-sm">{anxietyEvent.excitement_level}</span>
+            <span className="text-sm">{anxietyEvent.pre_excitement_level}</span>
           </div>
           <div className="rounded-md px-2 py-1 bg-muted-input shadow-sm flex items-center justify-center">
             {typeIcon}
@@ -50,7 +50,7 @@ export function AnxietyEventCard({ anxietyEvent }: AnxietyEventCardProps) {
         </div>
         <div className="flex flex-row gap-2.5">
           <EditAnxietyEventDialog anxietyEvent={anxietyEvent} />
-          <CompleteAnxietyEventDrawer />
+          <CompleteAnxietyEventDrawer anxietyEvent={anxietyEvent} />
         </div>
       </div>
     </div>

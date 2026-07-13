@@ -34,10 +34,10 @@ export function EditAnxietyEventDialog({ anxietyEvent }: EditAnxietyEventDialogP
   });
   const form = useAppForm({
     defaultValues: {
-      anxietyLevel: anxietyEvent.anxiety_level,
-      excitementLevel: anxietyEvent.excitement_level,
+      anxietyLevel: anxietyEvent.pre_anxiety_level,
+      excitementLevel: anxietyEvent.pre_excitement_level,
       eventType: anxietyEvent.event_type,
-      eventNotes: anxietyEvent.notes,
+      eventNotes: anxietyEvent.pre_notes,
       eventTitle: anxietyEvent.title,
       eventDate: anxietyEvent.date_occurred,
     },
