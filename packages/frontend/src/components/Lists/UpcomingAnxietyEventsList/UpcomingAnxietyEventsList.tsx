@@ -1,15 +1,15 @@
 import type { InfiniteData } from '@tanstack/react-query';
-import type { GetAnxietyEventsResponse } from '@katieeitak/shared';
+import type { AnxietyEventCursor, GetAnxietyEventsResponse } from '@katieeitak/shared';
 import { Ghost } from 'lucide-react';
 import React from 'react';
 import { AnxietyEventCard } from '@/components/Cards/AnxietyEvent/AnxietyEventCard';
 
 interface LatestAnxietyEventsListProps {
-  eventsResponse: InfiniteData<GetAnxietyEventsResponse, number>;
+  eventsResponse: InfiniteData<GetAnxietyEventsResponse, AnxietyEventCursor | null>;
 }
 
 export function UpcomingAnxietyEventsList({ eventsResponse }: LatestAnxietyEventsListProps) {
-  if (eventsResponse.pages[0].num_found === 0) {
+  if (eventsResponse.pages[0].anxietyEvents.length === 0) {
     return (
       <div className="flex flex-col flex-1 items-center justify-center">
         <Ghost size={42} />

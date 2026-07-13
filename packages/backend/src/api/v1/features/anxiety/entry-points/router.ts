@@ -4,21 +4,20 @@ import { setupLocals } from '@/middleware/setupLocals/setupLocals.js';
 import {
   type AnxietyEvent,
   AnxietyEventBodySchema,
+  CompleteAnxietyEventByIdPayloadSchema,
+  UpdateAnxietyEventBodySchema,
   type GetAnxietyEventsResponse,
+  type CompleteAnxietyEventByIdResponse,
+  GetAnxietyEventsRequestQuerySchema,
 } from '@katieeitak/shared';
 import { AnxietyService } from '@/api/v1/features/anxiety/domain/service.js';
 import { ApiResponse } from '@/api/v1/responses/ApiResponse.js';
 import { UpdateAnxietyEventPathSchema } from '@/api/v1/features/anxiety/schemas.js';
 import { AppError } from '@/api/v1/errors/AppError.js';
-import { ERROR_NAMES } from '@/api/v1/constants/errors.js';
-import { UpdateAnxietyEventBodySchema } from '@katieeitak/shared';
-import { z } from 'zod';
-import { getZodErrorKeys } from '@/utils/getZodErrorKeys/getZodErrorKeys.js';
-const GetAnxietyEventsQueryParamsSchema = z.object({
-  limit: z.coerce.number().int().positive(),
-  offset: z.coerce.number().int().nonnegative(),
-});
-type GetAnxietyEventsQueryParams = z.infer<typeof GetAnxietyEventsQueryParamsSchema>;
+import { ERROR_MESSAGES, ERROR_NAMES } from '@/api/v1/constants/errors.js';
+
+import { ResourceIdSchema } from '@/api/v1/requests/types.js';
+import { parseValue } from '@/utils/parseValue/parseValue.js';
 const anxietyRouter: Router = Router();
 
 // SubmitAnxietyEvent
@@ -36,25 +35,26 @@ anxietyRouter.post('/', validateToken, setupLocals, async (req: Request, res: Re
 // GetAnxietyEvents
 anxietyRouter.get('/', validateToken, setupLocals, async (req: Request, res: Response) => {
   const userId = res.locals.userId as string;
-  const parsedParams = GetAnxietyEventsQueryParamsSchema.safeParse(req.query);
-  if (!parsedParams.success) {
-    const errorKeys = getZodErrorKeys<GetAnxietyEventsQueryParams>({ parseResult: parsedParams });
-    throw new AppError({
-      message: `${errorKeys} are missing or invalid in query parameter.`,
-      statusCode: 400,
-      isOperational: true,
-      name: ERROR_NAMES.MALFORMED_REQUEST,
-      safeMessage: 'Malformed request',
-    });
-  }
-  const result = await AnxietyService.getEventsByUserId({
+  const parsedParams = parseValue({
+    schema: GetAnxietyEventsRequestQuerySchema,
+    value: req.query,
+    message: 'Invalid query parameters',
+  });
+  const cursor =
+    parsedParams.cursorDate && parsedParams.cursorId
+      ? { date: parsedParams.cursorDate, id: parsedParams.cursorId }
+      : null;
+  const result = await AnxietyService.getAnxietyEventsByUserId({
     userId,
-    limit: parsedParams.data.limit,
-    offset: parsedParams.data.offset,
+    limit: parsedParams.limit ?? 5,
+    cursor,
   });
   return res.status(200).json(
     ApiResponse.success<GetAnxietyEventsResponse>({
-      data: result,
+      data: {
+        anxietyEvents: result.items,
+        nextCursor: result.nextCursor,
+      },
     }),
   );
 });
@@ -85,5 +85,37 @@ anxietyRouter.patch('/:id', validateToken, setupLocals, async (req: Request, res
     }),
   );
 });
+
+// CompleteAnxietyEvent
+anxietyRouter.patch(
+  '/:id/complete',
+  validateToken,
+  setupLocals,
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const parsedId = parseValue({
+      schema: ResourceIdSchema,
+      value: id,
+      message: ERROR_MESSAGES.INVALID_ID_PATH_PARAMETER_FORMAT,
+    });
+    const payload = parseValue({
+      schema: CompleteAnxietyEventByIdPayloadSchema,
+      value: req.body,
+      message:
+        'Incorrect or missing req payload, must include postAnxietyLevel, postExcitementLevel, and postNotes values.',
+    });
+    const userId = res.locals.userId as string;
+    const anxietyEvent = await AnxietyService.CompleteAnxietyEventById({
+      userId,
+      id: parsedId,
+      payload,
+    });
+    res.status(200).json(
+      ApiResponse.success<CompleteAnxietyEventByIdResponse>({
+        data: anxietyEvent,
+      }),
+    );
+  },
+);
 
 export { anxietyRouter };

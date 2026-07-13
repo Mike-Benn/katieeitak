@@ -12,6 +12,9 @@ import {
   type MarkedBookReadPayload,
   type PatchReadBookByIdPayload,
   type PatchReadBookByIdResponse,
+  type CompleteAnxietyEventByIdResponse,
+  type CompleteAnxietyEventByIdPayload,
+  type AnxietyEventCursor,
 } from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
@@ -27,7 +30,7 @@ interface GetBookByKeyParams {
 }
 
 interface GetAnxietyEventsParams {
-  pageParam: number;
+  pageParam: AnxietyEventCursor | null;
   signal: AbortSignal;
 }
 
@@ -47,6 +50,11 @@ interface PatchMarkedBookParams {
   payload: PatchReadBookByIdPayload;
 }
 
+interface CompleteAnxietyEventByIdParams {
+  id: string;
+  payload: CompleteAnxietyEventByIdPayload;
+}
+
 // TODO - Error handling
 export const api = {
   completeAuth: async (signal: AbortSignal) => {
@@ -64,8 +72,12 @@ export const api = {
     >('/anxiety', body);
     return response.data.data;
   },
-  getAnxietyEvents: async ({ pageParam, signal }: GetAnxietyEventsParams) => {
-    const params = new URLSearchParams({ limit: '5', offset: `${pageParam}` });
+  getAnxietyEventsById: async ({ pageParam, signal }: GetAnxietyEventsParams) => {
+    const params = new URLSearchParams({ limit: '5' });
+    if (pageParam) {
+      params.set('cursorDate', pageParam.date);
+      params.set('cursorId', pageParam.id);
+    }
     const response = await apiClient.get<SuccessResponse<GetAnxietyEventsResponse>>(
       `/anxiety?${params}`,
       { signal },
@@ -80,6 +92,15 @@ export const api = {
     >(`/anxiety/${id}`, body);
     return response.data.data;
   },
+  completeAnxietyEventById: async ({ id, payload }: CompleteAnxietyEventByIdParams) => {
+    const response = await apiClient.patch<
+      SuccessResponse<CompleteAnxietyEventByIdResponse>,
+      AxiosResponse<SuccessResponse<CompleteAnxietyEventByIdResponse>>,
+      CompleteAnxietyEventByIdPayload
+    >(`/anxiety/${id}/complete`, payload);
+    return response.data.data;
+  },
+
   patchReadBookById: async ({ id, payload }: PatchMarkedBookParams) => {
     const response = await apiClient.patch<
       SuccessResponse<PatchReadBookByIdResponse>,
