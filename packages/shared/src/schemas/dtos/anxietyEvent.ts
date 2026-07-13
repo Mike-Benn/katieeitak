@@ -12,17 +12,68 @@ export const AnxietyEventSchema = z.object({
   user_id: z.string(),
   title: AnxietyEventTitleSchema,
   event_type: AnxietyEventTypeSchema,
-  notes: AnxietyEventNotesSchema,
-  anxiety_level: AnxietyEventSliderSchema,
-  excitement_level: AnxietyEventSliderSchema,
+  pre_notes: AnxietyEventNotesSchema,
+  pre_anxiety_level: AnxietyEventSliderSchema,
+  pre_excitement_level: AnxietyEventSliderSchema,
+  post_notes: AnxietyEventNotesSchema,
+  post_anxiety_level: AnxietyEventSliderSchema.nullable(),
+  post_excitement_level: AnxietyEventSliderSchema.nullable(),
   date_occurred: AnxietyEventDateSchema,
   created_at: z.iso.datetime(),
   updated_at: z.iso.datetime(),
 });
 export type AnxietyEvent = z.infer<typeof AnxietyEventSchema>;
+
+export const AnxietyEventCursorSchema = z.object({
+  date: z.string(),
+  id: z.string(),
+});
+
+export type AnxietyEventCursor = z.infer<typeof AnxietyEventCursorSchema>;
+
+export const GetAnxietyEventsRequestQuerySchema = z
+  .object({
+    cursorDate: z.iso.datetime().optional(),
+    cursorId: z
+      .string()
+      .regex(/^\d+$/, {
+        message: 'Invalid ID format. Expcted a numeric database ID.',
+      })
+      .optional(),
+    limit: z.coerce.number().int().positive().max(50).optional(),
+  })
+  .refine((data) => (data.cursorDate === null) === (data.cursorId === null), {
+    message: 'cursorDate and cursorId must be provided together',
+  });
+export type GetAnxietyEventsRequestQuery = z.infer<typeof GetAnxietyEventsRequestQuerySchema>;
+
 export const GetAnxietyEventsResponseSchema = z.object({
-  num_found: z.number().int().nonnegative(),
-  offset: z.number().int().nonnegative(),
   anxietyEvents: z.array(AnxietyEventSchema),
+  nextCursor: AnxietyEventCursorSchema.nullable(),
 });
 export type GetAnxietyEventsResponse = z.infer<typeof GetAnxietyEventsResponseSchema>;
+
+// CompleteAnxietyEvent //
+export const CompleteAnxietyEventByIdPayloadSchema = z.object({
+  postNotes: AnxietyEventNotesSchema,
+  postAnxietyLevel: AnxietyEventSliderSchema,
+  postExcitementLevel: AnxietyEventSliderSchema,
+});
+
+export type CompleteAnxietyEventByIdPayload = z.infer<typeof CompleteAnxietyEventByIdPayloadSchema>;
+
+export const CompleteAnxietyEventByIdQueryResultSchema = AnxietyEventSchema.pick({
+  id: true,
+});
+
+export type CompleteAnxietyEventByIdQueryResult = z.infer<
+  typeof CompleteAnxietyEventByIdQueryResultSchema
+>;
+
+export const CompleteAnxietyEventByIdResponseSchema = AnxietyEventSchema.pick({
+  id: true,
+});
+
+export type CompleteAnxietyEventByIdResponse = z.infer<
+  typeof CompleteAnxietyEventByIdResponseSchema
+>;

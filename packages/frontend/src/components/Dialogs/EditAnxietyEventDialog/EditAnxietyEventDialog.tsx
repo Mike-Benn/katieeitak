@@ -1,61 +1,65 @@
-import type { AnxietyEvent } from '@katieeitak/shared';
-import { formatInTimeZone } from 'date-fns-tz';
-import { type ReactNode } from 'react';
-import { Smile, Meh, Frown, PartyPopper } from 'lucide-react';
-import { getAnxietyEventTypeIcon } from '@/utils/getAnxietyEventTypeIcon';
-import { CompleteAnxietyEventDrawer } from '@/components/Drawers/CompleteAnxietyEventDrawer';
-import { EditAnxietyEventDialog } from '@/components/Dialogs/EditAnxietyEventDialog';
+import { Dialog, Button, Separator } from '@base-ui/react';
+import { useState } from 'react';
+import { X, Pencil } from 'lucide-react';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { api } from '@/api/api';
+import {
+  type UpdateAnxietyEventBody,
+  type AnxietyEvent,
+  UpdateAnxietyEventBodySchema,
+} from '@katieeitak/shared';
+import { useAppForm } from '@/hooks/useAppForm';
+import { toast } from 'sonner';
+import { anxietyEventTypeOptions } from '@katieeitak/shared';
 
-interface AnxietyEventCardProps {
+interface EditAnxietyEventDialogProps {
   anxietyEvent: AnxietyEvent;
 }
 
-export function AnxietyEventCard({ anxietyEvent }: AnxietyEventCardProps) {
-  const date = anxietyEvent.date_occurred
-    ? formatInTimeZone(anxietyEvent.date_occurred, 'UTC', 'MMM dd, yyyy')
-    : 'Unknown';
-  const anxietyIcon: ReactNode =
-    anxietyEvent.pre_anxiety_level <= 3 ? (
-      <Smile size={14} />
-    ) : anxietyEvent.pre_anxiety_level <= 6 ? (
-      <Meh size={14} />
-    ) : (
-      <Frown size={14} />
-    );
+export function EditAnxietyEventDialog({ anxietyEvent }: EditAnxietyEventDialogProps) {
+  const queryClient = useQueryClient();
+  const [open, setOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const { mutate, isPending } = useMutation({
+    mutationFn: (body: UpdateAnxietyEventBody) =>
+      api.updateAnxietyEvent({ id: anxietyEvent.id, body }),
+    onError: () => {
+      toast.error('There was an error updating anxiety event, please try again.');
+    },
+    onSuccess: async () => {
+      setOpen(false);
+      setIsEditing(false);
+      await queryClient.invalidateQueries({ queryKey: ['anxietyEvents'] });
+    },
+  });
+  const form = useAppForm({
+    defaultValues: {
+      anxietyLevel: anxietyEvent.pre_anxiety_level,
+      excitementLevel: anxietyEvent.pre_excitement_level,
+      eventType: anxietyEvent.event_type,
+      eventNotes: anxietyEvent.pre_notes,
+      eventTitle: anxietyEvent.title,
+      eventDate: anxietyEvent.date_occurred,
+    },
+    onSubmit: ({ value: formValues, formApi }) => {
+      const defaultFormValues = formApi.options.defaultValues;
+      if (!defaultFormValues) return;
+      const changedFormValues: Record<string, unknown> = {};
+      for (const [key, value] of Object.entries(formValues)) {
+        const typedKey = key as keyof typeof defaultFormValues;
+        if (value !== defaultFormValues[typedKey]) {
+          changedFormValues[typedKey] = value;
+        }
+      }
+      const parsedChangedFormValues = UpdateAnxietyEventBodySchema.safeParse(changedFormValues);
+      if (parsedChangedFormValues.error || !parsedChangedFormValues.data) {
+        toast.error('There was an error updating anxiety event, please try again.');
+        return;
+      }
+      mutate(parsedChangedFormValues.data);
+    },
+  });
 
-  const typeIcon = getAnxietyEventTypeIcon({ eventType: anxietyEvent.event_type });
-  return (
-    <div className="flex flex-col shadow-md rounded-md p-6 bg-white gap-2">
-      <div className="flex flex-row items-center">
-        <span className="font-semibold flex-1 text-left">{anxietyEvent.title}</span>
-        {date && (
-          <div className="flex items-center justify-end min-w-22">
-            <span className="text-gray-400 text-sm">{date}</span>
-          </div>
-        )}
-      </div>
-      <div className="flex justify-between">
-        <div className="flex flex-row gap-2">
-          <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm">
-            {anxietyIcon}
-            <span className="text-sm">{anxietyEvent.pre_anxiety_level}</span>
-          </div>
-          <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm">
-            <PartyPopper size={14} />
-            <span className="text-sm">{anxietyEvent.pre_excitement_level}</span>
-          </div>
-          <div className="rounded-md px-2 py-1 bg-muted-input shadow-sm flex items-center justify-center">
-            {typeIcon}
-          </div>
-        </div>
-        <div className="flex flex-row gap-2.5">
-          <EditAnxietyEventDialog anxietyEvent={anxietyEvent} />
-          <CompleteAnxietyEventDrawer anxietyEvent={anxietyEvent} />
-        </div>
-      </div>
-    </div>
-  );
-  /*
   return (
     <Dialog.Root
       open={open}
@@ -67,37 +71,11 @@ export function AnxietyEventCard({ anxietyEvent }: AnxietyEventCardProps) {
         }
       }}
     >
-      <Dialog.Trigger>
-        <div className="flex flex-col shadow-md rounded-md p-6 bg-white gap-2">
-          <div className="flex flex-row items-center">
-            <span className="font-semibold flex-1 text-left">{anxietyEvent.title}</span>
-            {date && (
-              <div className="flex flex-rowi items-center justify-end min-w-22">
-                <span className="text-gray-400 text-sm">{date}</span>
-              </div>
-            )}
-          </div>
-
-          <div className="flex justify-between">
-            <div className="flex flex-row gap-2">
-              <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm">
-                {anxietyIcon}
-                <span className="text-sm">{anxietyEvent.anxiety_level}</span>
-              </div>
-              <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm">
-                <PartyPopper size={14} />
-                <span className="text-sm">{anxietyEvent.excitement_level}</span>
-              </div>
-              <div className="rounded-md pl-2 pr-2 pt-1 pb-1 bg-muted-input shadow-sm flex items-center justify-center">
-                {typeIcon}
-              </div>
-            </div>
-            <div>
-              <CompleteAnxietyEventDrawer />
-            </div>
-          </div>
-        </div>
-      </Dialog.Trigger>
+      <div className="flex h-full w-full justify-center items-center">
+        <Dialog.Trigger>
+          <Pencil size={21} color="black" />
+        </Dialog.Trigger>
+      </div>
       <Dialog.Portal>
         <Dialog.Backdrop className="fixed inset-0 min-h-dvh bg-black opacity-20 transition-all duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 dark:opacity-70 supports-[-webkit-touch-callout:none]:absolute" />
         <Dialog.Popup className="fixed top-1/2 left-1/2 w-96 max-w-[calc(100vw-3rem)] max-h-[90dvh] -translate-x-1/2 -translate-y-1/2 flex flex-col overflow-hidden rounded-lg bg-gray-50 text-gray-900 outline-1 outline-gray-200 transition-all duration-150 data-ending-style:scale-90 data-ending-style:opacity-0 data-starting-style:scale-90 data-starting-style:opacity-0 dark:outline-gray-300">
@@ -219,5 +197,4 @@ export function AnxietyEventCard({ anxietyEvent }: AnxietyEventCardProps) {
       </Dialog.Portal>
     </Dialog.Root>
   );
-  */
 }

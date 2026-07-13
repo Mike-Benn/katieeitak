@@ -7,6 +7,7 @@ export interface AuthenticatedRequest extends Request {
   };
 }
 
+// Being used because of bigint precision loss
 export const ResourceIdSchema = z.string().regex(/^\d+$/, {
   message: 'Invalid ID format. Expcted a numeric database ID.',
 });

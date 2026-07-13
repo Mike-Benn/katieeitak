@@ -1,25 +1,19 @@
 import { useInfiniteQuery, type InfiniteData } from '@tanstack/react-query';
 import { api } from '@/api/api';
-import type { GetAnxietyEventsResponse } from '@katieeitak/shared';
+import type { AnxietyEventCursor, GetAnxietyEventsResponse } from '@katieeitak/shared';
 
 export function useAnxietyEvents() {
   return useInfiniteQuery<
     GetAnxietyEventsResponse,
     Error,
-    InfiniteData<GetAnxietyEventsResponse, number>,
+    InfiniteData<GetAnxietyEventsResponse, AnxietyEventCursor | null>,
     string[],
-    number
+    AnxietyEventCursor | null
   >({
-    queryKey: ['anxietyEvents'],
-    queryFn: ({ pageParam, signal }) => api.getAnxietyEvents({ pageParam, signal }),
-    initialPageParam: 0,
-    getNextPageParam: (lastPage) => {
-      const nextOffset = lastPage.offset + 5;
-      if (nextOffset >= lastPage.num_found) {
-        return undefined;
-      }
-      return nextOffset;
-    },
+    queryKey: ['anxietyEvents', 'upcoming'],
+    queryFn: ({ pageParam, signal }) => api.getAnxietyEventsById({ pageParam, signal }),
+    initialPageParam: null,
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     refetchOnWindowFocus: false,
   });
 }

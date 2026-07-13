@@ -6,8 +6,13 @@ export {
   AnxietyEventSliderSchema,
   AnxietyEventNotesSchema,
 } from './schemas/forms/validators.js';
-export type { AnxietyEventBody, UpdateAnxietyEventBody } from './schemas/forms/bodies.js';
-export { AnxietyEventBodySchema, UpdateAnxietyEventBodySchema } from './schemas/forms/bodies.js';
+export {
+  AnxietyEventBodySchema,
+  UpdateAnxietyEventBodySchema,
+  CompleteAnxietyEventByIdFormSchema,
+  type AnxietyEventBody,
+  type UpdateAnxietyEventBody,
+} from './schemas/forms/bodies.js';
 export type { AnxietyEvent, GetAnxietyEventsResponse } from './schemas/dtos/anxietyEvent.js';
 export type { AnxietyEventType } from './schemas/forms/validators.js';
 export {
@@ -40,7 +45,19 @@ export {
   type PatchReadBookByIdQueryResult,
   type PatchReadBookByIdResponse,
 } from './schemas/dtos/book.js';
-export { GetAnxietyEventsResponseSchema } from './schemas/dtos/anxietyEvent.js';
+export {
+  GetAnxietyEventsResponseSchema,
+  CompleteAnxietyEventByIdPayloadSchema,
+  CompleteAnxietyEventByIdQueryResultSchema,
+  CompleteAnxietyEventByIdResponseSchema,
+  AnxietyEventCursorSchema,
+  GetAnxietyEventsRequestQuerySchema,
+  type CompleteAnxietyEventByIdPayload,
+  type CompleteAnxietyEventByIdQueryResult,
+  type CompleteAnxietyEventByIdResponse,
+  type AnxietyEventCursor,
+  type GetAnxietyEventsRequestQuery,
+} from './schemas/dtos/anxietyEvent.js';
 export {
   MarkBookReadFormSchema,
   MarkBookReadPagesFieldSchema,

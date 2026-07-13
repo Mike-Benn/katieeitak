@@ -1,8 +1,15 @@
-import type { AnxietyEventBody, AnxietyEvent, UpdateAnxietyEventBody } from '@katieeitak/shared';
+import {
+  type AnxietyEventBody,
+  type AnxietyEvent,
+  type UpdateAnxietyEventBody,
+  type CompleteAnxietyEventByIdPayload,
+  type CompleteAnxietyEventByIdQueryResult,
+  type AnxietyEventCursor,
+} from '@katieeitak/shared';
 import type { PoolClient } from 'pg';
 import { pool } from '@/db/db.js';
 import { AppError } from '@/api/v1/errors/AppError.js';
-import { ERROR_NAMES } from '@/api/v1/constants/errors.js';
+import { ERROR_MESSAGES, ERROR_NAMES, SAFE_ERROR_MESSAGES } from '@/api/v1/constants/errors.js';
 import { convertStringToNumber } from '@/utils/convertStringToNumber/convertStringToNumber.js';
 
 interface CreateEventParams {
@@ -15,14 +22,20 @@ interface CountEventsByUserIdParams {
   userId: string;
   client?: PoolClient;
 }
-
+/*
 interface GetEventsByUserIdParams {
   userId: string;
-  limit: number;
+  limit?: number;
   offset: number;
   client?: PoolClient;
 }
-
+*/
+interface GetAnxietyEventsByUserIdParams {
+  limit: number;
+  client?: PoolClient;
+  userId: string;
+  cursor: AnxietyEventCursor | null;
+}
 interface UpdateAnxietyEventByEventIdParams {
   userId: string;
   client?: PoolClient;
@@ -30,11 +43,18 @@ interface UpdateAnxietyEventByEventIdParams {
   eventChanges: UpdateAnxietyEventBody;
 }
 
+interface CompleteAnxietyEventByIdParams {
+  userId: string;
+  id: string;
+  payload: CompleteAnxietyEventByIdPayload;
+  client?: PoolClient;
+}
+
 export const AnxietyRepository = {
   createEvent: async ({ userId, body, client }: CreateEventParams) => {
     const connection = client ?? pool;
     const query = `
-            INSERT INTO anxiety_events (user_id, event_type, notes, anxiety_level, excitement_level, date_occurred, title)
+            INSERT INTO anxiety_events (user_id, event_type, pre_notes, pre_anxiety_level, pre_excitement_level, date_occurred, title)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING *
         `;
@@ -71,17 +91,35 @@ export const AnxietyRepository = {
     const { rows } = await connection.query<{ num_found: string }>(query, values);
     return convertStringToNumber({ str: rows[0]?.num_found });
   },
-  getEventsByUserId: async ({ userId, limit, offset, client }: GetEventsByUserIdParams) => {
+  getAnxietyEventsByUserId: async ({
+    limit,
+    client,
+    userId,
+    cursor,
+  }: GetAnxietyEventsByUserIdParams) => {
     const connection = client ?? pool;
+    const values: unknown[] = [userId];
+    let cursorClause = '';
+    if (cursor) {
+      values.push(cursor.date, cursor.id);
+      cursorClause = 'AND (date_occurred, id) > ($2, $3)';
+    }
+    values.push(limit + 1);
     const query = `
       SELECT * FROM anxiety_events
-      WHERE user_id = $1
-      ORDER BY date_occurred DESC
-      LIMIT $2 OFFSET $3
+      WHERE user_id = $1 AND post_anxiety_level IS NULL
+      ${cursorClause}
+      ORDER BY date_occurred ASC, id ASC
+      LIMIT $${values.length}
     `;
-    const values = [userId, limit, offset];
     const { rows } = await connection.query<AnxietyEvent>(query, values);
-    return rows;
+    const hasMore = rows.length > limit;
+    const items = hasMore ? rows.slice(0, limit) : rows;
+    const last = items[items.length - 1];
+    return {
+      items,
+      nextCursor: hasMore && last ? { date: last.date_occurred, id: last.id } : null,
+    };
   },
   updateAnxietyEventByEventId: async ({
     userId,
@@ -98,7 +136,7 @@ export const AnxietyRepository = {
       values.push(eventChanges.eventDate);
     }
     if (eventChanges.eventNotes) {
-      setClauses.push(` notes = $${paramIndex++}`);
+      setClauses.push(` pre_notes = $${paramIndex++}`);
       values.push(eventChanges.eventNotes);
     }
     if (eventChanges.eventTitle) {
@@ -110,11 +148,11 @@ export const AnxietyRepository = {
       values.push(eventChanges.eventType);
     }
     if (eventChanges.anxietyLevel) {
-      setClauses.push(` anxiety_level = $${paramIndex++}`);
+      setClauses.push(` pre_anxiety_level = $${paramIndex++}`);
       values.push(eventChanges.anxietyLevel);
     }
     if (eventChanges.excitementLevel) {
-      setClauses.push(` excitement_level = $${paramIndex++}`);
+      setClauses.push(` pre_excitement_level = $${paramIndex++}`);
       values.push(eventChanges.excitementLevel);
     }
 
@@ -145,6 +183,39 @@ export const AnxietyRepository = {
         statusCode: 404,
         name: ERROR_NAMES.RESOURCE_NOT_FOUND,
         safeMessage: 'Resource not found',
+      });
+    }
+    return anxietyEvent;
+  },
+  CompleteAnxietyEventById: async ({
+    userId,
+    id,
+    payload,
+    client,
+  }: CompleteAnxietyEventByIdParams) => {
+    const connection = client ?? pool;
+    const query = `
+      UPDATE anxiety_events
+      SET post_notes = $1, post_anxiety_level = $2, post_excitement_level = $3
+      WHERE user_id = $4 AND id = $5
+      RETURNING id
+    `;
+    const values = [
+      payload.postNotes,
+      payload.postAnxietyLevel,
+      payload.postExcitementLevel,
+      userId,
+      id,
+    ];
+    const { rows } = await connection.query<CompleteAnxietyEventByIdQueryResult>(query, values);
+    const anxietyEvent = rows[0];
+    if (!anxietyEvent) {
+      throw new AppError({
+        message: ERROR_MESSAGES.RESOURCE_NOT_FOUND,
+        isOperational: true,
+        statusCode: 404,
+        name: ERROR_NAMES.RESOURCE_NOT_FOUND,
+        safeMessage: SAFE_ERROR_MESSAGES.RESOURCE_NOT_FOUND,
       });
     }
     return anxietyEvent;
