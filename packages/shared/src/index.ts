@@ -40,7 +40,11 @@ export {
   type PatchReadBookByIdQueryResult,
   type PatchReadBookByIdResponse,
 } from './schemas/dtos/book.js';
-export { GetAnxietyEventsResponseSchema } from './schemas/dtos/anxietyEvent.js';
+export {
+  GetAnxietyEventsResponseSchema,
+  CompleteAnxietyEventByIdPayloadSchema,
+  type CompleteAnxietyEventByIdPayload,
+} from './schemas/dtos/anxietyEvent.js';
 export {
   MarkBookReadFormSchema,
   MarkBookReadPagesFieldSchema,

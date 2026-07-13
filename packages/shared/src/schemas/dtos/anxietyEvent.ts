@@ -29,3 +29,11 @@ export const GetAnxietyEventsResponseSchema = z.object({
   anxietyEvents: z.array(AnxietyEventSchema),
 });
 export type GetAnxietyEventsResponse = z.infer<typeof GetAnxietyEventsResponseSchema>;
+
+export const CompleteAnxietyEventByIdPayloadSchema = z.object({
+  postNotes: AnxietyEventNotesSchema,
+  postAnxietyLevel: AnxietyEventSliderSchema,
+  postExcitementLevel: AnxietyEventSliderSchema,
+});
+
+export type CompleteAnxietyEventByIdPayload = z.infer<typeof CompleteAnxietyEventByIdPayloadSchema>;
