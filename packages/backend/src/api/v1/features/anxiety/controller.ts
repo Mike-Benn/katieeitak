@@ -35,6 +35,7 @@ export class AnxietyController {
 
   public getAnxietyEventsByUserId = async (req: Request, res: Response) => {
     const userId = res.locals.userId as string;
+    console.log(req.query);
     const parsedParams = parseValue({
       schema: GetAnxietyEventsRequestQuerySchema,
       value: req.query,
@@ -48,6 +49,7 @@ export class AnxietyController {
       userId,
       limit: parsedParams.limit ?? 5,
       cursor,
+      status: parsedParams.status,
     });
     return res.status(200).json(
       ApiResponse.success<GetAnxietyEventsResponse>({

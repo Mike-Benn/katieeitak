@@ -2,6 +2,7 @@ import type { AnxietyRepository } from '@/api/v1/features/anxiety/repository.js'
 import type {
   AnxietyEventBody,
   AnxietyEventCursor,
+  AnxietyEventStatus,
   CompleteAnxietyEventByIdPayload,
   UpdateAnxietyEventBody,
 } from '@katieeitak/shared';
@@ -21,6 +22,7 @@ interface GetAnxietyEventsByUserIdParams {
   limit: number;
   cursor: AnxietyEventCursor | null;
   userId: string;
+  status: AnxietyEventStatus;
 }
 interface CompleteAnxietyEventByIdParams {
   userId: string;
@@ -56,11 +58,13 @@ export class AnxietyService {
     userId,
     limit,
     cursor,
+    status,
   }: GetAnxietyEventsByUserIdParams) => {
     const anxietyEvents = await this.anxietyRepository.getAnxietyEventsByUserId({
       userId,
       cursor,
       limit,
+      status,
     });
     return anxietyEvents;
   };

@@ -4,6 +4,7 @@ import type {
   AnxietyEvent,
   AnxietyEventBody,
   AnxietyEventCursor,
+  AnxietyEventStatus,
   CompleteAnxietyEventByIdPayload,
   CompleteAnxietyEventByIdQueryResult,
   UpdateAnxietyEventBody,
@@ -27,6 +28,7 @@ interface GetAnxietyEventsByUserIdParams {
   client?: PoolClient;
   userId: string;
   cursor: AnxietyEventCursor | null;
+  status: AnxietyEventStatus;
 }
 interface UpdateAnxietyEventByEventIdParams {
   userId: string;
@@ -95,6 +97,7 @@ export class AnxietyRepository {
     client,
     userId,
     cursor,
+    status,
   }: GetAnxietyEventsByUserIdParams) => {
     const connection = client ?? this.pool;
     const values: unknown[] = [userId];
@@ -104,9 +107,13 @@ export class AnxietyRepository {
       cursorClause = 'AND (date_occurred, id) > ($2, $3)';
     }
     values.push(limit + 1);
+    const statusClause =
+      status === 'upcoming'
+        ? ' AND post_anxiety_level IS NULL'
+        : ' AND post_anxiety_level IS NOT NULL';
     const query = `
       SELECT * FROM anxiety_events
-      WHERE user_id = $1 AND post_anxiety_level IS NULL
+      WHERE user_id = $1 ${statusClause}
       ${cursorClause}
       ORDER BY date_occurred ASC, id ASC
       LIMIT $${values.length}
