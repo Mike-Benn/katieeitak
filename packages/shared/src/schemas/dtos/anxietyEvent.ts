@@ -82,3 +82,19 @@ export const CompleteAnxietyEventByIdResponseSchema = AnxietyEventSchema.pick({
 export type CompleteAnxietyEventByIdResponse = z.infer<
   typeof CompleteAnxietyEventByIdResponseSchema
 >;
+
+export const UncompleteAnxietyEventByIdQueryResultSchema = AnxietyEventSchema.pick({
+  id: true,
+});
+
+export type UncompleteAnxietyEventByIdQueryResult = z.infer<
+  typeof UncompleteAnxietyEventByIdQueryResultSchema
+>;
+
+export const UncompleteAnxietyEventByIdResponseSchema = AnxietyEventSchema.pick({
+  id: true,
+});
+
+export type UncompleteAnxietyEventByIdResponse = z.infer<
+  typeof UncompleteAnxietyEventByIdResponseSchema
+>;

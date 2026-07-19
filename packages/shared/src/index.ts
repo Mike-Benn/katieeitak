@@ -53,12 +53,16 @@ export {
   AnxietyEventCursorSchema,
   GetAnxietyEventsRequestQuerySchema,
   AnxietyEventStatusSchema,
+  UncompleteAnxietyEventByIdQueryResultSchema,
+  UncompleteAnxietyEventByIdResponseSchema,
   type CompleteAnxietyEventByIdPayload,
   type CompleteAnxietyEventByIdQueryResult,
   type CompleteAnxietyEventByIdResponse,
   type AnxietyEventCursor,
   type GetAnxietyEventsRequestQuery,
   type AnxietyEventStatus,
+  type UncompleteAnxietyEventByIdQueryResult,
+  type UncompleteAnxietyEventByIdResponse,
 } from './schemas/dtos/anxietyEvent.js';
 export {
   MarkBookReadFormSchema,
