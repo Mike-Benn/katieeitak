@@ -11,6 +11,7 @@ import {
 import { useAppForm } from '@/hooks/useAppForm';
 import { toast } from 'sonner';
 import { anxietyEventTypeOptions } from '@katieeitak/shared';
+import { DeleteAnxietyEventAlert } from '@/components/Alerts/DeleteAnxietyEventAlert';
 
 interface EditAnxietyEventDialogProps {
   anxietyEvent: AnxietyEvent;
@@ -78,10 +79,11 @@ export function EditAnxietyEventDialog({ anxietyEvent }: EditAnxietyEventDialogP
       </div>
       <Dialog.Portal>
         <Dialog.Backdrop className="fixed inset-0 min-h-dvh bg-black opacity-20 transition-all duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 dark:opacity-70 supports-[-webkit-touch-callout:none]:absolute" />
-        <Dialog.Popup className="fixed top-1/2 left-1/2 w-96 max-w-[calc(100vw-3rem)] max-h-[90dvh] -translate-x-1/2 -translate-y-1/2 flex flex-col overflow-hidden rounded-lg bg-gray-50 text-gray-900 outline-1 outline-gray-200 transition-all duration-150 data-ending-style:scale-90 data-ending-style:opacity-0 data-starting-style:scale-90 data-starting-style:opacity-0 dark:outline-gray-300">
+        <Dialog.Popup className="fixed top-1/2 left-1/2 w-96 max-w-[calc(100vw-3rem)] max-h-[90dvh] -translate-x-1/2 -translate-y-1/2 flex flex-col overflow-hidden rounded-lg bg-gray-50 text-gray-900 outline-1 outline-gray-200 transition-all duration-150 data-ending-style:scale-90 data-ending-style:opacity-0 data-starting-style:scale-90 data-starting-style:opacity-0 dark:outline-gray-300 data-nested-dialog-open:brightness-50 data-nested-dialog-open:pointer-events-none">
           <div className="flex flex-row justify-between pl-6 pr-6 pt-4 pb-4 shrink-0">
             <h2 className="text-lg font-semibold">Event details</h2>
             <div className="flex flex-row gap-2">
+              <DeleteAnxietyEventAlert anxietyEvent={anxietyEvent} setEditOpen={setOpen} />
               <Button
                 onClick={() => setIsEditing(!isEditing)}
                 className={`w-7 h-7 flex justify-center items-center rounded-md transition-colors ${

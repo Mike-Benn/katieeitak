@@ -17,6 +17,7 @@ import {
   type AnxietyEventCursor,
   type AnxietyEventStatus,
   type UncompleteAnxietyEventByIdResponse,
+  type DeleteAnxietyEventByIdResponse,
 } from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
@@ -59,6 +60,10 @@ interface CompleteAnxietyEventByIdParams {
 }
 
 interface UncompleteAnxietyEventByIdParams {
+  id: string;
+}
+
+interface DeleteAnxietyEventByIdParams {
   id: string;
 }
 
@@ -113,6 +118,14 @@ export const api = {
       SuccessResponse<UncompleteAnxietyEventByIdResponse>,
       AxiosResponse<SuccessResponse<UncompleteAnxietyEventByIdResponse>>
     >(`/anxiety/${id}/complete`);
+    return response.data.data;
+  },
+
+  deleteAnxietyEventById: async ({ id }: DeleteAnxietyEventByIdParams) => {
+    const response = await apiClient.delete<
+      SuccessResponse<DeleteAnxietyEventByIdResponse>,
+      AxiosResponse<SuccessResponse<DeleteAnxietyEventByIdResponse>>
+    >(`/anxiety/${id}`);
     return response.data.data;
   },
   patchReadBookById: async ({ id, payload }: PatchMarkedBookParams) => {
