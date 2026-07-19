@@ -2,7 +2,7 @@ import type { InfiniteData } from '@tanstack/react-query';
 import type { AnxietyEventCursor, GetAnxietyEventsResponse } from '@katieeitak/shared';
 import { Ghost } from 'lucide-react';
 import React from 'react';
-import { AnxietyEventCard } from '@/components/Cards/AnxietyEvent/AnxietyEventCard';
+import { UpcomingAnxietyEventCard } from '@/components/Cards/AnxietyEvent/UpcomingAnxietyEventCard';
 
 interface UpcomingAnxietyEventsListProps {
   eventsResponse: InfiniteData<GetAnxietyEventsResponse, AnxietyEventCursor | null>;
@@ -23,7 +23,7 @@ export function UpcomingAnxietyEventsList({ eventsResponse }: UpcomingAnxietyEve
         // eslint-disable-next-line react/no-array-index-key
         <React.Fragment key={index}>
           {page.anxietyEvents.map((anxietyEvent) => (
-            <AnxietyEventCard key={anxietyEvent.id} anxietyEvent={anxietyEvent} />
+            <UpcomingAnxietyEventCard key={anxietyEvent.id} anxietyEvent={anxietyEvent} />
           ))}
         </React.Fragment>
       ))}
