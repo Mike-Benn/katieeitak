@@ -12,7 +12,7 @@ import {
   type DeleteAnxietyEventByIdQueryResult,
 } from '@katieeitak/shared';
 import type { Pool, PoolClient } from 'pg';
-import { convertStringToNumber } from '@/utils/convertStringToNumber/convertStringToNumber.js';
+import { convertIntegerStringToNumber } from '@/utils/convertIntegerStringToNumber/convertIntegerStringToNumber.js';
 
 interface CreateEventParams {
   userId: string;
@@ -103,7 +103,7 @@ export class AnxietyRepository {
     `;
     const values = [userId];
     const { rows } = await connection.query<{ num_found: string }>(query, values);
-    return convertStringToNumber({ str: rows[0]?.num_found });
+    return convertIntegerStringToNumber({ str: rows[0]?.num_found });
   };
 
   public getAnxietyEventsByUserId = async ({
