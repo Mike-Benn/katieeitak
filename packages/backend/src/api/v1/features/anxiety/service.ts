@@ -2,6 +2,7 @@ import type { AnxietyRepository } from '@/api/v1/features/anxiety/repository.js'
 import type {
   AnxietyEventBody,
   AnxietyEventCursor,
+  AnxietyEventStatus,
   CompleteAnxietyEventByIdPayload,
   UpdateAnxietyEventBody,
 } from '@katieeitak/shared';
@@ -21,11 +22,22 @@ interface GetAnxietyEventsByUserIdParams {
   limit: number;
   cursor: AnxietyEventCursor | null;
   userId: string;
+  status: AnxietyEventStatus;
 }
 interface CompleteAnxietyEventByIdParams {
   userId: string;
   id: string;
   payload: CompleteAnxietyEventByIdPayload;
+}
+
+interface UncompleteAnxietyEventByIdParams {
+  userId: string;
+  id: string;
+}
+
+interface DeleteAnxietyEventByIdParams {
+  userId: string;
+  id: string;
 }
 
 export class AnxietyService {
@@ -56,11 +68,13 @@ export class AnxietyService {
     userId,
     limit,
     cursor,
+    status,
   }: GetAnxietyEventsByUserIdParams) => {
     const anxietyEvents = await this.anxietyRepository.getAnxietyEventsByUserId({
       userId,
       cursor,
       limit,
+      status,
     });
     return anxietyEvents;
   };
@@ -74,6 +88,22 @@ export class AnxietyService {
       userId,
       id,
       payload,
+    });
+    return anxietyEvent;
+  };
+
+  public uncompleteAnxietyEventById = async ({ userId, id }: UncompleteAnxietyEventByIdParams) => {
+    const anxietyEvent = await this.anxietyRepository.uncompleteAnxietyEventById({
+      userId,
+      id,
+    });
+    return anxietyEvent;
+  };
+
+  public deleteAnxietyEventById = async ({ userId, id }: DeleteAnxietyEventByIdParams) => {
+    const anxietyEvent = await this.anxietyRepository.deleteAnxietyEventById({
+      userId,
+      id,
     });
     return anxietyEvent;
   };

@@ -2,14 +2,14 @@ import type { InfiniteData } from '@tanstack/react-query';
 import type { AnxietyEventCursor, GetAnxietyEventsResponse } from '@katieeitak/shared';
 import { Ghost } from 'lucide-react';
 import React from 'react';
-import { UpcomingAnxietyEventCard } from '@/components/Cards/AnxietyEvent/UpcomingAnxietyEventCard';
+import { CompletedAnxietyEventCard } from '@/components/Cards/AnxietyEvent/CompletedAnxietyEventCard';
 
 interface UpcomingAnxietyEventsListProps {
   eventsResponse: InfiniteData<GetAnxietyEventsResponse, AnxietyEventCursor | null>;
   hasNextPage: boolean;
 }
 
-export function UpcomingAnxietyEventsList({
+export function CompletedAnxietyEventsList({
   eventsResponse,
   hasNextPage,
 }: UpcomingAnxietyEventsListProps) {
@@ -31,7 +31,7 @@ export function UpcomingAnxietyEventsList({
         // eslint-disable-next-line react/no-array-index-key
         <React.Fragment key={index}>
           {page.anxietyEvents.map((anxietyEvent) => (
-            <UpcomingAnxietyEventCard key={anxietyEvent.id} anxietyEvent={anxietyEvent} />
+            <CompletedAnxietyEventCard key={anxietyEvent.id} anxietyEvent={anxietyEvent} />
           ))}
         </React.Fragment>
       ))}

@@ -1,8 +1,17 @@
 import { useInfiniteQuery, type InfiniteData } from '@tanstack/react-query';
 import { api } from '@/api/api';
-import type { AnxietyEventCursor, GetAnxietyEventsResponse } from '@katieeitak/shared';
+import type {
+  AnxietyEventCursor,
+  AnxietyEventStatus,
+  GetAnxietyEventsResponse,
+} from '@katieeitak/shared';
 
-export function useAnxietyEvents() {
+interface UseAnxietyEventsParams {
+  status: AnxietyEventStatus;
+  enabled: boolean;
+}
+
+export function useAnxietyEvents({ status, enabled }: UseAnxietyEventsParams) {
   return useInfiniteQuery<
     GetAnxietyEventsResponse,
     Error,
@@ -10,10 +19,12 @@ export function useAnxietyEvents() {
     string[],
     AnxietyEventCursor | null
   >({
-    queryKey: ['anxietyEvents', 'upcoming'],
-    queryFn: ({ pageParam, signal }) => api.getAnxietyEventsById({ pageParam, signal }),
+    queryKey: ['anxietyEvents', status],
+    queryFn: ({ pageParam, signal }) => api.getAnxietyEventsById({ pageParam, status, signal }),
     initialPageParam: null,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     refetchOnWindowFocus: false,
+    enabled,
+    staleTime: 1000 * 60 * 10,
   });
 }
