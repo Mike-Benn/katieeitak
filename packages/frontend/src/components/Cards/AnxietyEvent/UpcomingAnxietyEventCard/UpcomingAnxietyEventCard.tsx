@@ -10,7 +10,7 @@ interface AnxietyEventCardProps {
   anxietyEvent: AnxietyEvent;
 }
 
-export function AnxietyEventCard({ anxietyEvent }: AnxietyEventCardProps) {
+export function UpcomingAnxietyEventCard({ anxietyEvent }: AnxietyEventCardProps) {
   const date = anxietyEvent.date_occurred
     ? formatInTimeZone(anxietyEvent.date_occurred, 'UTC', 'MMM dd, yyyy')
     : 'Unknown';
