@@ -31,7 +31,7 @@ export const AnxietyEventCursorSchema = z.object({
 
 export type AnxietyEventCursor = z.infer<typeof AnxietyEventCursorSchema>;
 
-export const AnxietyEventStatusSchema = z.enum(['pending', 'completed']);
+export const AnxietyEventStatusSchema = z.enum(['upcoming', 'completed']);
 
 export type AnxietyEventStatus = z.infer<typeof AnxietyEventStatusSchema>;
 
