@@ -1,13 +1,14 @@
 import { ERROR_MESSAGES, ERROR_NAMES, SAFE_ERROR_MESSAGES } from '@/api/v1/constants/errors.js';
 import { AppError } from '@/api/v1/errors/AppError.js';
-import type {
-  AnxietyEvent,
-  AnxietyEventBody,
-  AnxietyEventCursor,
-  AnxietyEventStatus,
-  CompleteAnxietyEventByIdPayload,
-  CompleteAnxietyEventByIdQueryResult,
-  UpdateAnxietyEventBody,
+import {
+  type UncompleteAnxietyEventByIdQueryResult,
+  type AnxietyEvent,
+  type AnxietyEventBody,
+  type AnxietyEventCursor,
+  type AnxietyEventStatus,
+  type CompleteAnxietyEventByIdPayload,
+  type CompleteAnxietyEventByIdQueryResult,
+  type UpdateAnxietyEventBody,
 } from '@katieeitak/shared';
 import type { Pool, PoolClient } from 'pg';
 import { convertStringToNumber } from '@/utils/convertStringToNumber/convertStringToNumber.js';
@@ -41,6 +42,12 @@ interface CompleteAnxietyEventByIdParams {
   userId: string;
   id: string;
   payload: CompleteAnxietyEventByIdPayload;
+  client?: PoolClient;
+}
+
+interface UncompleteAnxietyEventByIdParams {
+  userId: string;
+  id: string;
   client?: PoolClient;
 }
 
@@ -216,6 +223,33 @@ export class AnxietyRepository {
       id,
     ];
     const { rows } = await connection.query<CompleteAnxietyEventByIdQueryResult>(query, values);
+    const anxietyEvent = rows[0];
+    if (!anxietyEvent) {
+      throw new AppError({
+        message: ERROR_MESSAGES.RESOURCE_NOT_FOUND,
+        isOperational: true,
+        statusCode: 404,
+        name: ERROR_NAMES.RESOURCE_NOT_FOUND,
+        safeMessage: SAFE_ERROR_MESSAGES.RESOURCE_NOT_FOUND,
+      });
+    }
+    return anxietyEvent;
+  };
+
+  public uncompleteAnxietyEventById = async ({
+    userId,
+    id,
+    client,
+  }: UncompleteAnxietyEventByIdParams) => {
+    const connection = client ?? this.pool;
+    const query = `
+      UPDATE anxiety_events
+      SET post_notes = NULL, post_anxiety_level = NULL, post_excitement_level = NULL
+      WHERE user_id = $1 AND id = $2 AND post_anxiety_level IS NOT NULL
+      RETURNING id
+  `;
+    const values = [userId, id];
+    const { rows } = await connection.query<UncompleteAnxietyEventByIdQueryResult>(query, values);
     const anxietyEvent = rows[0];
     if (!anxietyEvent) {
       throw new AppError({

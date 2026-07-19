@@ -30,6 +30,11 @@ interface CompleteAnxietyEventByIdParams {
   payload: CompleteAnxietyEventByIdPayload;
 }
 
+interface UncompleteAnxietyEventByIdParams {
+  userId: string;
+  id: string;
+}
+
 export class AnxietyService {
   private anxietyRepository: AnxietyRepository;
   constructor(anxietyRepository: AnxietyRepository) {
@@ -78,6 +83,14 @@ export class AnxietyService {
       userId,
       id,
       payload,
+    });
+    return anxietyEvent;
+  };
+
+  public uncompleteAnxietyEventById = async ({ userId, id }: UncompleteAnxietyEventByIdParams) => {
+    const anxietyEvent = await this.anxietyRepository.uncompleteAnxietyEventById({
+      userId,
+      id,
     });
     return anxietyEvent;
   };

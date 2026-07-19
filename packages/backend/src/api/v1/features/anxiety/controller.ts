@@ -9,6 +9,7 @@ import {
   AnxietyEventBodySchema,
   CompleteAnxietyEventByIdPayloadSchema,
   GetAnxietyEventsRequestQuerySchema,
+  type UncompleteAnxietyEventByIdResponse,
   UpdateAnxietyEventBodySchema,
   type AnxietyEvent,
   type CompleteAnxietyEventByIdResponse,
@@ -107,6 +108,25 @@ export class AnxietyController {
     });
     res.status(200).json(
       ApiResponse.success<CompleteAnxietyEventByIdResponse>({
+        data: anxietyEvent,
+      }),
+    );
+  };
+
+  public uncompleteAnxietyEventById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const parsedId = parseValue({
+      schema: ResourceIdSchema,
+      value: id,
+      message: ERROR_MESSAGES.INVALID_ID_PATH_PARAMETER_FORMAT,
+    });
+    const userId = res.locals.userId as string;
+    const anxietyEvent = await this.anxietyService.uncompleteAnxietyEventById({
+      userId,
+      id: parsedId,
+    });
+    res.status(200).json(
+      ApiResponse.success<UncompleteAnxietyEventByIdResponse>({
         data: anxietyEvent,
       }),
     );

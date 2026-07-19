@@ -25,5 +25,11 @@ anxietyRouter.patch(
   setupLocals,
   anxietyController.completeAnxietyEventById,
 );
+anxietyRouter.delete(
+  '/:id/complete',
+  validateToken,
+  setupLocals,
+  anxietyController.uncompleteAnxietyEventById,
+);
 
 export { anxietyRouter };
