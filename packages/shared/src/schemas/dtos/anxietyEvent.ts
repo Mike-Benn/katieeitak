@@ -31,6 +31,10 @@ export const AnxietyEventCursorSchema = z.object({
 
 export type AnxietyEventCursor = z.infer<typeof AnxietyEventCursorSchema>;
 
+export const AnxietyEventStatusSchema = z.enum(['pending', 'completed']);
+
+export type AnxietyEventStatus = z.infer<typeof AnxietyEventStatusSchema>;
+
 export const GetAnxietyEventsRequestQuerySchema = z
   .object({
     cursorDate: z.iso.datetime().optional(),
@@ -40,6 +44,7 @@ export const GetAnxietyEventsRequestQuerySchema = z
         message: 'Invalid ID format. Expcted a numeric database ID.',
       })
       .optional(),
+    status: AnxietyEventStatusSchema,
     limit: z.coerce.number().int().positive().max(50).optional(),
   })
   .refine((data) => (data.cursorDate === null) === (data.cursorId === null), {
