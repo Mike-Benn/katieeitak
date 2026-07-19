@@ -11,6 +11,6 @@ export default defineConfig({
     environment: 'node',
     globals: true,
     reporters: ['tree'],
-    setupFiles: './src/shared/utils/setUpTests/index.ts',
+    setupFiles: './src/utils/setupTests/setupTests.ts',
   },
 });
