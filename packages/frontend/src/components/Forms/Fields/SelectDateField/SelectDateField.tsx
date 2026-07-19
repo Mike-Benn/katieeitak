@@ -36,18 +36,21 @@ export function SelectDateField({
     <Field.Root className="flex flex-col gap-1" disabled={isDisabled}>
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}
       <Popover.Root open={open && !isDisabled} onOpenChange={setOpen}>
-        <Popover.Trigger
-          className={`flex flex-row gap-2 w-full border rounded-sm pt-2 pb-2 pl-3 pr-3
-            ${hasError ? 'border-red-500' : 'border-muted-border'} 
-            bg-muted-input 
-            disabled:opacity-70 disabled:bg-gray-100 disabled:text-gray-500
-          `}
-          disabled={isDisabled}
-        >
-          <CalendarDays className="text-inherit" />
-
-          <span className={!dateValue ? 'opacity-60' : ''}>{displayText}</span>
-        </Popover.Trigger>
+        <Field.Control
+          render={
+            <Popover.Trigger
+              className={`flex flex-row gap-2 w-full border rounded-sm pt-2 pb-2 pl-3 pr-3
+                ${hasError ? 'border-red-500' : 'border-muted-border'} 
+                bg-muted-input 
+                disabled:opacity-70 disabled:bg-gray-100 disabled:text-gray-500
+              `}
+              disabled={isDisabled}
+            >
+              <CalendarDays className="text-inherit" />
+              <span className={!dateValue ? 'opacity-60' : ''}>{displayText}</span>
+            </Popover.Trigger>
+          }
+        />
 
         <Popover.Portal>
           <Popover.Positioner>
