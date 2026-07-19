@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { LoadMoreButton } from '@/components/Buttons/LoadMoreButton';
 import { UpcomingAnxietyEventsList } from '@/components/Lists/UpcomingAnxietyEventsList';
+import { CompletedAnxietyEventsList } from '@/components/Lists/CompletedAnxietyEventList';
 import { Tabs } from '@base-ui/react';
 
 export function AnxietyPage() {
@@ -41,7 +42,11 @@ export function AnxietyPage() {
           </div>
         </Link>
       </div>
-      <Tabs.Root className="w-full" value={activeTab} onValueChange={setActiveTab}>
+      <Tabs.Root
+        className="w-full flex-1 flex flex-col"
+        value={activeTab}
+        onValueChange={setActiveTab}
+      >
         <Tabs.List className="relative grid grid-cols-2">
           <Tabs.Tab
             value="upcoming"
@@ -60,11 +65,14 @@ export function AnxietyPage() {
             style={{ left: 'var(--active-tab-left)', width: 'var(--active-tab-width)' }}
           />
         </Tabs.List>
-        <div className="flex flex-col pt-6">
-          <Tabs.Panel value="upcoming">
-            <div className="flex flex-col gap-6">
+        <div className="flex flex-col pt-6 flex-1">
+          <Tabs.Panel value="upcoming" className="flex flex-col flex-1">
+            <div className="flex flex-col flex-1 gap-6">
               {pendingQuery.data && !isPendingGlobalFetch && (
-                <UpcomingAnxietyEventsList eventsResponse={pendingQuery.data} />
+                <UpcomingAnxietyEventsList
+                  eventsResponse={pendingQuery.data}
+                  hasNextPage={pendingQuery.hasNextPage}
+                />
               )}
               {!isPendingGlobalFetch && !isPendingGlobalFetchError && pendingQuery.hasNextPage && (
                 <LoadMoreButton
@@ -74,10 +82,13 @@ export function AnxietyPage() {
               )}
             </div>
           </Tabs.Panel>
-          <Tabs.Panel value="completed">
-            <div className="flex flex-col gap-6">
+          <Tabs.Panel value="completed" className="flex flex-col flex-1">
+            <div className="flex flex-col gap-6 flex-1">
               {completedQuery.data && !isCompletedGlobalFetch && (
-                <UpcomingAnxietyEventsList eventsResponse={completedQuery.data} />
+                <CompletedAnxietyEventsList
+                  eventsResponse={completedQuery.data}
+                  hasNextPage={completedQuery.hasNextPage}
+                />
               )}
               {!isCompletedGlobalFetch &&
                 !isCompletedGlobalFetchError &&
