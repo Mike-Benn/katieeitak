@@ -9,6 +9,7 @@ import {
   type CompleteAnxietyEventByIdPayload,
   type CompleteAnxietyEventByIdQueryResult,
   type UpdateAnxietyEventBody,
+  type DeleteAnxietyEventByIdQueryResult,
 } from '@katieeitak/shared';
 import type { Pool, PoolClient } from 'pg';
 import { convertStringToNumber } from '@/utils/convertStringToNumber/convertStringToNumber.js';
@@ -46,6 +47,12 @@ interface CompleteAnxietyEventByIdParams {
 }
 
 interface UncompleteAnxietyEventByIdParams {
+  userId: string;
+  id: string;
+  client?: PoolClient;
+}
+
+interface DeleteAnxietyEventByIdParams {
   userId: string;
   id: string;
   client?: PoolClient;
@@ -250,6 +257,29 @@ export class AnxietyRepository {
   `;
     const values = [userId, id];
     const { rows } = await connection.query<UncompleteAnxietyEventByIdQueryResult>(query, values);
+    const anxietyEvent = rows[0];
+    if (!anxietyEvent) {
+      throw new AppError({
+        message: ERROR_MESSAGES.RESOURCE_NOT_FOUND,
+        isOperational: true,
+        statusCode: 404,
+        name: ERROR_NAMES.RESOURCE_NOT_FOUND,
+        safeMessage: SAFE_ERROR_MESSAGES.RESOURCE_NOT_FOUND,
+      });
+    }
+    return anxietyEvent;
+  };
+
+  public deleteAnxietyEventById = async ({ userId, id, client }: DeleteAnxietyEventByIdParams) => {
+    const connection = client ?? this.pool;
+    const query = `
+      DELETE 
+      FROM anxiety_events
+      WHERE user_id = $1 AND id = $2
+      RETURNING id
+    `;
+    const values = [userId, id];
+    const { rows } = await connection.query<DeleteAnxietyEventByIdQueryResult>(query, values);
     const anxietyEvent = rows[0];
     if (!anxietyEvent) {
       throw new AppError({

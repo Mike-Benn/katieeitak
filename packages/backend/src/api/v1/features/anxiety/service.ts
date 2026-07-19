@@ -35,6 +35,11 @@ interface UncompleteAnxietyEventByIdParams {
   id: string;
 }
 
+interface DeleteAnxietyEventByIdParams {
+  userId: string;
+  id: string;
+}
+
 export class AnxietyService {
   private anxietyRepository: AnxietyRepository;
   constructor(anxietyRepository: AnxietyRepository) {
@@ -89,6 +94,14 @@ export class AnxietyService {
 
   public uncompleteAnxietyEventById = async ({ userId, id }: UncompleteAnxietyEventByIdParams) => {
     const anxietyEvent = await this.anxietyRepository.uncompleteAnxietyEventById({
+      userId,
+      id,
+    });
+    return anxietyEvent;
+  };
+
+  public deleteAnxietyEventById = async ({ userId, id }: DeleteAnxietyEventByIdParams) => {
+    const anxietyEvent = await this.anxietyRepository.deleteAnxietyEventById({
       userId,
       id,
     });

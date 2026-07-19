@@ -14,6 +14,7 @@ import {
   type AnxietyEvent,
   type CompleteAnxietyEventByIdResponse,
   type GetAnxietyEventsResponse,
+  type DeleteAnxietyEventByIdResponse,
 } from '@katieeitak/shared';
 import type { Request, Response } from 'express';
 
@@ -127,6 +128,24 @@ export class AnxietyController {
     });
     res.status(200).json(
       ApiResponse.success<UncompleteAnxietyEventByIdResponse>({
+        data: anxietyEvent,
+      }),
+    );
+  };
+  public deleteAnxietyEventById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const parsedId = parseValue({
+      schema: ResourceIdSchema,
+      value: id,
+      message: ERROR_MESSAGES.INVALID_ID_PATH_PARAMETER_FORMAT,
+    });
+    const userId = res.locals.userId as string;
+    const anxietyEvent = await this.anxietyService.deleteAnxietyEventById({
+      userId,
+      id: parsedId,
+    });
+    res.status(200).json(
+      ApiResponse.success<DeleteAnxietyEventByIdResponse>({
         data: anxietyEvent,
       }),
     );
