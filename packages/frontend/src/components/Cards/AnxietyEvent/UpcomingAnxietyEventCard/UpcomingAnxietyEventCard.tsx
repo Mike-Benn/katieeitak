@@ -25,7 +25,7 @@ export function UpcomingAnxietyEventCard({ anxietyEvent }: AnxietyEventCardProps
 
   const typeIcon = getAnxietyEventTypeIcon({ eventType: anxietyEvent.event_type });
   return (
-    <div className="flex flex-col shadow-md rounded-md p-6 bg-white gap-2">
+    <div className="flex flex-col shadow-md rounded-2xl p-6 bg-white gap-2">
       <div className="flex flex-row items-center">
         <span className="font-semibold flex-1 text-left">{anxietyEvent.title}</span>
         {date && (
