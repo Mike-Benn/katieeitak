@@ -13,6 +13,8 @@ import {
   CircleQuestionMark,
 } from 'lucide-react';
 
+type EventTypeColor = 'red' | 'brown' | 'silver' | 'wheat' | 'dodgerblue' | 'black' | 'orchid';
+
 interface GetAnxietyEventTypeParams {
   eventType?: AnxietyEventType;
   size: number;
@@ -30,10 +32,22 @@ export function getAnxietyEventTypeIcon({ eventType, size }: GetAnxietyEventType
     shopping: ShoppingCart,
     future: Infinitee,
   };
+  const EVENT_COLOR_MAP: Record<AnxietyEventType, EventTypeColor> = {
+    work: 'brown',
+    health: 'red',
+    restaurant: 'silver',
+    family: 'wheat',
+    friends: 'wheat',
+    event: 'orchid',
+    bugs: 'black',
+    shopping: 'silver',
+    future: 'dodgerblue',
+  };
   if (!eventType) {
     return <CircleQuestionMark size={14} />;
   } else {
     const Icon = EVENT_ICON_MAP[eventType];
-    return <Icon size={size} />;
+    const color = EVENT_COLOR_MAP[eventType];
+    return <Icon size={size} color={color} />;
   }
 }
