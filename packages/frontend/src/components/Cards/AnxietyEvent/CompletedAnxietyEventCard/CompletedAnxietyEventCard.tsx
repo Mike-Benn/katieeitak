@@ -22,7 +22,7 @@ export function CompletedAnxietyEventCard({ anxietyEvent }: AnxietyEventCardProp
       <Frown size={14} />
     );
 
-  const typeIcon = getAnxietyEventTypeIcon({ eventType: anxietyEvent.event_type });
+  const typeIcon = getAnxietyEventTypeIcon({ eventType: anxietyEvent.event_type, size: 14 });
   return (
     <div className="flex flex-col shadow-md rounded-md p-6 bg-white gap-2">
       <div className="flex flex-row items-center">

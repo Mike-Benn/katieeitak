@@ -2,37 +2,38 @@ import type { AnxietyEventType } from '@katieeitak/shared';
 import type { LucideIcon } from 'lucide-react';
 import {
   Bug,
-  Hospital,
-  Briefcase,
-  ChefHat,
+  HeartPulse,
+  BriefcaseBusiness,
+  Utensils,
   Tickets,
-  Heart,
+  UsersRound,
   Handshake,
   ShoppingCart,
-  Atom,
+  Infinity as Infinitee,
   CircleQuestionMark,
 } from 'lucide-react';
 
 interface GetAnxietyEventTypeParams {
   eventType?: AnxietyEventType;
+  size: number;
 }
 
-export function getAnxietyEventTypeIcon({ eventType }: GetAnxietyEventTypeParams) {
+export function getAnxietyEventTypeIcon({ eventType, size }: GetAnxietyEventTypeParams) {
   const EVENT_ICON_MAP: Record<AnxietyEventType, LucideIcon> = {
     bugs: Bug,
-    health: Hospital,
-    work: Briefcase,
-    restaurant: ChefHat,
+    health: HeartPulse,
+    work: BriefcaseBusiness,
+    restaurant: Utensils,
     event: Tickets,
-    family: Heart,
+    family: UsersRound,
     friends: Handshake,
     shopping: ShoppingCart,
-    future: Atom,
+    future: Infinitee,
   };
   if (!eventType) {
     return <CircleQuestionMark size={14} />;
   } else {
     const Icon = EVENT_ICON_MAP[eventType];
-    return <Icon size={14} />;
+    return <Icon size={size} />;
   }
 }
