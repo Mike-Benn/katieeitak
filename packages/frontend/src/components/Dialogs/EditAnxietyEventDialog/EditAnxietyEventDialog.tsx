@@ -15,9 +15,10 @@ import { DeleteAnxietyEventAlert } from '@/components/Alerts/DeleteAnxietyEventA
 
 interface EditAnxietyEventDialogProps {
   anxietyEvent: AnxietyEvent;
+  buttonSize: number;
 }
 
-export function EditAnxietyEventDialog({ anxietyEvent }: EditAnxietyEventDialogProps) {
+export function EditAnxietyEventDialog({ anxietyEvent, buttonSize }: EditAnxietyEventDialogProps) {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -74,7 +75,7 @@ export function EditAnxietyEventDialog({ anxietyEvent }: EditAnxietyEventDialogP
     >
       <div className="flex h-full w-full justify-center items-center">
         <Dialog.Trigger>
-          <Pencil size={21} color="black" />
+          <Pencil size={buttonSize} color="black" />
         </Dialog.Trigger>
       </div>
       <Dialog.Portal>
