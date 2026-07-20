@@ -1,8 +1,10 @@
-const BASE_RATE = 46.1;
-const WEEKEND_DIFFERENTIAL = 5;
-const NIGHTSHIFT_DIFFERENTIAL = 4.5;
+import { calculateDifferentialPay } from '@/utils/calculatePay/calculateDifferentialPay';
+
+const BASE_RATE = 46.8;
+const WEEKEND_DIFFERENTIAL = 5.5;
+const NIGHTSHIFT_DIFFERENTIAL = 5.5;
 const HOLIDAY_DIFFERENTIAL = 10;
-const TAX_RATE = 0.65;
+const TAX_RATE = 0.638;
 
 interface CalculatePayParams {
   regularHours: string;
@@ -20,28 +22,33 @@ export function calculatePay({
   holidayHours,
 }: CalculatePayParams) {
   // Reg pay
-  const parsedRegHours = Number(regularHours);
-  const regularPay = isNaN(parsedRegHours) ? 0 : parsedRegHours * BASE_RATE;
+  const regularPay = calculateDifferentialPay({ hours: regularHours, differential: BASE_RATE });
   // OT pay
-  const parsedOvertimeHours = Number(overtimeHours);
-  const overtimePay = isNaN(parsedOvertimeHours) ? 0 : parsedOvertimeHours * BASE_RATE * 1.5;
+  const overtimePay = calculateDifferentialPay({
+    hours: overtimeHours,
+    differential: BASE_RATE * 1.5,
+  });
   // NS pay
-  const parsedNightshiftHours = Number(nightshiftHours);
-  const nightshiftPay = isNaN(parsedNightshiftHours)
-    ? 0
-    : parsedNightshiftHours * NIGHTSHIFT_DIFFERENTIAL;
+  const nightshiftPay = calculateDifferentialPay({
+    hours: nightshiftHours,
+    differential: NIGHTSHIFT_DIFFERENTIAL,
+  });
   // Weekend pay
-  const parsedWeekendHours = Number(weekendHours);
-  const weekendPay = isNaN(parsedWeekendHours) ? 0 : parsedWeekendHours * WEEKEND_DIFFERENTIAL;
+  const weekendPay = calculateDifferentialPay({
+    hours: weekendHours,
+    differential: WEEKEND_DIFFERENTIAL,
+  });
   // Holiday pay
-  const parsedHolidayHours = Number(holidayHours);
-  const holidayPay = isNaN(parsedHolidayHours) ? 0 : parsedHolidayHours * HOLIDAY_DIFFERENTIAL;
-
+  const holidayPay = calculateDifferentialPay({
+    hours: holidayHours,
+    differential: HOLIDAY_DIFFERENTIAL,
+  });
+  //
   const gross = regularPay + overtimePay + nightshiftPay + weekendPay + holidayPay;
-  const net = (gross * TAX_RATE).toFixed(2);
+  const net = gross * TAX_RATE;
 
   return {
-    net,
+    net: net.toFixed(2),
     gross: gross.toFixed(2),
   };
 }
