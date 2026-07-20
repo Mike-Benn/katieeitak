@@ -15,7 +15,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    setupFiles: './src/utils/setUpTests/index.ts',
+    setupFiles: './src/utils/setupTests/index.ts',
     reporters: ['tree'],
   },
 });
