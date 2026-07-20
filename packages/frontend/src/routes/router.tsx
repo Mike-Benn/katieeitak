@@ -9,6 +9,7 @@ import { NewAnxietyEventPage } from '@/pages/Anxiety/NewAnxietyEventPage';
 import { BooksDashboard } from '@/pages/Books/BooksDashboard';
 import { BooksSearch } from '@/pages/Books/BooksSearch';
 import { BookProfile } from '@/pages/Books/BookProfile';
+import { LicensePlatesDashboard } from '@/pages/LicensePlates/LicensePlatesDashboard';
 const rootRoute = createRootRoute({
   component: Root,
 });
@@ -71,6 +72,14 @@ const bookProfileRoute = createRoute({
   component: BookProfile,
 });
 
+// License plates
+
+const licensePlatesDashboardRoute = createRoute({
+  getParentRoute: () => mainLayoutRoute,
+  path: '/license-plates',
+  component: LicensePlatesDashboard,
+});
+
 // Misc routes
 
 const errorRoute = createRoute({
@@ -88,6 +97,7 @@ const protectedRouteTree = mainLayoutRoute.addChildren([
   booksDashboardRoute,
   booksSearchRoute,
   bookProfileRoute,
+  licensePlatesDashboardRoute,
 ]);
 const routeTree = rootRoute.addChildren([protectedRouteTree, errorRoute]);
 
