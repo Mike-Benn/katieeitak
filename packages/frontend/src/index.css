@@ -14,7 +14,7 @@ body {
 }
 
 :root {
-  --nav-height: 57px;
+  --nav-height: 67px;
 }
 
 @layer components {

@@ -15,7 +15,7 @@ export function NavDrawer() {
   return (
     <Drawer.Root open={open} onOpenChange={setOpen}>
       <Drawer.Trigger className="flex items-center">
-        <Menu size={20} />
+        <Menu size={30} strokeWidth={3} />
       </Drawer.Trigger>
       <Drawer.Portal>
         <Drawer.Backdrop className={styles.backdrop} />
