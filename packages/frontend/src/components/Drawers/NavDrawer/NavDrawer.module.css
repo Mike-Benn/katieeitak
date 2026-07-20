@@ -1,6 +1,6 @@
 .backdrop {
   position: fixed;
-  top: 57px;
+  top: var(--nav-height);
   left: 0;
   right: 0;
   bottom: 0;
@@ -22,7 +22,7 @@
 .popup {
   box-sizing: border-box;
   position: fixed;
-  top: 57px;
+  top: var(--nav-height);
   left: 0;
   width: 19rem;
   max-width: calc(100vw - 3rem);
