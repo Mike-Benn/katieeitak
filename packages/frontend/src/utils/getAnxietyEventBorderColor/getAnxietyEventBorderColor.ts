@@ -3,7 +3,7 @@ interface GetAnxietyEventBorderColorParams {
 }
 
 export function getAnxietyEventBorderColor({ anxietyLevel }: GetAnxietyEventBorderColorParams) {
-  if (!anxietyLevel) return null;
+  if (anxietyLevel === null) return null;
   if (anxietyLevel < 4) {
     return 'border-green-500';
   }

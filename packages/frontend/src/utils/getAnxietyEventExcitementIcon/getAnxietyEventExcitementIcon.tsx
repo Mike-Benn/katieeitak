@@ -9,7 +9,7 @@ export function getAnxietyEventExcitementIcon({
   excitementLevel,
   size,
 }: GetAnxietyEventExcitementIconParams) {
-  if (!excitementLevel) return <CircleQuestionMark size={size} />;
+  if (excitementLevel === null) return <CircleQuestionMark size={size} />;
   if (excitementLevel < 4) return <Frown size={size} />;
   if (excitementLevel < 7) return <Meh size={size} />;
   return <Smile size={size} />;

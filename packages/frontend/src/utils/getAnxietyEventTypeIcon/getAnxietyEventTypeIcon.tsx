@@ -44,7 +44,7 @@ export function getAnxietyEventTypeIcon({ eventType, size }: GetAnxietyEventType
     future: 'dodgerblue',
   };
   if (!eventType) {
-    return <CircleQuestionMark size={14} />;
+    return <CircleQuestionMark size={size} />;
   } else {
     const Icon = EVENT_ICON_MAP[eventType];
     const color = EVENT_COLOR_MAP[eventType];
