@@ -1,0 +1,1 @@
+export { getAnxietyEventExcitementIcon } from './getAnxietyEventExcitementIcon';
