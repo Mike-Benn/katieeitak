@@ -1,7 +1,5 @@
 import type { AnxietyEvent } from '@katieeitak/shared';
 import { formatInTimeZone } from 'date-fns-tz';
-import { type ReactNode } from 'react';
-import { Smile, Meh, Frown, PartyPopper } from 'lucide-react';
 import { getAnxietyEventTypeIcon } from '@/utils/getAnxietyEventTypeIcon';
 import { ResetAnxietyEventAlert } from '@/components/Alerts/ResetAnxietyEventAlert';
 import { getAnxietyEventBorderColor } from '@/utils/getAnxietyEventBorderColor';
@@ -26,10 +24,12 @@ export function CompletedAnxietyEventCard({ anxietyEvent }: CompletedAnxietyEven
   const preExcitementIcon = getAnxietyEventExcitementIcon({
     excitementLevel: anxietyEvent.pre_excitement_level,
     size: 14,
+    status: 'pre',
   });
   const postExcitementIcon = getAnxietyEventExcitementIcon({
     excitementLevel: anxietyEvent.post_excitement_level,
-    size: 14,
+    size: 34,
+    status: 'post',
   });
   return (
     <div
@@ -48,15 +48,18 @@ export function CompletedAnxietyEventCard({ anxietyEvent }: CompletedAnxietyEven
           </div>
           <span className="font-semibold">{anxietyEvent.title}</span>
         </div>
-        <div className="flex flex-row gap-2">
-          <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm">
-            {preAnxietyIcon}
-            <span className="text-sm">{anxietyEvent.pre_anxiety_level}</span>
+        <div className="flex flex-row justify-between">
+          <div className="flex flex-row gap-2">
+            <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm max-h-7">
+              {preAnxietyIcon}
+              <span className="text-sm">{anxietyEvent.pre_anxiety_level}</span>
+            </div>
+            <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm max-h-7">
+              {preExcitementIcon}
+              <span className="text-sm">{anxietyEvent.pre_excitement_level}</span>
+            </div>
           </div>
-          <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm">
-            {preExcitementIcon}
-            <span className="text-sm">{anxietyEvent.pre_excitement_level}</span>
-          </div>
+          <div className="flex justify-center items-center">{postExcitementIcon}</div>
         </div>
       </div>
     </div>

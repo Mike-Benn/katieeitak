@@ -17,6 +17,7 @@ export function UpcomingAnxietyEventCard({ anxietyEvent }: UpcomingAnxietyEventC
   const excitementIcon = getAnxietyEventExcitementIcon({
     excitementLevel: anxietyEvent.pre_excitement_level,
     size: 14,
+    status: 'pre',
   });
   const anxietyIcon = getAnxietyEventAnxietyIcon({
     anxietyLevel: anxietyEvent.pre_anxiety_level,
