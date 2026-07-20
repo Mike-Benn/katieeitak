@@ -7,9 +7,10 @@ import { toast } from 'sonner';
 
 interface ResetAnxietyEventAlertProps {
   anxietyEvent: AnxietyEvent;
+  buttonSize: number;
 }
 
-export function ResetAnxietyEventAlert({ anxietyEvent }: ResetAnxietyEventAlertProps) {
+export function ResetAnxietyEventAlert({ anxietyEvent, buttonSize }: ResetAnxietyEventAlertProps) {
   const [open, setOpen] = useState(false);
   const { mutate } = useUncompleteAnxietyEventByIdMutation();
   return (
@@ -21,7 +22,7 @@ export function ResetAnxietyEventAlert({ anxietyEvent }: ResetAnxietyEventAlertP
     >
       <div className="flex h-full w-full justify-center items-center">
         <AlertDialog.Trigger>
-          <History size={21} color="black" />
+          <History size={buttonSize} color="black" />
         </AlertDialog.Trigger>
       </div>
       <AlertDialog.Portal>

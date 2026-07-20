@@ -8,9 +8,13 @@ import { useCompleteAnxietyEventByIdMutation } from '@/hooks/mutations/useComple
 
 interface CompleteAnxietyEventDrawerProps {
   anxietyEvent: AnxietyEvent;
+  buttonSize: number;
 }
 
-export function CompleteAnxietyEventDrawer({ anxietyEvent }: CompleteAnxietyEventDrawerProps) {
+export function CompleteAnxietyEventDrawer({
+  anxietyEvent,
+  buttonSize,
+}: CompleteAnxietyEventDrawerProps) {
   const [open, setOpen] = useState(false);
   const { mutate } = useCompleteAnxietyEventByIdMutation();
   const form = useAppForm({
@@ -51,7 +55,7 @@ export function CompleteAnxietyEventDrawer({ anxietyEvent }: CompleteAnxietyEven
     >
       <div className="flex h-full w-full justify-center items-center">
         <Dialog.Trigger>
-          <CircleCheckBig size={21} color="green" />
+          <CircleCheckBig size={buttonSize} color="green" />
         </Dialog.Trigger>
       </div>
       <Dialog.Portal>

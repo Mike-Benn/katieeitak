@@ -1,94 +1,54 @@
 import type { AnxietyEvent } from '@katieeitak/shared';
 import { formatInTimeZone } from 'date-fns-tz';
-import { type ReactNode } from 'react';
-import { Smile, Meh, Frown, PartyPopper } from 'lucide-react';
 import { getAnxietyEventTypeIcon } from '@/utils/getAnxietyEventTypeIcon';
 import { CompleteAnxietyEventDrawer } from '@/components/Drawers/CompleteAnxietyEventDrawer';
 import { EditAnxietyEventDialog } from '@/components/Dialogs/EditAnxietyEventDialog';
+import { getAnxietyEventExcitementIcon } from '@/utils/getAnxietyEventExcitementIcon';
+import { getAnxietyEventAnxietyIcon } from '@/utils/getAnxietyEventAnxietyIcon';
 
-interface AnxietyEventCardProps {
+interface UpcomingAnxietyEventCardProps {
   anxietyEvent: AnxietyEvent;
 }
 
-export function UpcomingAnxietyEventCard({ anxietyEvent }: AnxietyEventCardProps) {
+export function UpcomingAnxietyEventCard({ anxietyEvent }: UpcomingAnxietyEventCardProps) {
   const date = anxietyEvent.date_occurred
     ? formatInTimeZone(anxietyEvent.date_occurred, 'UTC', 'MMM dd, yyyy')
     : 'Unknown';
-  const anxietyIcon: ReactNode =
-    anxietyEvent.pre_anxiety_level <= 3 ? (
-      <Smile size={14} />
-    ) : anxietyEvent.pre_anxiety_level <= 6 ? (
-      <Meh size={14} />
-    ) : (
-      <Frown size={14} />
-    );
-
-  const typeIcon = getAnxietyEventTypeIcon({ eventType: anxietyEvent.event_type, size: 14 });
+  const excitementIcon = getAnxietyEventExcitementIcon({
+    excitementLevel: anxietyEvent.pre_excitement_level,
+    size: 14,
+  });
+  const anxietyIcon = getAnxietyEventAnxietyIcon({
+    anxietyLevel: anxietyEvent.pre_anxiety_level,
+    size: 14,
+  });
   return (
-    <div className="flex flex-col shadow-md rounded-2xl p-6 bg-white gap-2">
-      <div className="flex flex-row items-center">
-        <span className="font-semibold flex-1 text-left">{anxietyEvent.title}</span>
-        {date && (
-          <div className="flex items-center justify-end min-w-22">
-            <span className="text-gray-400 text-sm">{date}</span>
-          </div>
-        )}
+    <div className="grid grid-cols-[2.25rem_1fr] shadow-md rounded-2xl p-5 bg-white gap-4">
+      <div className="flex justify-center items-center">
+        {getAnxietyEventTypeIcon({ eventType: anxietyEvent.event_type, size: 36 })}
       </div>
-      <div className="flex justify-between">
+      <div className="flex flex-col gap-1">
+        <div className="flex flex-col">
+          <div className="flex justify-between">
+            {date && <span className="text-gray-400 text-sm">{date}</span>}
+            <div className="flex flex-row gap-2.5">
+              <EditAnxietyEventDialog anxietyEvent={anxietyEvent} buttonSize={18} />
+              <CompleteAnxietyEventDrawer anxietyEvent={anxietyEvent} buttonSize={18} />
+            </div>
+          </div>
+          <span className="font-semibold">{anxietyEvent.title}</span>
+        </div>
         <div className="flex flex-row gap-2">
           <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm">
             {anxietyIcon}
             <span className="text-sm">{anxietyEvent.pre_anxiety_level}</span>
           </div>
           <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm">
-            <PartyPopper size={14} />
+            {excitementIcon}
             <span className="text-sm">{anxietyEvent.pre_excitement_level}</span>
           </div>
-          <div className="rounded-md px-2 py-1 bg-muted-input shadow-sm flex items-center justify-center">
-            {typeIcon}
-          </div>
-        </div>
-        <div className="flex flex-row gap-2.5">
-          <EditAnxietyEventDialog anxietyEvent={anxietyEvent} />
-          <CompleteAnxietyEventDrawer anxietyEvent={anxietyEvent} />
         </div>
       </div>
     </div>
   );
 }
-
-/*
-return (
-    <div className="flex flex-col shadow-md rounded-2xl p-6 bg-white gap-2">
-      <div className="flex flex-row items-center">
-        <span className="font-semibold flex-1 text-left">{anxietyEvent.title}</span>
-        {date && (
-          <div className="flex items-center justify-end min-w-22">
-            <span className="text-gray-400 text-sm">{date}</span>
-          </div>
-        )}
-      </div>
-      <div className="flex justify-between">
-        <div className="flex flex-row gap-2">
-          <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm">
-            {anxietyIcon}
-            <span className="text-sm">{anxietyEvent.pre_anxiety_level}</span>
-          </div>
-          <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm">
-            <PartyPopper size={14} />
-            <span className="text-sm">{anxietyEvent.pre_excitement_level}</span>
-          </div>
-          <div className="rounded-md px-2 py-1 bg-muted-input shadow-sm flex items-center justify-center">
-            {typeIcon}
-          </div>
-        </div>
-        <div className="flex flex-row gap-2.5">
-          <EditAnxietyEventDialog anxietyEvent={anxietyEvent} />
-          <CompleteAnxietyEventDrawer anxietyEvent={anxietyEvent} />
-        </div>
-      </div>
-    </div>
-  );
-
-
-*/
