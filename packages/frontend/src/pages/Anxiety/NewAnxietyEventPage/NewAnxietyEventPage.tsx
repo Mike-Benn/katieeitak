@@ -17,7 +17,8 @@ export function NewAnxietyEventPage() {
   const { mutate, isPending } = useMutation({
     mutationFn: api.submitAnxietyEvent,
     onSuccess: async () => {
-      await queryClient.resetQueries({ queryKey: ['anxietyEvents', 'upcoming'] });
+      await queryClient.resetQueries({ queryKey: ['anxietyEvents', 'upcoming', 'expected'] });
+      await queryClient.resetQueries({ queryKey: ['anxietyEvents', 'completed', 'unplanned'] });
       void navigate({ to: '/anxiety' });
     },
     onError: async () => {
