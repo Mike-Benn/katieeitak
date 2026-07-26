@@ -16,10 +16,13 @@ export function NewAnxietyEventPage() {
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: api.submitAnxietyEvent,
-    onSuccess: async () => {
+    onSuccess: async (value) => {
       await queryClient.resetQueries({ queryKey: ['anxietyEvents', 'upcoming', 'expected'] });
       await queryClient.resetQueries({ queryKey: ['anxietyEvents', 'completed', 'unplanned'] });
-      void navigate({ to: '/anxiety' });
+      void navigate({
+        to: '/anxiety',
+        search: { initialOccurrence: value.is_unplanned ? 'unplanned' : 'expected' },
+      });
     },
     onError: async () => {
       toast.error('There was an error submitting, please try again.');

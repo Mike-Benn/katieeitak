@@ -9,13 +9,15 @@ import { UpcomingAnxietyEventsList } from '@/components/Lists/UpcomingAnxietyEve
 import { CompletedAnxietyEventsList } from '@/components/Lists/CompletedAnxietyEventsList';
 import { Tabs } from '@base-ui/react';
 import { UnplannedAnxietyEventsList } from '@/components/Lists/UnplannedAnxietyEventsList';
+import { anxietyRoute } from '@/routes/router';
 
 export function AnxietyPage() {
+  const { initialOccurrence } = anxietyRoute.useSearch();
   const [expectedActiveStatusTab, setExpectedActiveStatusTab] = useState<'upcoming' | 'completed'>(
     'upcoming',
   );
   const [activeOccurrenceTypeTab, setActiveOccurrenceTypeTab] = useState<'expected' | 'unplanned'>(
-    'expected',
+    initialOccurrence ?? 'expected',
   );
   const [unplannedActiveStatusTab, setUnplannedActiveStatusTab] =
     useState<'completed'>('completed');

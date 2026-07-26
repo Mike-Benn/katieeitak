@@ -10,6 +10,7 @@ import { BooksDashboard } from '@/pages/Books/BooksDashboard';
 import { BooksSearch } from '@/pages/Books/BooksSearch';
 import { BookProfile } from '@/pages/Books/BookProfile';
 import { LicensePlatesDashboard } from '@/pages/LicensePlates/LicensePlatesDashboard';
+import { z } from 'zod';
 const rootRoute = createRootRoute({
   component: Root,
 });
@@ -40,10 +41,13 @@ const paycheckRoute = createRoute({
 
 // Anxiety routes
 
-const anxietyRoute = createRoute({
+export const anxietyRoute = createRoute({
   getParentRoute: () => mainLayoutRoute,
   path: '/anxiety',
   component: AnxietyPage,
+  validateSearch: z.object({
+    initialOccurrence: z.enum(['expected', 'unplanned']).optional(),
+  }),
 });
 
 const newAnxietyEventRoute = createRoute({
