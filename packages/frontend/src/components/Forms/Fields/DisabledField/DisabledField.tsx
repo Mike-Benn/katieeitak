@@ -3,11 +3,17 @@ interface DisabledFieldProps {
   label?: string;
   description?: string;
   value: string;
+  className?: string;
 }
 
-export function DisabledField({ label = '', description = '', value = '' }: DisabledFieldProps) {
+export function DisabledField({
+  label = '',
+  description = '',
+  value = '',
+  className = '',
+}: DisabledFieldProps) {
   return (
-    <Field.Root className="flex flex-col gap-1">
+    <Field.Root className={`flex flex-col gap-1 ${className}`}>
       {label && <Field.Label className="font-semibold">{label}</Field.Label>}
       <Field.Control
         disabled
