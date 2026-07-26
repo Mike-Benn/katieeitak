@@ -36,9 +36,9 @@ export const AnxietyEventStatusSchema = z.enum(['upcoming', 'completed']);
 
 export type AnxietyEventStatus = z.infer<typeof AnxietyEventStatusSchema>;
 
-export const AnxietyEventOccurrenceSchema = z.enum(['expected', 'unplanned']);
+export const AnxietyEventOccurrenceTypeSchema = z.enum(['expected', 'unplanned']);
 
-export type AnxietyEventOccurrence = z.infer<typeof AnxietyEventOccurrenceSchema>;
+export type AnxietyEventOccurrenceType = z.infer<typeof AnxietyEventOccurrenceTypeSchema>;
 
 export const GetAnxietyEventsRequestQuerySchema = z
   .object({

@@ -3,15 +3,17 @@ import { api } from '@/api/api';
 import type {
   AnxietyEventCursor,
   AnxietyEventStatus,
+  AnxietyEventOccurrenceType,
   GetAnxietyEventsResponse,
 } from '@katieeitak/shared';
 
 interface UseAnxietyEventsParams {
   status: AnxietyEventStatus;
   enabled: boolean;
+  occurrenceType: AnxietyEventOccurrenceType;
 }
 
-export function useAnxietyEvents({ status, enabled }: UseAnxietyEventsParams) {
+export function useAnxietyEvents({ status, enabled, occurrenceType }: UseAnxietyEventsParams) {
   return useInfiniteQuery<
     GetAnxietyEventsResponse,
     Error,
@@ -20,7 +22,8 @@ export function useAnxietyEvents({ status, enabled }: UseAnxietyEventsParams) {
     AnxietyEventCursor | null
   >({
     queryKey: ['anxietyEvents', status],
-    queryFn: ({ pageParam, signal }) => api.getAnxietyEventsById({ pageParam, status, signal }),
+    queryFn: ({ pageParam, signal }) =>
+      api.getAnxietyEventsById({ pageParam, status, signal, occurrenceType }),
     initialPageParam: null,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     refetchOnWindowFocus: false,
