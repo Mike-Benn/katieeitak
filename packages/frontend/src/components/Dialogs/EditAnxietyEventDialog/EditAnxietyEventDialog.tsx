@@ -31,7 +31,7 @@ export function EditAnxietyEventDialog({ anxietyEvent, buttonSize }: EditAnxiety
     onSuccess: async () => {
       setOpen(false);
       setIsEditing(false);
-      await queryClient.invalidateQueries({ queryKey: ['anxietyEvents'] });
+      await queryClient.invalidateQueries({ queryKey: ['anxietyEvents', 'upcoming', 'expected'] });
     },
   });
   const form = useAppForm({
