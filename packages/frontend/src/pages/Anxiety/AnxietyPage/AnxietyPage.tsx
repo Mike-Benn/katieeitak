@@ -6,15 +6,33 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { LoadMoreButton } from '@/components/Buttons/LoadMoreButton';
 import { UpcomingAnxietyEventsList } from '@/components/Lists/UpcomingAnxietyEventsList';
-import { CompletedAnxietyEventsList } from '@/components/Lists/CompletedAnxietyEventList';
+import { CompletedAnxietyEventsList } from '@/components/Lists/CompletedAnxietyEventsList';
 import { Tabs } from '@base-ui/react';
+import { UnplannedAnxietyEventsList } from '@/components/Lists/UnplannedAnxietyEventsList';
 
 export function AnxietyPage() {
-  const [activeTab, setActiveTab] = useState<'upcoming' | 'completed'>('upcoming');
-  const pendingQuery = useAnxietyEvents({ status: 'upcoming', enabled: 'upcoming' === activeTab });
+  const [expectedActiveStatusTab, setExpectedActiveStatusTab] = useState<'upcoming' | 'completed'>(
+    'upcoming',
+  );
+  const [activeOccurrenceTypeTab, setActiveOccurrenceTypeTab] = useState<'expected' | 'unplanned'>(
+    'expected',
+  );
+  const [unplannedActiveStatusTab, setUnplannedActiveStatusTab] =
+    useState<'completed'>('completed');
+  const pendingQuery = useAnxietyEvents({
+    status: 'upcoming',
+    enabled: 'upcoming' === expectedActiveStatusTab && activeOccurrenceTypeTab === 'expected',
+    occurrenceType: 'expected',
+  });
   const completedQuery = useAnxietyEvents({
     status: 'completed',
-    enabled: 'completed' === activeTab,
+    enabled: 'completed' === expectedActiveStatusTab && activeOccurrenceTypeTab === 'expected',
+    occurrenceType: 'expected',
+  });
+  const unplannedQuery = useAnxietyEvents({
+    status: 'completed',
+    enabled: activeOccurrenceTypeTab === 'unplanned',
+    occurrenceType: 'unplanned',
   });
   useEffect(() => {
     if (pendingQuery.isFetchNextPageError) {
@@ -32,73 +50,144 @@ export function AnxietyPage() {
   const isCompletedGlobalFetch = completedQuery.isFetching && !completedQuery.isFetchingNextPage;
   const isCompletedGlobalFetchError =
     completedQuery.isError && !completedQuery.isFetchNextPageError;
+  const isUnplannedGlobalFetch = unplannedQuery.isFetching && !unplannedQuery.isFetchingNextPage;
+  const isUnplannedGlobalFetchError =
+    unplannedQuery.isError && !unplannedQuery.isFetchNextPageError;
   return (
     <PageWrapper className="p-6 gap-6">
-      <div className="flex flex-row justify-between items-center">
-        <h1 className="text-2xl font-bold">Anxiety Events</h1>
-        <Link to="/anxiety/new">
-          <div className="border border-muted-border p-2 rounded-md bg-muted-input shadow-md">
-            <CalendarPlus />
-          </div>
-        </Link>
+      <div>
+        <h1 className="text-2xl font-bold font-serif">Anxiety Events</h1>
       </div>
       <Tabs.Root
         className="w-full flex-1 flex flex-col"
-        value={activeTab}
-        onValueChange={setActiveTab}
+        value={activeOccurrenceTypeTab}
+        onValueChange={setActiveOccurrenceTypeTab}
       >
-        <Tabs.List className="relative grid grid-cols-2">
-          <Tabs.Tab
-            value="upcoming"
-            className="pb-3 text-center text-sm text-gray-400 data-active:text-gray-900 font-bold"
-          >
-            Upcoming
-          </Tabs.Tab>
-          <Tabs.Tab
-            value="completed"
-            className="pb-3 text-center text-sm text-gray-400 data-active:text-gray-900 font-bold"
-          >
-            Completed
-          </Tabs.Tab>
-          <Tabs.Indicator
-            className="absolute bottom-0 h-1 bg-gray-900 transition-all duration-300 ease-out rounded-full"
-            style={{ left: 'var(--active-tab-left)', width: 'var(--active-tab-width)' }}
-          />
-        </Tabs.List>
+        <div className="flex flex-row justify-between">
+          <Tabs.List className="relative flex flex-row gap-5">
+            <Tabs.Tab
+              value="expected"
+              className="text-lg text-gray-400 data-active:text-black data-active:scale-110 font-semibold transition-all duration-200 ease-in-out"
+            >
+              Expected
+            </Tabs.Tab>
+            <Tabs.Tab
+              value="unplanned"
+              className="text-lg text-gray-400 data-active:text-black data-active:scale-110 font-semibold transition-all duration-200 ease-in-out"
+            >
+              Unplanned
+            </Tabs.Tab>
+          </Tabs.List>
+          <Link to="/anxiety/new">
+            <div className="border border-muted-border p-2 rounded-md bg-muted-input shadow-md">
+              <CalendarPlus />
+            </div>
+          </Link>
+        </div>
         <div className="flex flex-col pt-6 flex-1">
-          <Tabs.Panel value="upcoming" className="flex flex-col flex-1">
-            <div className="flex flex-col flex-1 gap-6">
-              {pendingQuery.data && !isPendingGlobalFetch && (
-                <UpcomingAnxietyEventsList
-                  eventsResponse={pendingQuery.data}
-                  hasNextPage={pendingQuery.hasNextPage}
+          <Tabs.Panel value="expected" className="flex flex-col flex-1">
+            <Tabs.Root
+              className="w-full flex-1 flex flex-col"
+              value={expectedActiveStatusTab}
+              onValueChange={setExpectedActiveStatusTab}
+            >
+              <Tabs.List className="relative grid grid-cols-2">
+                <Tabs.Tab
+                  value="upcoming"
+                  className="pb-3 text-center text-sm text-gray-400 data-active:text-gray-900 transition-all duration-300 font-bold"
+                >
+                  Upcoming
+                </Tabs.Tab>
+                <Tabs.Tab
+                  value="completed"
+                  className="pb-3 text-center text-sm text-gray-400 data-active:text-gray-900 transition-all duration-300 font-bold"
+                >
+                  Past
+                </Tabs.Tab>
+                <Tabs.Indicator
+                  className="absolute bottom-0 h-1 bg-gray-900 transition-all duration-300 ease-out rounded-full"
+                  style={{ left: 'var(--active-tab-left)', width: 'var(--active-tab-width)' }}
                 />
-              )}
-              {!isPendingGlobalFetch && !isPendingGlobalFetchError && pendingQuery.hasNextPage && (
-                <LoadMoreButton
-                  isFetchingNextPage={pendingQuery.isFetchingNextPage}
-                  onClick={() => void pendingQuery.fetchNextPage()}
-                />
-              )}
-            </div>
+              </Tabs.List>
+              <div className="flex flex-col pt-6 flex-1">
+                <Tabs.Panel value="upcoming" className="flex flex-col flex-1">
+                  <div className="flex flex-col flex-1 gap-6">
+                    {pendingQuery.data && !isPendingGlobalFetch && (
+                      <UpcomingAnxietyEventsList
+                        eventsResponse={pendingQuery.data}
+                        hasNextPage={pendingQuery.hasNextPage}
+                      />
+                    )}
+                    {!isPendingGlobalFetch &&
+                      !isPendingGlobalFetchError &&
+                      pendingQuery.hasNextPage && (
+                        <LoadMoreButton
+                          isFetchingNextPage={pendingQuery.isFetchingNextPage}
+                          onClick={() => void pendingQuery.fetchNextPage()}
+                        />
+                      )}
+                  </div>
+                </Tabs.Panel>
+                <Tabs.Panel value="completed" className="flex flex-col flex-1">
+                  <div className="flex flex-col gap-6 flex-1">
+                    {completedQuery.data && !isCompletedGlobalFetch && (
+                      <CompletedAnxietyEventsList
+                        eventsResponse={completedQuery.data}
+                        hasNextPage={completedQuery.hasNextPage}
+                      />
+                    )}
+                    {!isCompletedGlobalFetch &&
+                      !isCompletedGlobalFetchError &&
+                      completedQuery.hasNextPage && (
+                        <LoadMoreButton
+                          isFetchingNextPage={completedQuery.isFetchingNextPage}
+                          onClick={() => void completedQuery.fetchNextPage()}
+                        />
+                      )}
+                  </div>
+                </Tabs.Panel>
+              </div>
+            </Tabs.Root>
           </Tabs.Panel>
-          <Tabs.Panel value="completed" className="flex flex-col flex-1">
-            <div className="flex flex-col gap-6 flex-1">
-              {completedQuery.data && !isCompletedGlobalFetch && (
-                <CompletedAnxietyEventsList
-                  eventsResponse={completedQuery.data}
-                  hasNextPage={completedQuery.hasNextPage}
+          <Tabs.Panel value="unplanned" className="flex flex-col flex-1">
+            <Tabs.Root
+              className="w-full flex-1 flex flex-col"
+              value={unplannedActiveStatusTab}
+              onValueChange={setUnplannedActiveStatusTab}
+            >
+              <Tabs.List className="relative grid grid-cols-1">
+                <Tabs.Tab
+                  value="completed"
+                  className="pb-3 text-center text-sm text-gray-400 data-active:text-gray-900 transition-all duration-300 font-bold"
+                >
+                  Past
+                </Tabs.Tab>
+                <Tabs.Indicator
+                  className="absolute bottom-0 h-1 bg-gray-900 transition-all duration-300 ease-out rounded-full"
+                  style={{ left: 'var(--active-tab-left)', width: 'var(--active-tab-width)' }}
                 />
-              )}
-              {!isCompletedGlobalFetch &&
-                !isCompletedGlobalFetchError &&
-                completedQuery.hasNextPage && (
-                  <LoadMoreButton
-                    isFetchingNextPage={completedQuery.isFetchingNextPage}
-                    onClick={() => void completedQuery.fetchNextPage()}
-                  />
-                )}
-            </div>
+              </Tabs.List>
+              <div className="flex flex-col pt-6 flex-1">
+                <Tabs.Panel value="completed" className="flex flex-col flex-1">
+                  <div className="flex flex-col gap-6 flex-1">
+                    {unplannedQuery.data && !isUnplannedGlobalFetch && (
+                      <UnplannedAnxietyEventsList
+                        eventsResponse={unplannedQuery.data}
+                        hasNextPage={unplannedQuery.hasNextPage}
+                      />
+                    )}
+                    {!isUnplannedGlobalFetch &&
+                      !isUnplannedGlobalFetchError &&
+                      unplannedQuery.hasNextPage && (
+                        <LoadMoreButton
+                          isFetchingNextPage={unplannedQuery.isFetchingNextPage}
+                          onClick={() => void unplannedQuery.fetchNextPage()}
+                        />
+                      )}
+                  </div>
+                </Tabs.Panel>
+              </div>
+            </Tabs.Root>
           </Tabs.Panel>
         </div>
       </Tabs.Root>

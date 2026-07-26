@@ -17,7 +17,8 @@ export function NewAnxietyEventPage() {
   const { mutate, isPending } = useMutation({
     mutationFn: api.submitAnxietyEvent,
     onSuccess: async () => {
-      await queryClient.resetQueries({ queryKey: ['anxietyEvents', 'upcoming'] });
+      await queryClient.resetQueries({ queryKey: ['anxietyEvents', 'upcoming', 'expected'] });
+      await queryClient.resetQueries({ queryKey: ['anxietyEvents', 'completed', 'unplanned'] });
       void navigate({ to: '/anxiety' });
     },
     onError: async () => {
@@ -32,6 +33,7 @@ export function NewAnxietyEventPage() {
       eventNotes: '',
       eventTitle: '',
       eventDate: undefined as string | undefined,
+      isUnplanned: false,
     },
     onSubmit: async ({ value }) => {
       const parsedValue = value as AnxietyEventBody;
@@ -61,6 +63,10 @@ export function NewAnxietyEventPage() {
         <form.AppField
           name="eventDate"
           children={(field) => <field.SelectDateField label="Event Date" />}
+        />
+        <form.AppField
+          name="isUnplanned"
+          children={(field) => <field.CheckboxField label="Is unplanned?" />}
         />
         <form.AppField
           name="eventType"

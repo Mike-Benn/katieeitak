@@ -57,6 +57,7 @@ export {
   UncompleteAnxietyEventByIdResponseSchema,
   DeleteAnxietyEventByIdQueryResultSchema,
   DeleteAnxietyEventByIdResponseSchema,
+  AnxietyEventOccurrenceTypeSchema,
   type CompleteAnxietyEventByIdPayload,
   type CompleteAnxietyEventByIdQueryResult,
   type CompleteAnxietyEventByIdResponse,
@@ -67,6 +68,7 @@ export {
   type UncompleteAnxietyEventByIdResponse,
   type DeleteAnxietyEventByIdQueryResult,
   type DeleteAnxietyEventByIdResponse,
+  type AnxietyEventOccurrenceType,
 } from './schemas/dtos/anxietyEvent.js';
 export {
   MarkBookReadFormSchema,

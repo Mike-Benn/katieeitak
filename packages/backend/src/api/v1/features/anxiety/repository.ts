@@ -31,6 +31,7 @@ interface GetAnxietyEventsByUserIdParams {
   userId: string;
   cursor: AnxietyEventCursor | null;
   status: AnxietyEventStatus;
+  isUnplanned: boolean;
 }
 interface UpdateAnxietyEventByEventIdParams {
   userId: string;
@@ -66,19 +67,29 @@ export class AnxietyRepository {
 
   public createEvent = async ({ userId, body, client }: CreateEventParams) => {
     const connection = client ?? this.pool;
-    const query = `
-            INSERT INTO anxiety_events (user_id, event_type, pre_notes, pre_anxiety_level, pre_excitement_level, date_occurred, title)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
-            RETURNING *
-        `;
+    let query;
+    if (body.isUnplanned) {
+      query = `
+        INSERT INTO anxiety_events (user_id, title, event_type, post_notes, post_anxiety_level, post_excitement_level, is_unplanned, date_occurred)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        RETURNING *
+      `;
+    } else {
+      query = `
+        INSERT INTO anxiety_events (user_id, title, event_type, pre_notes, pre_anxiety_level, pre_excitement_level, is_unplanned, date_occurred)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        RETURNING *
+      `;
+    }
     const values = [
       userId,
+      body.eventTitle,
       body.eventType,
       body.eventNotes,
       body.anxietyLevel,
       body.excitementLevel,
+      body.isUnplanned,
       body.eventDate,
-      body.eventTitle,
     ];
     const { rows } = await connection.query<AnxietyEvent>(query, values);
     const anxietyEvent = rows[0];
@@ -112,13 +123,14 @@ export class AnxietyRepository {
     userId,
     cursor,
     status,
+    isUnplanned,
   }: GetAnxietyEventsByUserIdParams) => {
     const connection = client ?? this.pool;
-    const values: unknown[] = [userId];
+    const values: unknown[] = [userId, isUnplanned];
     let cursorClause = '';
     if (cursor) {
       values.push(cursor.date, cursor.id);
-      cursorClause = 'AND (date_occurred, id) > ($2, $3)';
+      cursorClause = 'AND (date_occurred, id) > ($3, $4)';
     }
     values.push(limit + 1);
     const statusClause =
@@ -127,8 +139,9 @@ export class AnxietyRepository {
         : ' AND post_anxiety_level IS NOT NULL';
     const query = `
       SELECT * FROM anxiety_events
-      WHERE user_id = $1 ${statusClause}
+      WHERE user_id = $1 AND is_unplanned = $2 ${statusClause}
       ${cursorClause}
+      
       ORDER BY date_occurred ASC, id ASC
       LIMIT $${values.length}
     `;

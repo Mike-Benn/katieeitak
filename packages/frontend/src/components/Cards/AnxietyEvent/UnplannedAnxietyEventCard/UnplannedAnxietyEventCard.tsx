@@ -1,30 +1,19 @@
 import type { AnxietyEvent } from '@katieeitak/shared';
 import { formatInTimeZone } from 'date-fns-tz';
 import { getAnxietyEventTypeIcon } from '@/utils/getAnxietyEventTypeIcon';
-import { ResetAnxietyEventAlert } from '@/components/Alerts/ResetAnxietyEventAlert';
 import { getAnxietyEventBorderColor } from '@/utils/getAnxietyEventBorderColor';
-import { getAnxietyEventAnxietyIcon } from '@/utils/getAnxietyEventAnxietyIcon';
 import { getAnxietyEventExcitementIcon } from '@/utils/getAnxietyEventExcitementIcon';
 
-interface CompletedAnxietyEventCardProps {
+interface UnplannedAnxietyEventCardProps {
   anxietyEvent: AnxietyEvent;
 }
 
-export function CompletedAnxietyEventCard({ anxietyEvent }: CompletedAnxietyEventCardProps) {
+export function UnplannedAnxietyEventCard({ anxietyEvent }: UnplannedAnxietyEventCardProps) {
   const date = anxietyEvent.date_occurred
     ? formatInTimeZone(anxietyEvent.date_occurred, 'UTC', 'MMM dd, yyyy')
     : 'Unknown';
   const borderColorResult = getAnxietyEventBorderColor({
     anxietyLevel: anxietyEvent.post_anxiety_level,
-  });
-  const preAnxietyIcon = getAnxietyEventAnxietyIcon({
-    anxietyLevel: anxietyEvent.pre_anxiety_level,
-    size: 14,
-  });
-  const preExcitementIcon = getAnxietyEventExcitementIcon({
-    excitementLevel: anxietyEvent.pre_excitement_level,
-    size: 14,
-    status: 'pre',
   });
   const postExcitementIcon = getAnxietyEventExcitementIcon({
     excitementLevel: anxietyEvent.post_excitement_level,
@@ -42,23 +31,10 @@ export function CompletedAnxietyEventCard({ anxietyEvent }: CompletedAnxietyEven
         <div className="flex flex-col">
           <div className="flex justify-between">
             {date && <span className="text-gray-400 text-sm">{date}</span>}
-            <div>
-              <ResetAnxietyEventAlert anxietyEvent={anxietyEvent} buttonSize={18} />
-            </div>
           </div>
           <span className="font-semibold">{anxietyEvent.title}</span>
         </div>
-        <div className="flex flex-row justify-between">
-          <div className="flex flex-row items-center justify-center gap-2">
-            <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm max-h-7">
-              {preAnxietyIcon}
-              <span className="text-sm">{anxietyEvent.pre_anxiety_level}</span>
-            </div>
-            <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm max-h-7">
-              {preExcitementIcon}
-              <span className="text-sm">{anxietyEvent.pre_excitement_level}</span>
-            </div>
-          </div>
+        <div className="flex flex-row justify-end">
           <div className="flex justify-center items-center">{postExcitementIcon}</div>
         </div>
       </div>

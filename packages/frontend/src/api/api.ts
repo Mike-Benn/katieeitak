@@ -18,6 +18,7 @@ import {
   type AnxietyEventStatus,
   type UncompleteAnxietyEventByIdResponse,
   type DeleteAnxietyEventByIdResponse,
+  type AnxietyEventOccurrenceType,
 } from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
@@ -35,6 +36,7 @@ interface GetBookByKeyParams {
 interface GetAnxietyEventsParams {
   pageParam: AnxietyEventCursor | null;
   status: AnxietyEventStatus;
+  occurrenceType: AnxietyEventOccurrenceType;
   signal: AbortSignal;
 }
 
@@ -84,13 +86,19 @@ export const api = {
     >('/anxiety', body);
     return response.data.data;
   },
-  getAnxietyEventsById: async ({ pageParam, status, signal }: GetAnxietyEventsParams) => {
+  getAnxietyEventsById: async ({
+    pageParam,
+    status,
+    signal,
+    occurrenceType,
+  }: GetAnxietyEventsParams) => {
     const params = new URLSearchParams({ limit: '5' });
     if (pageParam) {
       params.set('cursorDate', pageParam.date);
       params.set('cursorId', pageParam.id);
     }
     params.set('status', status);
+    params.set('occurrenceType', occurrenceType);
     const response = await apiClient.get<SuccessResponse<GetAnxietyEventsResponse>>(
       `/anxiety?${params}`,
       { signal },

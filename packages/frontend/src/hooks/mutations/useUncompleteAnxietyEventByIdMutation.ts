@@ -12,7 +12,7 @@ export function useUncompleteAnxietyEventByIdMutation() {
     },
     onSuccess: async (_, variables) => {
       queryClient.setQueryData<InfiniteData<GetAnxietyEventsResponse, AnxietyEventCursor | null>>(
-        ['anxietyEvents', 'completed'],
+        ['anxietyEvents', 'completed', 'expected'],
         (old) => {
           if (!old) return old;
           return {
@@ -24,7 +24,7 @@ export function useUncompleteAnxietyEventByIdMutation() {
           };
         },
       );
-      await queryClient.resetQueries({ queryKey: ['anxietyEvents', 'upcoming'] });
+      await queryClient.resetQueries({ queryKey: ['anxietyEvents', 'upcoming', 'expected'] });
     },
   });
 }

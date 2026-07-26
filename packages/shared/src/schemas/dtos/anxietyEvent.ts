@@ -18,6 +18,7 @@ export const AnxietyEventSchema = z.object({
   post_notes: AnxietyEventNotesSchema,
   post_anxiety_level: AnxietyEventSliderSchema.nullable(),
   post_excitement_level: AnxietyEventSliderSchema.nullable(),
+  is_unplanned: z.boolean(),
   date_occurred: AnxietyEventDateSchema,
   created_at: z.iso.datetime(),
   updated_at: z.iso.datetime(),
@@ -35,6 +36,10 @@ export const AnxietyEventStatusSchema = z.enum(['upcoming', 'completed']);
 
 export type AnxietyEventStatus = z.infer<typeof AnxietyEventStatusSchema>;
 
+export const AnxietyEventOccurrenceTypeSchema = z.enum(['expected', 'unplanned']);
+
+export type AnxietyEventOccurrenceType = z.infer<typeof AnxietyEventOccurrenceTypeSchema>;
+
 export const GetAnxietyEventsRequestQuerySchema = z
   .object({
     cursorDate: z.iso.datetime().optional(),
@@ -46,6 +51,7 @@ export const GetAnxietyEventsRequestQuerySchema = z
       .optional(),
     status: AnxietyEventStatusSchema,
     limit: z.coerce.number().int().positive().max(50).optional(),
+    occurrenceType: AnxietyEventOccurrenceTypeSchema,
   })
   .refine((data) => (data.cursorDate === null) === (data.cursorId === null), {
     message: 'cursorDate and cursorId must be provided together',

@@ -23,6 +23,7 @@ interface GetAnxietyEventsByUserIdParams {
   cursor: AnxietyEventCursor | null;
   userId: string;
   status: AnxietyEventStatus;
+  isUnplanned: boolean;
 }
 interface CompleteAnxietyEventByIdParams {
   userId: string;
@@ -69,12 +70,14 @@ export class AnxietyService {
     limit,
     cursor,
     status,
+    isUnplanned,
   }: GetAnxietyEventsByUserIdParams) => {
     const anxietyEvents = await this.anxietyRepository.getAnxietyEventsByUserId({
       userId,
       cursor,
       limit,
       status,
+      isUnplanned,
     });
     return anxietyEvents;
   };
