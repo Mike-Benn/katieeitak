@@ -15,6 +15,7 @@ export const AnxietyEventBodySchema = z.object({
   eventNotes: AnxietyEventNotesSchema,
   eventDate: AnxietyEventDateSchema,
   eventTitle: AnxietyEventTitleSchema,
+  isUnplanned: z.boolean(),
 });
 
 export type AnxietyEventBody = z.infer<typeof AnxietyEventBodySchema>;

@@ -32,6 +32,7 @@ export function NewAnxietyEventPage() {
       eventNotes: '',
       eventTitle: '',
       eventDate: undefined as string | undefined,
+      isUnplanned: false,
     },
     onSubmit: async ({ value }) => {
       const parsedValue = value as AnxietyEventBody;
@@ -61,6 +62,10 @@ export function NewAnxietyEventPage() {
         <form.AppField
           name="eventDate"
           children={(field) => <field.SelectDateField label="Event Date" />}
+        />
+        <form.AppField
+          name="isUnplanned"
+          children={(field) => <field.CheckboxField label="Is unplanned?" />}
         />
         <form.AppField
           name="eventType"
