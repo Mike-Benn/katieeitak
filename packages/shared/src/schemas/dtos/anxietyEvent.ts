@@ -18,6 +18,7 @@ export const AnxietyEventSchema = z.object({
   post_notes: AnxietyEventNotesSchema,
   post_anxiety_level: AnxietyEventSliderSchema.nullable(),
   post_excitement_level: AnxietyEventSliderSchema.nullable(),
+  is_unplanned: z.boolean(),
   date_occurred: AnxietyEventDateSchema,
   created_at: z.iso.datetime(),
   updated_at: z.iso.datetime(),
