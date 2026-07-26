@@ -9,6 +9,7 @@ import { SubscribeButton } from '@/components/Buttons/SubscribeButton';
 import { StarRatingField } from '@/components/Forms/Fields/StarRatingField/StarRatingField';
 import { NumberField } from '@/components/Forms/Fields/NumberField';
 import { SaveButton } from '@/components/Buttons/SaveButton';
+import { CheckboxField } from '@/components/Forms/Fields/CheckboxField';
 
 const { fieldContext, formContext, useFieldContext, useFormContext } = createFormHookContexts();
 
@@ -22,6 +23,7 @@ const { useAppForm } = createFormHook({
     TextField,
     StarRatingField,
     NumberField,
+    CheckboxField,
   },
   formComponents: {
     SubscribeButton,
