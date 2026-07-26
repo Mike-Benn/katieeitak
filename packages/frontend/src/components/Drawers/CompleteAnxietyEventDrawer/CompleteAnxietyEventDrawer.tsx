@@ -70,7 +70,7 @@ export function CompleteAnxietyEventDrawer({
                 <X size={16} />
               </Button>
             </div>
-            <h2 className="text-lg font-semibold">Post anxiety event</h2>
+            <h2 className="text-lg font-semibold">Complete event</h2>
             <form.AppForm>
               <div>
                 <form.SaveButton className="w-7 h-7 flex justify-center items-center rounded-md disabled:opacity-50">
