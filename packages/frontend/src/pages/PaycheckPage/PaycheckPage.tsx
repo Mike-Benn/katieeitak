@@ -3,6 +3,7 @@ import { calculatePay } from '@/utils/calculatePay';
 import { useAppForm } from '@/hooks/useAppForm';
 import { DisabledField } from '@/components/Forms/Fields/DisabledField';
 import { useStore } from '@tanstack/react-form';
+import { Separator } from '@base-ui/react';
 
 export function PaycheckPage() {
   const form = useAppForm({
@@ -47,7 +48,9 @@ export function PaycheckPage() {
           children={(field) => <field.MoneyField label="Holiday Hours" />}
         />
         <DisabledField label="Gross Pay" value={pay.gross} />
-        <DisabledField label="Net Pay" value={pay.net} />
+        <DisabledField label="Net Pay" value={pay.net} className="pb-2" />
+        <Separator orientation="horizontal" className="h-px bg-lightgray w-full" />
+        <DisabledField label="Excess Pay" value={pay.excess} />
       </form>
     </PageWrapper>
   );
