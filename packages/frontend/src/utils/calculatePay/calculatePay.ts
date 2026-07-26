@@ -5,6 +5,7 @@ const WEEKEND_DIFFERENTIAL = 5.5;
 const NIGHTSHIFT_DIFFERENTIAL = 5.5;
 const HOLIDAY_DIFFERENTIAL = 10;
 const TAX_RATE = 0.638;
+const EXCESS_PAY_START = 1570;
 
 interface CalculatePayParams {
   regularHours: string;
@@ -46,9 +47,17 @@ export function calculatePay({
   //
   const gross = regularPay + overtimePay + nightshiftPay + weekendPay + holidayPay;
   const net = gross * TAX_RATE;
+  let excess: number;
+
+  if (net <= EXCESS_PAY_START) {
+    excess = 0;
+  } else {
+    excess = (net - EXCESS_PAY_START) / 7;
+  }
 
   return {
     net: net.toFixed(2),
     gross: gross.toFixed(2),
+    excess: excess.toFixed(2),
   };
 }
