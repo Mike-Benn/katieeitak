@@ -12,7 +12,7 @@ export function useDeleteAnxietyEventByIdMutation() {
     },
     onSuccess: async (_, variables) => {
       queryClient.setQueryData<InfiniteData<GetAnxietyEventsResponse, AnxietyEventCursor | null>>(
-        ['anxietyEvents', 'upcoming'],
+        ['anxietyEvents', 'upcoming', 'expected'],
         (old) => {
           if (!old) return old;
           return {

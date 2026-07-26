@@ -21,7 +21,7 @@ export function useAnxietyEvents({ status, enabled, occurrenceType }: UseAnxiety
     string[],
     AnxietyEventCursor | null
   >({
-    queryKey: ['anxietyEvents', status],
+    queryKey: ['anxietyEvents', status, occurrenceType],
     queryFn: ({ pageParam, signal }) =>
       api.getAnxietyEventsById({ pageParam, status, signal, occurrenceType }),
     initialPageParam: null,
