@@ -51,6 +51,7 @@ export const GetAnxietyEventsRequestQuerySchema = z
       .optional(),
     status: AnxietyEventStatusSchema,
     limit: z.coerce.number().int().positive().max(50).optional(),
+    occurrenceType: AnxietyEventOccurrenceTypeSchema,
   })
   .refine((data) => (data.cursorDate === null) === (data.cursorId === null), {
     message: 'cursorDate and cursorId must be provided together',

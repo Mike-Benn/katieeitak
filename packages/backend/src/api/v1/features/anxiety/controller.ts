@@ -42,6 +42,7 @@ export class AnxietyController {
       value: req.query,
       message: 'Invalid query parameters',
     });
+    const isUnplanned = parsedParams.occurrenceType === 'unplanned';
     const cursor =
       parsedParams.cursorDate && parsedParams.cursorId
         ? { date: parsedParams.cursorDate, id: parsedParams.cursorId }
@@ -51,6 +52,7 @@ export class AnxietyController {
       limit: parsedParams.limit ?? 5,
       cursor,
       status: parsedParams.status,
+      isUnplanned,
     });
     return res.status(200).json(
       ApiResponse.success<GetAnxietyEventsResponse>({
