@@ -49,7 +49,7 @@ export function CompletedAnxietyEventCard({ anxietyEvent }: CompletedAnxietyEven
           <span className="font-semibold">{anxietyEvent.title}</span>
         </div>
         <div className="flex flex-row justify-between">
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row items-center justify-center gap-2">
             <div className="rounded-md p-1 flex flex-row gap-1 items-center bg-muted-input shadow-sm max-h-7">
               {preAnxietyIcon}
               <span className="text-sm">{anxietyEvent.pre_anxiety_level}</span>
