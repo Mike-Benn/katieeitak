@@ -36,6 +36,10 @@ export const AnxietyEventStatusSchema = z.enum(['upcoming', 'completed']);
 
 export type AnxietyEventStatus = z.infer<typeof AnxietyEventStatusSchema>;
 
+export const AnxietyEventOccurrenceSchema = z.enum(['expected', 'unplanned']);
+
+export type AnxietyEventOccurrence = z.infer<typeof AnxietyEventOccurrenceSchema>;
+
 export const GetAnxietyEventsRequestQuerySchema = z
   .object({
     cursorDate: z.iso.datetime().optional(),
