@@ -72,7 +72,7 @@ export function ViewAnxietyEventDialog({ anxietyEvent, buttonSize }: ViewAnxiety
               <form.AppField
                 name="eventTitle"
                 children={(field) => (
-                  <field.TextField label="Title" maxLength={20} isDisabled={true} />
+                  <field.TextField label="Title" maxLength={40} isDisabled={true} />
                 )}
               />
             </div>

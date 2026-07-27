@@ -60,7 +60,7 @@ export function NewAnxietyEventPage() {
         <form.AppField
           name="eventTitle"
           children={(field) => (
-            <field.TextField label="Title" maxLength={20} placeholder="e.g. Kidney failure" />
+            <field.TextField label="Title" maxLength={40} placeholder="e.g. Kidney failure" />
           )}
         />
         <form.AppField
