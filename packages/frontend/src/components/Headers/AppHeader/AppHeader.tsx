@@ -10,7 +10,6 @@ export function AppHeader() {
           <img src="/app-logo.png" alt="Website logo" className="h-11.5 w-auto" />
         </Link>
       </div>
-      <div></div>
     </header>
   );
 }
