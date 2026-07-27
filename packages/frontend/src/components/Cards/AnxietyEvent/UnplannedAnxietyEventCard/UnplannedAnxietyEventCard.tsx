@@ -28,7 +28,7 @@ export function UnplannedAnxietyEventCard({ anxietyEvent }: UnplannedAnxietyEven
       <div className="flex justify-center items-center">
         {getAnxietyEventTypeIcon({ eventType: anxietyEvent.event_type, size: 36 })}
       </div>
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 min-w-0">
         <div className="flex flex-col">
           <div className="flex justify-between">
             {date && <span className="text-gray-400 text-sm">{date}</span>}
@@ -36,7 +36,7 @@ export function UnplannedAnxietyEventCard({ anxietyEvent }: UnplannedAnxietyEven
               <ViewAnxietyEventDialog anxietyEvent={anxietyEvent} buttonSize={18} />
             </div>
           </div>
-          <span className="font-semibold">{anxietyEvent.title}</span>
+          <span className="font-semibold line-clamp-2 wrap-break-word">{anxietyEvent.title}</span>
         </div>
         <div className="flex flex-row justify-end">
           <div className="flex justify-center items-center">{postExcitementIcon}</div>
