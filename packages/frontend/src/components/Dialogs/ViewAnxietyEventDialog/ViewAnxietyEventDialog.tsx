@@ -1,9 +1,10 @@
 import { useAppForm } from '@/hooks/useAppForm';
 import { Dialog, Button, Separator } from '@base-ui/react';
 import { anxietyEventTypeOptions, type AnxietyEvent } from '@katieeitak/shared';
-import { X, Eye, Trash2 } from 'lucide-react';
+import { X, Eye } from 'lucide-react';
 import { useState } from 'react';
 import { parseISO, format, isValid } from 'date-fns';
+import { DeleteAnxietyEventAlert } from '@/components/Alerts/DeleteAnxietyEventAlert';
 
 interface ViewAnxietyEventDialogProps {
   anxietyEvent: AnxietyEvent;
@@ -44,9 +45,11 @@ export function ViewAnxietyEventDialog({ anxietyEvent, buttonSize }: ViewAnxiety
           <div className="flex flex-row justify-between px-6 py-4 shrink-0">
             <span className="text-slate-500">{cleanDate}</span>
             <div className="flex flex-row gap-2 text-slate-500">
-              <div className="w-7 h-7 flex justify-center items-center">
-                <Trash2 size={21} className="text-slate-500" />
-              </div>
+              <DeleteAnxietyEventAlert
+                anxietyEvent={anxietyEvent}
+                status="completed"
+                setParentWindowOpen={setOpen}
+              />
               <Button
                 onClick={() => {
                   setOpen(false);
