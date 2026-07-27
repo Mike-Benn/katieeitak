@@ -84,7 +84,11 @@ export function EditAnxietyEventDialog({ anxietyEvent, buttonSize }: EditAnxiety
           <div className="flex flex-row justify-between pl-6 pr-6 pt-4 pb-4 shrink-0">
             <h2 className="text-lg font-semibold">Event details</h2>
             <div className="flex flex-row gap-2">
-              <DeleteAnxietyEventAlert anxietyEvent={anxietyEvent} setEditOpen={setOpen} />
+              <DeleteAnxietyEventAlert
+                anxietyEvent={anxietyEvent}
+                setParentWindowOpen={setOpen}
+                status="upcoming"
+              />
               <Button
                 onClick={() => setIsEditing(!isEditing)}
                 className={`w-7 h-7 flex justify-center items-center rounded-md transition-colors ${
