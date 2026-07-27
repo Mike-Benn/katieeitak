@@ -124,7 +124,7 @@ export function EditAnxietyEventDialog({ anxietyEvent, buttonSize }: EditAnxiety
               <form.AppField
                 name="eventTitle"
                 children={(field) => (
-                  <field.TextField label="Title" maxLength={20} isDisabled={!isEditing} />
+                  <field.TextField label="Title" maxLength={40} isDisabled={!isEditing} />
                 )}
               />
             </div>
