@@ -3,6 +3,7 @@ import { formatInTimeZone } from 'date-fns-tz';
 import { getAnxietyEventTypeIcon } from '@/utils/getAnxietyEventTypeIcon';
 import { getAnxietyEventBorderColor } from '@/utils/getAnxietyEventBorderColor';
 import { getAnxietyEventExcitementIcon } from '@/utils/getAnxietyEventExcitementIcon';
+import { ViewAnxietyEventDialog } from '@/components/Dialogs/ViewAnxietyEventDialog';
 
 interface UnplannedAnxietyEventCardProps {
   anxietyEvent: AnxietyEvent;
@@ -31,6 +32,9 @@ export function UnplannedAnxietyEventCard({ anxietyEvent }: UnplannedAnxietyEven
         <div className="flex flex-col">
           <div className="flex justify-between">
             {date && <span className="text-gray-400 text-sm">{date}</span>}
+            <div className="flex flex-row gap-2.5">
+              <ViewAnxietyEventDialog anxietyEvent={anxietyEvent} buttonSize={18} />
+            </div>
           </div>
           <span className="font-semibold">{anxietyEvent.title}</span>
         </div>

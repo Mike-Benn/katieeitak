@@ -5,6 +5,7 @@ import { ResetAnxietyEventAlert } from '@/components/Alerts/ResetAnxietyEventAle
 import { getAnxietyEventBorderColor } from '@/utils/getAnxietyEventBorderColor';
 import { getAnxietyEventAnxietyIcon } from '@/utils/getAnxietyEventAnxietyIcon';
 import { getAnxietyEventExcitementIcon } from '@/utils/getAnxietyEventExcitementIcon';
+import { ViewAnxietyEventDialog } from '@/components/Dialogs/ViewAnxietyEventDialog';
 
 interface CompletedAnxietyEventCardProps {
   anxietyEvent: AnxietyEvent;
@@ -42,7 +43,8 @@ export function CompletedAnxietyEventCard({ anxietyEvent }: CompletedAnxietyEven
         <div className="flex flex-col">
           <div className="flex justify-between">
             {date && <span className="text-gray-400 text-sm">{date}</span>}
-            <div>
+            <div className="flex flex-row gap-2.5">
+              <ViewAnxietyEventDialog anxietyEvent={anxietyEvent} buttonSize={18} />
               <ResetAnxietyEventAlert anxietyEvent={anxietyEvent} buttonSize={18} />
             </div>
           </div>
