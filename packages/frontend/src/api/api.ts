@@ -19,6 +19,7 @@ import {
   type UncompleteAnxietyEventByIdResponse,
   type DeleteAnxietyEventByIdResponse,
   type AnxietyEventOccurrenceType,
+  type GetLicensePlatesResponse,
 } from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
@@ -67,6 +68,10 @@ interface UncompleteAnxietyEventByIdParams {
 
 interface DeleteAnxietyEventByIdParams {
   id: string;
+}
+
+interface GetLicensePlatesParams {
+  signal: AbortSignal;
 }
 
 // TODO - Error handling
@@ -175,6 +180,13 @@ export const api = {
   getMarkedBook: async ({ key, signal }: GetMarkedBookParams) => {
     const response = await apiClient.get<SuccessResponse<GetMarkedBookResponse>>(
       `/library/book/${key}`,
+      { signal },
+    );
+    return response.data.data;
+  },
+  getLicensePlates: async ({ signal }: GetLicensePlatesParams) => {
+    const response = await apiClient.get<SuccessResponse<GetLicensePlatesResponse>>(
+      `/license-plates`,
       { signal },
     );
     return response.data.data;
