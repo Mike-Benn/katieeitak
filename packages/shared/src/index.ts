@@ -77,3 +77,11 @@ export {
   MarkBookReadWordsFieldSchema,
   PatchReadBookFormSchema,
 } from './schemas/forms/validators.js';
+export {
+  type GetLicensePlatesQueryResult,
+  type LicensePlate,
+  type GetLicensePlatesResponse,
+  GetLicensePlatesQueryResultSchema,
+  LicensePlateSchema,
+  GetLicensePlatesResponseSchema,
+} from './schemas/dtos/plates.js';
