@@ -79,9 +79,11 @@ export {
 } from './schemas/forms/validators.js';
 export {
   type GetLicensePlatesQueryResult,
-  type LicensePlate,
+  type MasterLicensePlate,
   type GetLicensePlatesResponse,
+  type LicensePlate,
   GetLicensePlatesQueryResultSchema,
-  LicensePlateSchema,
+  MasterLicensePlateSchema,
   GetLicensePlatesResponseSchema,
+  LicensePlateSchema,
 } from './schemas/dtos/plates.js';

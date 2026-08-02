@@ -13,9 +13,7 @@ export class LicensePlateController {
     const licensePlates = await this.licensePlateService.getLicensePlates();
     return res.status(200).json(
       ApiResponse.success<GetLicensePlatesResponse>({
-        data: {
-          licensePlates: licensePlates,
-        },
+        data: licensePlates,
       }),
     );
   };

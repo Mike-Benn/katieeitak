@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const LicensePlateSchema = z.object({
+export const MasterLicensePlateSchema = z.object({
   id: z.number().int(),
   name: z.string(),
   nickname: z.string(),
@@ -9,26 +9,21 @@ export const LicensePlateSchema = z.object({
   updated_at: z.iso.datetime(),
 });
 
-export type LicensePlate = z.infer<typeof LicensePlateSchema>;
+export type MasterLicensePlate = z.infer<typeof MasterLicensePlateSchema>;
 
-export const GetLicensePlatesQueryResultSchema = LicensePlateSchema.pick({
+export const LicensePlateSchema = MasterLicensePlateSchema.pick({
   id: true,
   name: true,
   nickname: true,
   plate_url: true,
 });
 
+export type LicensePlate = z.infer<typeof LicensePlateSchema>;
+
+export const GetLicensePlatesQueryResultSchema = LicensePlateSchema;
+
 export type GetLicensePlatesQueryResult = z.infer<typeof GetLicensePlatesQueryResultSchema>;
 
-export const GetLicensePlatesResponseSchema = z.object({
-  licensePlates: z.array(
-    LicensePlateSchema.pick({
-      id: true,
-      name: true,
-      nickname: true,
-      plate_url: true,
-    }),
-  ),
-});
+export const GetLicensePlatesResponseSchema = z.array(LicensePlateSchema);
 
 export type GetLicensePlatesResponse = z.infer<typeof GetLicensePlatesResponseSchema>;
