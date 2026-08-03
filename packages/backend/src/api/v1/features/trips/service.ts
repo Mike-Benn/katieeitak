@@ -36,8 +36,11 @@ export class TripService {
     if (!trip) {
       return null;
     }
-    const currentTrip = await this.tripRepository.getTripPlateListByTripId({ tripId: trip.id });
-    return currentTrip;
+    const plateList = await this.tripRepository.getTripPlateListByTripId({ tripId: trip.id });
+    return {
+      plateList,
+      tripId: trip.id,
+    };
   };
 
   public createTripByUserId = async ({ userId, data }: CreateTripByUserIdParams) => {

@@ -59,8 +59,12 @@ export type GetTripPlateListByTripIdQueryResult = z.infer<
 >;
 
 export const GetCurrentTripByUserIdResponseSchema = z
-  .array(GetTripPlateListByTripIdQueryResultSchema)
+  .object({
+    plateList: z.array(GetTripPlateListByTripIdQueryResultSchema),
+    tripId: z.string(),
+  })
   .nullable();
+
 export type GetCurrentTripByUserIdResponse = z.infer<typeof GetCurrentTripByUserIdResponseSchema>;
 
 export const LicensePlateSchema = MasterLicensePlateSchema.pick({
