@@ -11,7 +11,6 @@ export function useMarkPlateSeenMutation() {
       toast.error('There was an error marking plate, please try again.');
     },
     onSuccess: async (data) => {
-      //await queryClient.resetQueries({ queryKey: ['current-trip'] });
       queryClient.setQueryData<GetCurrentTripByUserIdResponse>(['current-trip'], (old) => {
         if (!old) return old;
         return {
