@@ -72,7 +72,7 @@ export function NavDrawer() {
                         className="nav-drawer-link visited:text-inherit"
                       >
                         <Car />
-                        <span>License Plates</span>
+                        <span>Trips</span>
                       </Link>
                     </li>
                   </div>

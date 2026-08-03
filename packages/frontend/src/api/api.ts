@@ -19,6 +19,12 @@ import {
   type UncompleteAnxietyEventByIdResponse,
   type DeleteAnxietyEventByIdResponse,
   type AnxietyEventOccurrenceType,
+  type GetCurrentTripByUserIdResponse,
+  type CreateTripByUserIdRequestBody,
+  type CreateTripByUserIdResponse,
+  type CompleteTripByIdResponse,
+  type MarkPlateSeenResponse,
+  type UnmarkPlateSeenResponse,
 } from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
@@ -67,6 +73,28 @@ interface UncompleteAnxietyEventByIdParams {
 
 interface DeleteAnxietyEventByIdParams {
   id: string;
+}
+
+interface GetCurrentTripByUserIdParams {
+  signal: AbortSignal;
+}
+
+interface CreateTripByUserIdParams {
+  body: CreateTripByUserIdRequestBody;
+}
+
+interface CompleteTripByIdParams {
+  id: string;
+}
+
+interface MarkPlateSeenParams {
+  tripId: string;
+  plateId: number;
+}
+
+interface UnmarkPlateSeenParams {
+  tripId: string;
+  plateId: number;
 }
 
 // TODO - Error handling
@@ -176,6 +204,41 @@ export const api = {
     const response = await apiClient.get<SuccessResponse<GetMarkedBookResponse>>(
       `/library/book/${key}`,
       { signal },
+    );
+    return response.data.data;
+  },
+  getCurrentTripByUserId: async ({ signal }: GetCurrentTripByUserIdParams) => {
+    const response = await apiClient.get<SuccessResponse<GetCurrentTripByUserIdResponse>>(
+      `/trips`,
+      { signal },
+    );
+    return response.data.data;
+  },
+  createTripByUserId: async ({ body }: CreateTripByUserIdParams) => {
+    const response = await apiClient.post<SuccessResponse<CreateTripByUserIdResponse>>(
+      `/trips`,
+      body,
+    );
+    return response.data.data;
+  },
+  completeTripById: async ({ id }: CompleteTripByIdParams) => {
+    const response = await apiClient.patch<SuccessResponse<CompleteTripByIdResponse>>(
+      `/trips/${id}/complete`,
+    );
+    return response.data.data;
+  },
+  markPlateSeen: async ({ plateId, tripId }: MarkPlateSeenParams) => {
+    const response = await apiClient.post<SuccessResponse<MarkPlateSeenResponse>>(
+      `/trips/${tripId}/seen-plates/`,
+      {
+        plateId,
+      },
+    );
+    return response.data.data;
+  },
+  unmarkPlateSeen: async ({ plateId, tripId }: UnmarkPlateSeenParams) => {
+    const response = await apiClient.delete<SuccessResponse<UnmarkPlateSeenResponse>>(
+      `/trips/${tripId}/seen-plates/${plateId}`,
     );
     return response.data.data;
   },

@@ -1,0 +1,1 @@
+export { LicensePlatesList } from './LicensePlatesList';
