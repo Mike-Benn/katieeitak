@@ -1,6 +1,6 @@
 import type { LicensePlate } from '@katieeitak/shared';
 import { Separator } from '@base-ui/react';
-import { X } from 'lucide-react';
+import { Circle } from 'lucide-react';
 
 interface LicensePlateCardProps {
   licensePlate: LicensePlate;
@@ -17,8 +17,8 @@ export function LicensePlateCard({ licensePlate }: LicensePlateCardProps) {
             <span className="text-xs">{licensePlate.nickname}</span>
           </div>
         </div>
-        <div>
-          <X size={24} color="red" />
+        <div className="text-slate-400">
+          <Circle size={24} />
         </div>
       </div>
       <Separator orientation="horizontal" className="h-px bg-slate-300 w-full" />
