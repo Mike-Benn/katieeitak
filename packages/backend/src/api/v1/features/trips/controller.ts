@@ -8,6 +8,7 @@ import {
   type GetCurrentTripByUserIdResponse,
   MarkPlateSeenRequestBodySchema,
   type MarkPlateSeenResponse,
+  type UnmarkPlateSeenResponse,
 } from '@katieeitak/shared';
 import { parseValue } from '@/utils/parseValue/parseValue.js';
 import { ResourceIdSchema } from '@/api/v1/requests/types.js';
@@ -77,7 +78,7 @@ export class TripController {
     const parsedBody = parseValue({
       schema: MarkPlateSeenRequestBodySchema,
       value: req.body,
-      message: ERROR_MESSAGES.INVALID_ID_PATH_PARAMETER_FORMAT,
+      message: 'Incorrect request payload format, must include a plate ID.',
     });
 
     const data = {
@@ -89,6 +90,32 @@ export class TripController {
     return res.status(201).json(
       ApiResponse.success<MarkPlateSeenResponse>({
         data: markedPlate,
+      }),
+    );
+  };
+
+  public unmarkPlateSeen = async (req: Request, res: Response) => {
+    const userId = res.locals.userId as string;
+    const { tripId, plateId } = req.params;
+    const parsedTripId = parseValue({
+      schema: ResourceIdSchema,
+      value: tripId,
+      message: ERROR_MESSAGES.INVALID_ID_PATH_PARAMETER_FORMAT,
+    });
+    const parsedPlateId = parseValue({
+      schema: ResourceIdSchema,
+      value: plateId,
+      message: ERROR_MESSAGES.INVALID_ID_PATH_PARAMETER_FORMAT,
+    });
+    const data = {
+      userId,
+      tripId: parsedTripId,
+      plateId: parsedPlateId,
+    };
+    const unmarkedPlate = await this.tripService.unmarkPlateSeen({ data });
+    return res.status(200).json(
+      ApiResponse.success<UnmarkPlateSeenResponse>({
+        data: unmarkedPlate,
       }),
     );
   };

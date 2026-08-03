@@ -3,6 +3,7 @@ import type {
   CompleteTripByIdDto,
   CreateTripByUserIdDto,
   MarkPlateSeenDto,
+  UnmarkPlateSeenDto,
 } from '@/api/v1/features/trips/dto.js';
 import { AppError } from '@/api/v1/errors/AppError.js';
 import { ERROR_MESSAGES, ERROR_NAMES, SAFE_ERROR_MESSAGES } from '@/api/v1/constants/errors.js';
@@ -23,6 +24,10 @@ interface CompleteTripByIdParams {
 
 interface MarkPlateSeenParams {
   data: MarkPlateSeenDto;
+}
+
+interface UnmarkPlateSeenParams {
+  data: UnmarkPlateSeenDto;
 }
 
 export class TripService {
@@ -66,5 +71,20 @@ export class TripService {
     }
     const markedPlate = await this.tripRepository.markPlateSeen({ data });
     return markedPlate;
+  };
+
+  public unmarkPlateSeen = async ({ data }: UnmarkPlateSeenParams) => {
+    const currentTrip = await this.tripRepository.getCurrentTripByUserId({ userId: data.userId });
+    if (!currentTrip || data.tripId !== currentTrip.id) {
+      throw new AppError({
+        message: ERROR_MESSAGES.RESOURCE_NOT_FOUND,
+        statusCode: 404,
+        isOperational: true,
+        safeMessage: SAFE_ERROR_MESSAGES.RESOURCE_NOT_FOUND,
+        name: ERROR_NAMES.RESOURCE_NOT_FOUND,
+      });
+    }
+    const unmarkedPlate = await this.tripRepository.unmarkPlateSeen({ data });
+    return unmarkedPlate;
   };
 }

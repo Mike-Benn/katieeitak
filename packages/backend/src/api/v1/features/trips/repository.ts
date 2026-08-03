@@ -5,6 +5,7 @@ import {
   type GetCurrentTripIdByUserIdQueryResult,
   type GetTripPlateListByTripIdQueryResult,
   type MarkPlateSeenQueryResult,
+  type UnmarkPlateSeenQueryResult,
 } from '@katieeitak/shared';
 import { AppError } from '@/api/v1/errors/AppError.js';
 import { ERROR_MESSAGES, ERROR_NAMES, SAFE_ERROR_MESSAGES } from '@/api/v1/constants/errors.js';
@@ -12,6 +13,7 @@ import {
   type CompleteTripByIdDto,
   type CreateTripByUserIdDto,
   type MarkPlateSeenDto,
+  type UnmarkPlateSeenDto,
 } from '@/api/v1/features/trips/dto.js';
 
 interface GetCurrentTripByUserIdParams {
@@ -38,6 +40,11 @@ interface CompleteTripByUserIdParams {
 
 interface MarkPlateSeenParams {
   data: MarkPlateSeenDto;
+  client?: PoolClient;
+}
+
+interface UnmarkPlateSeenParams {
+  data: UnmarkPlateSeenDto;
   client?: PoolClient;
 }
 
@@ -134,6 +141,28 @@ export class TripRepository {
         statusCode: 500,
         name: ERROR_NAMES.DB_QUERY_ERROR,
         safeMessage: 'Internal Server Error',
+      });
+    }
+    return rows[0];
+  };
+
+  public unmarkPlateSeen = async ({ data, client }: UnmarkPlateSeenParams) => {
+    const connection = client ?? this.pool;
+    const values = [data.plateId, data.tripId];
+    const query = `
+      DELETE 
+      FROM seen_plates
+      WHERE plate_id = $1 AND trip_id = $2
+      RETURNING plate_id
+    `;
+    const { rows } = await connection.query<UnmarkPlateSeenQueryResult>(query, values);
+    if (!rows[0]) {
+      throw new AppError({
+        message: ERROR_MESSAGES.RESOURCE_NOT_FOUND,
+        isOperational: true,
+        statusCode: 404,
+        name: ERROR_NAMES.RESOURCE_NOT_FOUND,
+        safeMessage: SAFE_ERROR_MESSAGES.RESOURCE_NOT_FOUND,
       });
     }
     return rows[0];

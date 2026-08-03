@@ -11,3 +11,9 @@ export interface MarkPlateSeenDto {
   plateId: number;
   tripId: string;
 }
+
+export interface UnmarkPlateSeenDto {
+  userId: string;
+  plateId: string;
+  tripId: string;
+}

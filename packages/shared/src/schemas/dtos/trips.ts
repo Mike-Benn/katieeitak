@@ -130,3 +130,15 @@ export const MarkPlateSeenRequestBodySchema = z.object({
   plateId: z.number().int(),
 });
 export type MarkPlateSeenRequestBody = z.infer<typeof MarkPlateSeenRequestBodySchema>;
+
+export const UnmarkPlateSeenQueryResultSchema = MasterSeenPlateSchema.pick({
+  plate_id: true,
+});
+
+export type UnmarkPlateSeenQueryResult = z.infer<typeof UnmarkPlateSeenQueryResultSchema>;
+
+export const UnmarkPlateSeenResponseSchema = MasterSeenPlateSchema.pick({
+  plate_id: true,
+});
+
+export type UnmarkPlateSeenResponse = z.infer<typeof UnmarkPlateSeenResponseSchema>;
