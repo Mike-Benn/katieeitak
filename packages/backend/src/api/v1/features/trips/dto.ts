@@ -5,3 +5,9 @@ export interface CompleteTripByIdDto {
 export interface CreateTripByUserIdDto {
   title: string;
 }
+
+export interface MarkPlateSeenDto {
+  userId: string;
+  plateId: number;
+  tripId: string;
+}
