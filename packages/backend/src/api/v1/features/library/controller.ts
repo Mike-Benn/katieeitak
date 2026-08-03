@@ -53,7 +53,7 @@ export class LibraryController {
       schema: PatchReadBookByIdPayloadSchema,
       value: req.body,
       message:
-        'Incorrect req payload format, must include an updated rating, word_count, and/or page_count value',
+        'Incorrect request payload format, must include an updated rating, word_count, and/or page_count value',
     });
     const userId = res.locals.userId as string;
     const readBook = await this.libraryService.patchReadBookById({
