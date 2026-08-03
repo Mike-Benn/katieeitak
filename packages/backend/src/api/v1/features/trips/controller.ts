@@ -6,6 +6,8 @@ import {
   CreateTripByUserIdRequestBodySchema,
   type CreateTripByUserIdResponse,
   type GetCurrentTripByUserIdResponse,
+  MarkPlateSeenRequestBodySchema,
+  type MarkPlateSeenResponse,
 } from '@katieeitak/shared';
 import { parseValue } from '@/utils/parseValue/parseValue.js';
 import { ResourceIdSchema } from '@/api/v1/requests/types.js';
@@ -60,6 +62,32 @@ export class TripController {
     return res.status(200).json(
       ApiResponse.success<CompleteTripByIdResponse>({
         data: completedTrip,
+      }),
+    );
+  };
+
+  public markPlateSeen = async (req: Request, res: Response) => {
+    const userId = res.locals.userId as string;
+    const { tripId } = req.params;
+    const parsedTripId = parseValue({
+      schema: ResourceIdSchema,
+      value: tripId,
+      message: ERROR_MESSAGES.INVALID_ID_PATH_PARAMETER_FORMAT,
+    });
+    const parsedBody = parseValue({
+      schema: MarkPlateSeenRequestBodySchema,
+      value: req.body,
+      message: ERROR_MESSAGES.INVALID_ID_PATH_PARAMETER_FORMAT,
+    });
+    const data = {
+      userId,
+      tripId: parsedTripId,
+      plateId: parsedBody.plate_id,
+    };
+    const markedPlate = await this.tripService.markPlateSeen({ data });
+    return res.status(201).json(
+      ApiResponse.success<MarkPlateSeenResponse>({
+        data: markedPlate,
       }),
     );
   };
