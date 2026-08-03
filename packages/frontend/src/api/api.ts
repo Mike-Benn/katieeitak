@@ -19,7 +19,10 @@ import {
   type UncompleteAnxietyEventByIdResponse,
   type DeleteAnxietyEventByIdResponse,
   type AnxietyEventOccurrenceType,
-  type GetLicensePlatesResponse,
+  type GetCurrentTripByUserIdResponse,
+  type CreateTripByUserIdRequestBody,
+  type CreateTripByUserIdResponse,
+  type CompleteTripByIdResponse,
 } from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
@@ -70,8 +73,16 @@ interface DeleteAnxietyEventByIdParams {
   id: string;
 }
 
-interface GetLicensePlatesParams {
+interface GetCurrentTripByUserIdParams {
   signal: AbortSignal;
+}
+
+interface CreateTripByUserIdParams {
+  body: CreateTripByUserIdRequestBody;
+}
+
+interface CompleteTripByIdParams {
+  id: string;
 }
 
 // TODO - Error handling
@@ -184,10 +195,23 @@ export const api = {
     );
     return response.data.data;
   },
-  getLicensePlates: async ({ signal }: GetLicensePlatesParams) => {
-    const response = await apiClient.get<SuccessResponse<GetLicensePlatesResponse>>(
-      `/license-plates`,
+  getCurrentTripByUserId: async ({ signal }: GetCurrentTripByUserIdParams) => {
+    const response = await apiClient.get<SuccessResponse<GetCurrentTripByUserIdResponse>>(
+      `/trips`,
       { signal },
+    );
+    return response.data.data;
+  },
+  createTripByUserId: async ({ body }: CreateTripByUserIdParams) => {
+    const response = await apiClient.post<SuccessResponse<CreateTripByUserIdResponse>>(
+      `/trips`,
+      body,
+    );
+    return response.data.data;
+  },
+  completeTripById: async ({ id }: CompleteTripByIdParams) => {
+    const response = await apiClient.patch<SuccessResponse<CompleteTripByIdResponse>>(
+      `/trips/${id}/complete`,
     );
     return response.data.data;
   },
