@@ -223,7 +223,7 @@ export const api = {
   },
   markPlateSeen: async ({ plateId, tripId }: MarkPlateSeenParams) => {
     const response = await apiClient.post<SuccessResponse<MarkPlateSeenResponse>>(
-      `/trips/${tripId}/seen-plates`,
+      `/trips/${tripId}/seen-plates/`,
       {
         plateId,
       },
