@@ -24,6 +24,7 @@ import {
   type CreateTripByUserIdResponse,
   type CompleteTripByIdResponse,
   type MarkPlateSeenResponse,
+  type UnmarkPlateSeenResponse,
 } from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
@@ -87,6 +88,11 @@ interface CompleteTripByIdParams {
 }
 
 interface MarkPlateSeenParams {
+  tripId: string;
+  plateId: number;
+}
+
+interface UnmarkPlateSeenParams {
   tripId: string;
   plateId: number;
 }
@@ -227,6 +233,12 @@ export const api = {
       {
         plateId,
       },
+    );
+    return response.data.data;
+  },
+  unmarkPlateSeen: async ({ plateId, tripId }: UnmarkPlateSeenParams) => {
+    const response = await apiClient.delete<SuccessResponse<UnmarkPlateSeenResponse>>(
+      `/trips/${tripId}/seen-plates/${plateId}`,
     );
     return response.data.data;
   },

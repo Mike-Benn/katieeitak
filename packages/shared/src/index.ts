@@ -93,6 +93,8 @@ export {
   type MarkPlateSeenQueryResult,
   type MarkPlateSeenResponse,
   type MarkPlateSeenRequestBody,
+  type UnmarkPlateSeenQueryResult,
+  type UnmarkPlateSeenResponse,
   MasterLicensePlateSchema,
   LicensePlateSchema,
   MasterTripSchema,
@@ -107,4 +109,6 @@ export {
   MarkPlateSeenQueryResultSchema,
   MarkPlateSeenResponseSchema,
   MarkPlateSeenRequestBodySchema,
+  UnmarkPlateSeenQueryResultSchema,
+  UnmarkPlateSeenResponseSchema,
 } from './schemas/dtos/trips.js';

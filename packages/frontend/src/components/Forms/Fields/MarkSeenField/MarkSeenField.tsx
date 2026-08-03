@@ -1,6 +1,7 @@
 import { Checkbox } from '@base-ui/react/checkbox';
 import { Check, Loader2 } from 'lucide-react';
 import { useMarkPlateSeenMutation } from '@/hooks/mutations/useMarkPlateSeenMutation';
+import { useUnmarkPlateSeenMutation } from '@/hooks/mutations/useUnmarkPlateSeenMutation';
 
 interface MarkSeenFieldProps {
   timeSeen: string | null;
@@ -10,17 +11,21 @@ interface MarkSeenFieldProps {
 
 export function MarkSeenField({ timeSeen, plateId, tripId }: MarkSeenFieldProps) {
   const markPlateMutation = useMarkPlateSeenMutation();
+  const unmarkPlateMutation = useUnmarkPlateSeenMutation();
 
   const isChecked = timeSeen !== null;
-  const isPending = markPlateMutation.isPending;
+  const isPending = markPlateMutation.isPending || unmarkPlateMutation.isPending;
 
   return (
     <Checkbox.Root
       checked={isChecked}
       disabled={isPending}
       onCheckedChange={() => {
-        if (isChecked) return;
-        markPlateMutation.mutate({ plateId, tripId });
+        if (isChecked) {
+          unmarkPlateMutation.mutate({ plateId, tripId });
+        } else {
+          markPlateMutation.mutate({ plateId, tripId });
+        }
       }}
       className="
         relative flex h-5 w-5 shrink-0 items-center justify-center rounded-full
