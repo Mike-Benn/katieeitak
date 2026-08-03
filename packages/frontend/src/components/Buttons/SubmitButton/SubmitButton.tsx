@@ -2,12 +2,12 @@ import { Button } from '@base-ui/react';
 import { useFormContext } from '@/hooks/useAppForm';
 
 interface SubmitButtonProps {
-  buttonText: string;
+  children: React.ReactNode;
   className?: string;
   isPending: boolean;
 }
 
-export function SubmitButton({ buttonText, className, isPending }: SubmitButtonProps) {
+export function SubmitButton({ children, className, isPending }: SubmitButtonProps) {
   const form = useFormContext();
   return (
     <form.Subscribe selector={(state) => [state.isDefaultValue]}>
@@ -16,8 +16,9 @@ export function SubmitButton({ buttonText, className, isPending }: SubmitButtonP
           type="submit"
           disabled={isDefaultValue || isPending}
           className={`text-sm rounded-sm px-3 py-1 ${className}`}
+          onClick={() => void form.handleSubmit()}
         >
-          {buttonText}
+          {children}
         </Button>
       )}
     </form.Subscribe>
