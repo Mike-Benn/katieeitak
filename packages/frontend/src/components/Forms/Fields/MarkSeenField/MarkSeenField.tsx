@@ -26,7 +26,7 @@ export function MarkSeenField({ timeSeen, plateId, tripId }: MarkSeenFieldProps)
         relative flex h-5 w-5 shrink-0 items-center justify-center rounded-full
         border-[1.5px] border-neutral-300 bg-transparent outline-none
         transition-colors duration-150
-        data-checked:border-transparent data-checked:bg-blue-600
+        data-checked:border-transparent data-checked:bg-mainbtn
         data-disabled:cursor-not-allowed data-disabled:bg-transparent data-disabled:border-neutral-300
         not-data-disabled:cursor-pointer not-data-disabled:hover:border-neutral-400
       "
