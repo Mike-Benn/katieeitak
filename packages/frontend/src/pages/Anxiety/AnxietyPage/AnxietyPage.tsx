@@ -66,7 +66,7 @@ export function AnxietyPage() {
         onValueChange={setActiveOccurrenceTypeTab}
       >
         <div className="flex flex-row justify-between">
-          <Tabs.List className="relative flex flex-row gap-5">
+          <Tabs.List className="relative flex flex-row gap-3">
             <Tabs.Tab
               value="expected"
               className="text-lg text-gray-400 data-active:text-black data-active:scale-110 font-semibold transition-all duration-200 ease-in-out"
