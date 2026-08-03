@@ -15,7 +15,7 @@ export function ErrorPage() {
       </div>
       <Link
         to="/"
-        className="relative rounded-lg bg-slate-700 py-3 text-muted-bg px-4 w-full flex justify-center font-bold"
+        className="relative rounded-lg bg-mainbtn py-3 text-white px-4 w-full flex justify-center font-bold"
       >
         Back to home
       </Link>
