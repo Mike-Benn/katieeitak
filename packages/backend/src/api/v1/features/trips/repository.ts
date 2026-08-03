@@ -120,7 +120,7 @@ export class TripRepository {
 
   public markPlateSeen = async ({ data, client }: MarkPlateSeenParams) => {
     const connection = client ?? this.pool;
-    const values = [data.tripId, data.plateId];
+    const values = [data.plateId, data.tripId];
     const query = `
       INSERT INTO seen_plates (plate_id, trip_id)
       VALUES ($1, $2)

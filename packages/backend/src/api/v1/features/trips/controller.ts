@@ -79,10 +79,11 @@ export class TripController {
       value: req.body,
       message: ERROR_MESSAGES.INVALID_ID_PATH_PARAMETER_FORMAT,
     });
+
     const data = {
       userId,
       tripId: parsedTripId,
-      plateId: parsedBody.plate_id,
+      plateId: parsedBody.plateId,
     };
     const markedPlate = await this.tripService.markPlateSeen({ data });
     return res.status(201).json(
