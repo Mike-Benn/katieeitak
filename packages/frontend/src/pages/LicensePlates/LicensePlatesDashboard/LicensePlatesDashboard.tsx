@@ -30,7 +30,7 @@ export function LicensePlatesDashboard() {
         <div className="flex flex-col pt-6 flex-1">
           <Tabs.Panel value="current" className="flex flex-col flex-1">
             {!currentTripQuery.isFetching && !currentTripQuery.isPending && (
-              <LicensePlatesList licensePlates={currentTripQuery.data} />
+              <LicensePlatesList currentTrip={currentTripQuery.data} />
             )}
           </Tabs.Panel>
           <Tabs.Panel value="past" className="flex flex-col flex-1">

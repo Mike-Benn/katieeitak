@@ -14,13 +14,16 @@ export function useMarkPlateSeenMutation() {
       //await queryClient.resetQueries({ queryKey: ['current-trip'] });
       queryClient.setQueryData<GetCurrentTripByUserIdResponse>(['current-trip'], (old) => {
         if (!old) return old;
-        return old.map((plate) => {
-          if (plate.id !== data.plate_id) return plate;
-          return {
-            ...plate,
-            date_seen: data.date_seen,
-          };
-        });
+        return {
+          ...old,
+          plateList: old.plateList.map((plate) => {
+            if (plate.id !== data.plate_id) return plate;
+            return {
+              ...plate,
+              date_seen: data.date_seen,
+            };
+          }),
+        };
       });
     },
   });

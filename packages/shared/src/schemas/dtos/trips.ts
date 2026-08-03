@@ -126,8 +126,7 @@ export const MarkPlateSeenResponseSchema = MasterSeenPlateSchema.pick({
 
 export type MarkPlateSeenResponse = z.infer<typeof MarkPlateSeenResponseSchema>;
 
-export const MarkPlateSeenRequestBodySchema = MasterSeenPlateSchema.pick({
-  plate_id: true,
+export const MarkPlateSeenRequestBodySchema = z.object({
+  plateId: z.number().int(),
 });
-
 export type MarkPlateSeenRequestBody = z.infer<typeof MarkPlateSeenRequestBodySchema>;
