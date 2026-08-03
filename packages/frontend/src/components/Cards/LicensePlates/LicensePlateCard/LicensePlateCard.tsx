@@ -1,12 +1,13 @@
 import type { LicensePlate } from '@katieeitak/shared';
 import { Separator } from '@base-ui/react';
-import { Circle } from 'lucide-react';
+import { MarkSeenField } from '@/components/Forms/Fields/MarkSeenField';
 
 interface LicensePlateCardProps {
   licensePlate: LicensePlate;
+  tripId: string;
 }
 
-export function LicensePlateCard({ licensePlate }: LicensePlateCardProps) {
+export function LicensePlateCard({ licensePlate, tripId }: LicensePlateCardProps) {
   return (
     <>
       <div className="flex justify-between items-center">
@@ -18,7 +19,11 @@ export function LicensePlateCard({ licensePlate }: LicensePlateCardProps) {
           </div>
         </div>
         <div className="text-slate-400">
-          <Circle size={24} />
+          <MarkSeenField
+            timeSeen={licensePlate.date_seen}
+            plateId={licensePlate.id}
+            tripId={tripId}
+          />
         </div>
       </div>
       <Separator orientation="horizontal" className="h-px bg-slate-300 w-full" />
