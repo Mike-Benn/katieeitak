@@ -65,3 +65,9 @@ export const PatchReadBookFormSchema = MarkBookReadFormSchema.partial().refine(
 );
 
 export type MarkBookReadForm = z.infer<typeof MarkBookReadFormSchema>;
+
+export const CreateTripByUserIdFormSchema = z.object({
+  title: z.string(),
+});
+
+export type CreateTripByUserIdForm = z.infer<typeof CreateTripByUserIdFormSchema>;
