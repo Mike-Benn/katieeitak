@@ -36,6 +36,7 @@ export type MasterTrip = z.infer<typeof MasterTripSchema>;
 
 export const GetCurrentTripIdByUserIdQueryResultSchema = MasterTripSchema.pick({
   id: true,
+  user_id: true,
   title: true,
   created_at: true,
 });
@@ -104,3 +105,25 @@ export const CompleteTripByIdResponseSchema = MasterTripSchema.pick({
 });
 
 export type CompleteTripByIdResponse = z.infer<typeof CompleteTripByIdResponseSchema>;
+
+export const MarkPlateSeenQueryResultSchema = MasterSeenPlateSchema.pick({
+  id: true,
+  plate_id: true,
+  date_seen: true,
+});
+
+export type MarkPlateSeenQueryResult = z.infer<typeof MarkPlateSeenQueryResultSchema>;
+
+export const MarkPlateSeenResponseSchema = MasterSeenPlateSchema.pick({
+  id: true,
+  plate_id: true,
+  date_seen: true,
+});
+
+export type MarkPlateSeenResponse = z.infer<typeof MarkPlateSeenResponseSchema>;
+
+export const MarkPlateSeenRequestBodySchema = MasterSeenPlateSchema.pick({
+  plate_id: true,
+});
+
+export type MarkPlateSeenRequestBody = z.infer<typeof MarkPlateSeenRequestBodySchema>;

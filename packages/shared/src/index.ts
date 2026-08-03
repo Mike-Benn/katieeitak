@@ -90,6 +90,9 @@ export {
   type CreateTripByUserIdResponse,
   type CompleteTripByIdQueryResult,
   type CompleteTripByIdResponse,
+  type MarkPlateSeenQueryResult,
+  type MarkPlateSeenResponse,
+  type MarkPlateSeenRequestBody,
   MasterLicensePlateSchema,
   LicensePlateSchema,
   MasterTripSchema,
@@ -101,4 +104,7 @@ export {
   CreateTripByUserIdResponseSchema,
   CompleteTripByIdQueryResultSchema,
   CompleteTripByIdResponseSchema,
+  MarkPlateSeenQueryResultSchema,
+  MarkPlateSeenResponseSchema,
+  MarkPlateSeenRequestBodySchema,
 } from './schemas/dtos/trips.js';
