@@ -54,7 +54,6 @@ export function NewAnxietyEventPage() {
         className="flex flex-col p-6 rounded-md gap-8 bg-white"
         onSubmit={(e) => {
           e.preventDefault();
-          void form.handleSubmit();
         }}
       >
         <form.AppField
@@ -110,7 +109,12 @@ export function NewAnxietyEventPage() {
         />
         <div className="flex flex-row justify-end">
           <form.AppForm>
-            <form.SubscribeButton buttonText="Submit" isPending={isPending} />
+            <form.SubmitButton
+              isPending={isPending}
+              className="inline-block border border-muted-border bg-muted-input rounded-md font-semibold pt-2 pb-2 pl-3 pr-3 disabled:opacity-50"
+            >
+              Submit
+            </form.SubmitButton>
           </form.AppForm>
         </div>
       </form>
