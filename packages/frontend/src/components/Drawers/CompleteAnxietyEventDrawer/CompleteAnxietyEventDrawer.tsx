@@ -51,6 +51,7 @@ export function CompleteAnxietyEventDrawer({
       open={open}
       onOpenChange={(open) => {
         setOpen(open);
+        form.reset();
       }}
     >
       <div className="flex h-full w-full justify-center items-center">
@@ -64,7 +65,10 @@ export function CompleteAnxietyEventDrawer({
           <div className="flex flex-row justify-between pl-6 pr-6 pt-4 pb-4">
             <div>
               <Button
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false);
+                  form.reset();
+                }}
                 className="w-7 h-7 flex justify-center items-center rounded-md transition-colors text-slate-500 hover:bg-slate-100 hover:text-slate-900"
               >
                 <X size={16} />
