@@ -117,7 +117,6 @@ export function EditAnxietyEventDialog({ anxietyEvent, buttonSize }: EditAnxiety
             className="flex flex-col overflow-y-auto"
             onSubmit={(e) => {
               e.preventDefault();
-              void form.handleSubmit();
             }}
           >
             <div className="pt-6 pl-6 pr-6">
@@ -191,12 +190,12 @@ export function EditAnxietyEventDialog({ anxietyEvent, buttonSize }: EditAnxiety
             <Separator orientation="horizontal" className="h-px w-full bg-lightgray shrink-0" />
             <form.AppForm>
               <div className="flex flex-row pl-6 pr-6 pt-4 pb-4 justify-end gap-2">
-                <form.SubscribeButton
-                  buttonText="Save"
-                  textColor="text-white"
-                  bgColor="bg-green-700"
+                <form.SubmitButton
                   isPending={isPending}
-                />
+                  className="text-white bg-green-700 border border-muted-border rounded-md font-semibold disabled:opacity-50 py-2"
+                >
+                  Save
+                </form.SubmitButton>
               </div>
             </form.AppForm>
           </form>

@@ -15,7 +15,7 @@ export function SubmitButton({ children, className, isPending }: SubmitButtonPro
         <Button
           type="submit"
           disabled={isDefaultValue || isPending}
-          className={`text-sm rounded-sm px-3 py-1 ${className}`}
+          className={`rounded-sm px-3 py-1 ${className}`}
           onClick={() => void form.handleSubmit()}
         >
           {children}
