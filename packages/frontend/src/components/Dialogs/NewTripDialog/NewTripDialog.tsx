@@ -87,7 +87,7 @@ export function NewTripDialog() {
                 Cancel
               </Button>
               <form.AppForm>
-                <form.SubmitButton className="bg-mainbtn text-white" isPending={false}>
+                <form.SubmitButton className="bg-mainbtn text-white text-sm" isPending={false}>
                   Create
                 </form.SubmitButton>
               </form.AppForm>

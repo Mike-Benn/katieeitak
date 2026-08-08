@@ -111,7 +111,7 @@ export function NewAnxietyEventPage() {
           <form.AppForm>
             <form.SubmitButton
               isPending={isPending}
-              className="inline-block border border-muted-border bg-muted-input rounded-md font-semibold pt-2 pb-2 pl-3 pr-3 disabled:opacity-50"
+              className="inline-block border border-muted-border bg-muted-input rounded-md font-semibold py-2 disabled:opacity-50"
             >
               Submit
             </form.SubmitButton>

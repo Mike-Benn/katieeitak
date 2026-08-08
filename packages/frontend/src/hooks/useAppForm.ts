@@ -5,7 +5,6 @@ import { SelectField } from '@/components/Forms/Fields/SelectField';
 import { TextAreaField } from '@/components/Forms/Fields/TextAreaField';
 import { SelectDateField } from '@/components/Forms/Fields/SelectDateField';
 import { TextField } from '@/components/Forms/Fields/TextField';
-import { SubscribeButton } from '@/components/Buttons/SubscribeButton';
 import { StarRatingField } from '@/components/Forms/Fields/StarRatingField/StarRatingField';
 import { NumberField } from '@/components/Forms/Fields/NumberField';
 import { SaveButton } from '@/components/Buttons/SaveButton';
@@ -27,7 +26,6 @@ const { useAppForm } = createFormHook({
     CheckboxField,
   },
   formComponents: {
-    SubscribeButton,
     SaveButton,
     SubmitButton,
   },
