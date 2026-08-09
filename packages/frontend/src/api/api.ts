@@ -22,9 +22,9 @@ import {
   type GetCurrentTripByUserIdResponse,
   type CreateTripByUserIdRequestBody,
   type CreateTripByUserIdResponse,
-  type CompleteTripByIdResponse,
   type MarkPlateSeenResponse,
   type UnmarkPlateSeenResponse,
+  type CompleteTripResponse,
 } from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
@@ -83,10 +83,6 @@ interface CreateTripByUserIdParams {
   body: CreateTripByUserIdRequestBody;
 }
 
-interface CompleteTripByIdParams {
-  id: string;
-}
-
 interface MarkPlateSeenParams {
   tripId: string;
   plateId: number;
@@ -95,6 +91,10 @@ interface MarkPlateSeenParams {
 interface UnmarkPlateSeenParams {
   tripId: string;
   plateId: number;
+}
+
+interface CompleteTripParams {
+  tripId: string;
 }
 
 // TODO - Error handling
@@ -149,6 +149,7 @@ export const api = {
     >(`/anxiety/${id}/complete`, payload);
     return response.data.data;
   },
+
   uncompleteAnxietyEventById: async ({ id }: UncompleteAnxietyEventByIdParams) => {
     const response = await apiClient.delete<
       SuccessResponse<UncompleteAnxietyEventByIdResponse>,
@@ -221,12 +222,7 @@ export const api = {
     );
     return response.data.data;
   },
-  completeTripById: async ({ id }: CompleteTripByIdParams) => {
-    const response = await apiClient.patch<SuccessResponse<CompleteTripByIdResponse>>(
-      `/trips/${id}/complete`,
-    );
-    return response.data.data;
-  },
+
   markPlateSeen: async ({ plateId, tripId }: MarkPlateSeenParams) => {
     const response = await apiClient.post<SuccessResponse<MarkPlateSeenResponse>>(
       `/trips/${tripId}/seen-plates/`,
@@ -240,6 +236,13 @@ export const api = {
     const response = await apiClient.delete<SuccessResponse<UnmarkPlateSeenResponse>>(
       `/trips/${tripId}/seen-plates/${plateId}`,
     );
+    return response.data.data;
+  },
+  completeTrip: async ({ tripId }: CompleteTripParams) => {
+    const response = await apiClient.patch<
+      SuccessResponse<CompleteTripResponse>,
+      AxiosResponse<SuccessResponse<CompleteTripResponse>>
+    >(`/trips/${tripId}/complete`);
     return response.data.data;
   },
 };

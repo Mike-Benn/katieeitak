@@ -1,6 +1,6 @@
 import type { TripRepository } from '@/api/v1/features/trips/repository.js';
 import type {
-  CompleteTripByIdDto,
+  CompleteTripDto,
   CreateTripByUserIdDto,
   MarkPlateSeenDto,
   UnmarkPlateSeenDto,
@@ -17,9 +17,8 @@ interface CreateTripByUserIdParams {
   data: CreateTripByUserIdDto;
 }
 
-interface CompleteTripByIdParams {
-  userId: string;
-  data: CompleteTripByIdDto;
+interface CompleteTripParams {
+  data: CompleteTripDto;
 }
 
 interface MarkPlateSeenParams {
@@ -45,6 +44,7 @@ export class TripService {
     return {
       plateList,
       tripId: trip.id,
+      title: trip.title,
     };
   };
 
@@ -53,8 +53,8 @@ export class TripService {
     return newTrip;
   };
 
-  public completeTripById = async ({ userId, data }: CompleteTripByIdParams) => {
-    const completedTrip = await this.tripRepository.completeTripById({ userId, data });
+  public completeTrip = async ({ data }: CompleteTripParams) => {
+    const completedTrip = await this.tripRepository.completeTrip({ data });
     return completedTrip;
   };
 

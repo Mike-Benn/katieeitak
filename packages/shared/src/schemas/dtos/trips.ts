@@ -62,6 +62,7 @@ export const GetCurrentTripByUserIdResponseSchema = z
   .object({
     plateList: z.array(GetTripPlateListByTripIdQueryResultSchema),
     tripId: z.string(),
+    title: z.string(),
   })
   .nullable();
 
@@ -98,17 +99,17 @@ export const CreateTripByUserIdResponseSchema = MasterTripSchema.pick({
 
 export type CreateTripByUserIdResponse = z.infer<typeof CreateTripByUserIdResponseSchema>;
 
-export const CompleteTripByIdQueryResultSchema = MasterTripSchema.pick({
+export const CompleteTripQueryResultSchema = MasterTripSchema.pick({
   id: true,
 });
 
-export type CompleteTripByIdQueryResult = z.infer<typeof CompleteTripByIdQueryResultSchema>;
+export type CompleteTripQueryResult = z.infer<typeof CompleteTripQueryResultSchema>;
 
-export const CompleteTripByIdResponseSchema = MasterTripSchema.pick({
+export const CompleteTripResponseSchema = MasterTripSchema.pick({
   id: true,
 });
 
-export type CompleteTripByIdResponse = z.infer<typeof CompleteTripByIdResponseSchema>;
+export type CompleteTripResponse = z.infer<typeof CompleteTripResponseSchema>;
 
 export const MarkPlateSeenQueryResultSchema = MasterSeenPlateSchema.pick({
   id: true,

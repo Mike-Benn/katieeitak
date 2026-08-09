@@ -1,6 +1,6 @@
 import { type Pool, type PoolClient } from 'pg';
 import {
-  type CompleteTripByIdQueryResult,
+  type CompleteTripQueryResult,
   type CreateTripByUserIdQueryResult,
   type GetCurrentTripIdByUserIdQueryResult,
   type GetTripPlateListByTripIdQueryResult,
@@ -10,7 +10,7 @@ import {
 import { AppError } from '@/api/v1/errors/AppError.js';
 import { ERROR_MESSAGES, ERROR_NAMES, SAFE_ERROR_MESSAGES } from '@/api/v1/constants/errors.js';
 import {
-  type CompleteTripByIdDto,
+  type CompleteTripDto,
   type CreateTripByUserIdDto,
   type MarkPlateSeenDto,
   type UnmarkPlateSeenDto,
@@ -32,12 +32,6 @@ interface CreateTripByUserIdParams {
   client?: PoolClient;
 }
 
-interface CompleteTripByUserIdParams {
-  userId: string;
-  data: CompleteTripByIdDto;
-  client?: PoolClient;
-}
-
 interface MarkPlateSeenParams {
   data: MarkPlateSeenDto;
   client?: PoolClient;
@@ -45,6 +39,11 @@ interface MarkPlateSeenParams {
 
 interface UnmarkPlateSeenParams {
   data: UnmarkPlateSeenDto;
+  client?: PoolClient;
+}
+
+interface CompleteTripParams {
+  data: CompleteTripDto;
   client?: PoolClient;
 }
 
@@ -102,16 +101,16 @@ export class TripRepository {
     return newTrip;
   };
 
-  public completeTripById = async ({ userId, data, client }: CompleteTripByUserIdParams) => {
+  public completeTrip = async ({ data, client }: CompleteTripParams) => {
     const connection = client ?? this.pool;
-    const values = [userId, data.id];
+    const values = [data.userId, data.tripId];
     const query = `
       UPDATE trips
       SET date_concluded = NOW()
       WHERE user_id = $1 AND id = $2
       RETURNING id
     `;
-    const { rows } = await connection.query<CompleteTripByIdQueryResult>(query, values);
+    const { rows } = await connection.query<CompleteTripQueryResult>(query, values);
     const completedTrip = rows[0];
     if (!completedTrip) {
       throw new AppError({

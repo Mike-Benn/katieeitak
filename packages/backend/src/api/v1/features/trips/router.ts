@@ -13,7 +13,7 @@ const tripRouter = Router();
 
 tripRouter.get('/', validateToken, setupLocals, tripController.getCurrentTripByUserId);
 tripRouter.post('/', validateToken, setupLocals, tripController.createTripByUserId);
-tripRouter.patch('/:id/complete', validateToken, setupLocals, tripController.completeTripById);
+tripRouter.patch('/:id/complete', validateToken, setupLocals, tripController.completeTrip);
 tripRouter.post('/:tripId/seen-plates/', validateToken, setupLocals, tripController.markPlateSeen);
 tripRouter.delete(
   '/:tripId/seen-plates/:plateId',

@@ -2,7 +2,7 @@ import { type TripService } from '@/api/v1/features/trips/service.js';
 import type { Request, Response } from 'express';
 import { ApiResponse } from '@/api/v1/responses/ApiResponse.js';
 import {
-  type CompleteTripByIdResponse,
+  type CompleteTripResponse,
   CreateTripByUserIdRequestBodySchema,
   type CreateTripByUserIdResponse,
   type GetCurrentTripByUserIdResponse,
@@ -48,7 +48,7 @@ export class TripController {
     );
   };
 
-  public completeTripById = async (req: Request, res: Response) => {
+  public completeTrip = async (req: Request, res: Response) => {
     const userId = res.locals.userId as string;
     const { id } = req.params;
     const parsedId = parseValue({
@@ -57,11 +57,12 @@ export class TripController {
       message: ERROR_MESSAGES.INVALID_ID_PATH_PARAMETER_FORMAT,
     });
     const data = {
-      id: parsedId,
+      tripId: parsedId,
+      userId,
     };
-    const completedTrip = await this.tripService.completeTripById({ userId, data });
+    const completedTrip = await this.tripService.completeTrip({ data });
     return res.status(200).json(
-      ApiResponse.success<CompleteTripByIdResponse>({
+      ApiResponse.success<CompleteTripResponse>({
         data: completedTrip,
       }),
     );
