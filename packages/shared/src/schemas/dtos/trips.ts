@@ -62,6 +62,7 @@ export const GetCurrentTripByUserIdResponseSchema = z
   .object({
     plateList: z.array(GetTripPlateListByTripIdQueryResultSchema),
     tripId: z.string(),
+    title: z.string(),
   })
   .nullable();
 

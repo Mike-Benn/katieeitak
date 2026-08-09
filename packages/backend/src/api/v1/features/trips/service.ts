@@ -44,6 +44,7 @@ export class TripService {
     return {
       plateList,
       tripId: trip.id,
+      title: trip.title,
     };
   };
 
