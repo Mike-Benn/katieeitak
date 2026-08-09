@@ -34,7 +34,7 @@ export function LicensePlatesDashboard() {
             )}
           </Tabs.Panel>
           <Tabs.Panel value="past" className="flex flex-col flex-1">
-            <p>Test</p>
+            <p>TODO</p>
           </Tabs.Panel>
         </div>
       </Tabs.Root>
