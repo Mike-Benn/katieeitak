@@ -44,7 +44,7 @@ export function DeleteAnxietyEventAlert({
 
             <div className="flex justify-end gap-2.5">
               <Button
-                className="text-sm border border-black rounded-sm px-3 py-1"
+                className="text-sm border border-black font-semibold rounded-sm px-3 py-1"
                 onClick={() => {
                   setOpen(false);
                 }}
@@ -52,7 +52,7 @@ export function DeleteAnxietyEventAlert({
                 Cancel
               </Button>
               <Button
-                className="bg-red-600 text-white text-sm rounded-sm px-3 py-1"
+                className="bg-red-600 text-white text-sm font-semibold rounded-sm px-3 py-1"
                 onClick={() => {
                   mutate(
                     { id: anxietyEvent.id },
