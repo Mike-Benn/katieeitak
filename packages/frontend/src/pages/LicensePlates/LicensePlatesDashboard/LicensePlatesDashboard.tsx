@@ -11,7 +11,7 @@ export function LicensePlatesDashboard() {
         <h1 className="text-2xl font-bold font-serif">Trips</h1>
       </div>
       <Tabs.Root className="w-full flex-1 flex flex-col" defaultValue="current">
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-col gap-1">
           <Tabs.List className="relative flex flex-row gap-3">
             <Tabs.Tab
               value="current"
@@ -27,8 +27,8 @@ export function LicensePlatesDashboard() {
             </Tabs.Tab>
           </Tabs.List>
         </div>
-        <div className="flex flex-col pt-6 flex-1">
-          <Tabs.Panel value="current" className="flex flex-col flex-1">
+        <div className="flex flex-col flex-1">
+          <Tabs.Panel value="current" className="flex flex-col flex-1 pt-2">
             {!currentTripQuery.isFetching && !currentTripQuery.isPending && (
               <LicensePlatesList currentTrip={currentTripQuery.data} />
             )}
