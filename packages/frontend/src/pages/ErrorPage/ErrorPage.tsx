@@ -17,7 +17,7 @@ export function ErrorPage() {
         to="/"
         className="relative rounded-lg bg-mainbtn py-3 text-white px-4 w-full flex justify-center font-bold"
       >
-        Back to home
+        Go back
       </Link>
     </PageWrapper>
   );
