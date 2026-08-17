@@ -27,6 +27,7 @@ import {
   type TripDescriptionsCursor,
   type TripStatus,
   type GetTripDescriptionsResponse,
+  type GetTripDataResponse,
 } from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
@@ -98,6 +99,11 @@ interface CompleteTripParams {
 interface GetTripDescriptionsParams {
   pageParam: TripDescriptionsCursor | null;
   status: TripStatus;
+  signal: AbortSignal;
+}
+
+interface GetTripDataParams {
+  tripId: string;
   signal: AbortSignal;
 }
 
@@ -217,6 +223,12 @@ export const api = {
       `/trips`,
       body,
     );
+    return response.data.data;
+  },
+  getTripData: async ({ tripId, signal }: GetTripDataParams) => {
+    const response = await apiClient.get<SuccessResponse<GetTripDataResponse>>(`/trips/${tripId}`, {
+      signal,
+    });
     return response.data.data;
   },
 
