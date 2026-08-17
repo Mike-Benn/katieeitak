@@ -10,9 +10,7 @@ export function LicensePlateListHeader({ title, plateCount, tripId }: LicensePla
   return (
     <div className="bg-mainbtn flex flex-col rounded-xl text-white p-4 gap-2">
       <div className="flex justify-between items-center gap-1">
-        <span className="text-slate-100 font-semibold text-lg line-clamp-1">
-          Hey little guy this is a test
-        </span>
+        <span className="text-slate-100 font-semibold text-lg line-clamp-1">{title}</span>
         <CompleteTripAlert
           tripId={tripId}
           className="bg-white text-mainbtn flex items-center justify-center px-2 py-2 rounded-lg"
