@@ -1,0 +1,1 @@
+export { MissingResourcePage } from './MissingResourcePage';
