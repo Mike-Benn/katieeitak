@@ -100,7 +100,7 @@ export type GetCurrentTripIdByUserIdQueryResult = z.infer<
   typeof GetCurrentTripIdByUserIdQueryResultSchema
 >;
 
-export const GetTripPlateListByTripIdQueryResultSchema = MasterLicensePlateSchema.pick({
+export const GetTripDataQueryResultSchema = MasterLicensePlateSchema.pick({
   id: true,
   name: true,
   nickname: true,
@@ -109,19 +109,17 @@ export const GetTripPlateListByTripIdQueryResultSchema = MasterLicensePlateSchem
   date_seen: z.iso.datetime().nullable(),
 });
 
-export type GetTripPlateListByTripIdQueryResult = z.infer<
-  typeof GetTripPlateListByTripIdQueryResultSchema
->;
+export type GetTripDataQueryResult = z.infer<typeof GetTripDataQueryResultSchema>;
 
-export const GetCurrentTripByUserIdResponseSchema = z
+export const GetTripDataResponseSchema = z
   .object({
-    plateList: z.array(GetTripPlateListByTripIdQueryResultSchema),
+    plateList: z.array(GetTripDataQueryResultSchema),
     tripId: z.string(),
     title: z.string(),
   })
   .nullable();
 
-export type GetCurrentTripByUserIdResponse = z.infer<typeof GetCurrentTripByUserIdResponseSchema>;
+export type GetTripDataResponse = z.infer<typeof GetTripDataResponseSchema>;
 
 export const LicensePlateSchema = MasterLicensePlateSchema.pick({
   id: true,
@@ -198,3 +196,10 @@ export const UnmarkPlateSeenResponseSchema = MasterSeenPlateSchema.pick({
 });
 
 export type UnmarkPlateSeenResponse = z.infer<typeof UnmarkPlateSeenResponseSchema>;
+
+export const VerifyTripOwnershipQueryResultSchema = MasterTripSchema.pick({
+  id: true,
+  title: true,
+});
+
+export type VerifyTripOwnershipQueryResult = z.infer<typeof VerifyTripOwnershipQueryResultSchema>;

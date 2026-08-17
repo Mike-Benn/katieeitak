@@ -12,6 +12,7 @@ const tripController = new TripController(tripService);
 const tripRouter = Router();
 
 tripRouter.get('/', validateToken, setupLocals, tripController.getTripDescriptions);
+tripRouter.get('/:id', validateToken, setupLocals, tripController.getTripData);
 tripRouter.post('/', validateToken, setupLocals, tripController.createTripByUserId);
 tripRouter.patch('/:id/complete', validateToken, setupLocals, tripController.completeTrip);
 tripRouter.post('/:tripId/seen-plates/', validateToken, setupLocals, tripController.markPlateSeen);

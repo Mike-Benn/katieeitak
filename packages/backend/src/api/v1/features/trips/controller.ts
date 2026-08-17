@@ -10,6 +10,7 @@ import {
   type MarkPlateSeenResponse,
   type UnmarkPlateSeenResponse,
   type GetTripDescriptionsResponse,
+  type GetTripDataResponse,
 } from '@katieeitak/shared';
 import { parseValue } from '@/utils/parseValue/parseValue.js';
 import { ResourceIdSchema } from '@/api/v1/requests/types.js';
@@ -58,6 +59,26 @@ export class TripController {
     return res.status(201).json(
       ApiResponse.success<CreateTripByUserIdResponse>({
         data: newTrip,
+      }),
+    );
+  };
+
+  public getTripData = async (req: Request, res: Response) => {
+    const userId = res.locals.userId as string;
+    const { id } = req.params;
+    const parsedId = parseValue({
+      schema: ResourceIdSchema,
+      value: id,
+      message: ERROR_MESSAGES.INVALID_ID_PATH_PARAMETER_FORMAT,
+    });
+    const data = {
+      tripId: parsedId,
+      userId,
+    };
+    const trip = await this.tripService.getTripData({ data });
+    return res.status(200).json(
+      ApiResponse.success<GetTripDataResponse>({
+        data: trip,
       }),
     );
   };

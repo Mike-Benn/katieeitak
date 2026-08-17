@@ -3,10 +3,11 @@ import {
   type GetTripDescriptionsQueryResult,
   type CompleteTripQueryResult,
   type CreateTripByUserIdQueryResult,
-  type GetTripPlateListByTripIdQueryResult,
+  type GetTripDataQueryResult,
   type MarkPlateSeenQueryResult,
   type UnmarkPlateSeenQueryResult,
   type GetCurrentTripIdByUserIdQueryResult,
+  type VerifyTripOwnershipQueryResult,
 } from '@katieeitak/shared';
 import { AppError } from '@/api/v1/errors/AppError.js';
 import { ERROR_MESSAGES, ERROR_NAMES, SAFE_ERROR_MESSAGES } from '@/api/v1/constants/errors.js';
@@ -17,11 +18,6 @@ import {
   type MarkPlateSeenDto,
   type UnmarkPlateSeenDto,
 } from '@/api/v1/features/trips/dto.js';
-
-interface GetTripsPlateListsByTripIdsParams {
-  tripIds: string[];
-  client?: PoolClient;
-}
 
 interface CreateTripByUserIdParams {
   userId: string;
@@ -52,6 +48,17 @@ interface GetTripsDescriptionsParams {
 interface GetCurrentTripByUserIdParams {
   client?: PoolClient;
   userId: string;
+}
+
+interface GetTripDataParams {
+  client?: PoolClient;
+  tripId: string;
+}
+
+interface VerifyTripOwnershipParams {
+  client?: PoolClient;
+  userId: string;
+  tripId: string;
 }
 
 export class TripRepository {
@@ -116,21 +123,39 @@ export class TripRepository {
     return rows[0];
   };
 
-  public getTripPlateListByTripId = async ({
-    tripIds,
-    client,
-  }: GetTripsPlateListsByTripIdsParams) => {
+  public getTripData = async ({ tripId, client }: GetTripDataParams) => {
     const connection = client ?? this.pool;
-    const values = [tripIds];
-
+    const values = [tripId];
     const query = `
-        SELECT p.id, p.name, p.nickname, p.plate_url, sp.date_seen
-        FROM plates AS p
-        LEFT JOIN seen_plates AS sp
-        ON p.id = sp.plate_id AND sp.trip_id = $1
+      SELECT p.id, p.name, p.nickname, p.plate_url, sp.date_seen
+      FROM plates AS p
+      LEFT JOIN seen_plates AS sp
+      ON p.id = sp.plate_id AND sp.trip_id = $1
     `;
-    const { rows } = await connection.query<GetTripPlateListByTripIdQueryResult>(query, values);
+    const { rows } = await connection.query<GetTripDataQueryResult>(query, values);
     return rows;
+  };
+
+  public verifyTripOwnership = async ({ userId, tripId, client }: VerifyTripOwnershipParams) => {
+    const connection = client ?? this.pool;
+    const values = [userId, tripId];
+    const query = `
+        SELECT id, title
+        FROM trips
+        WHERE user_id = $1 AND id = $2
+    `;
+    const { rows } = await connection.query<VerifyTripOwnershipQueryResult>(query, values);
+    if (rows[0]) {
+      return rows[0];
+    } else {
+      throw new AppError({
+        message: ERROR_MESSAGES.RESOURCE_NOT_FOUND,
+        isOperational: true,
+        statusCode: 404,
+        name: ERROR_NAMES.RESOURCE_NOT_FOUND,
+        safeMessage: SAFE_ERROR_MESSAGES.RESOURCE_NOT_FOUND,
+      });
+    }
   };
 
   public createTripByUserId = async ({ userId, data, client }: CreateTripByUserIdParams) => {

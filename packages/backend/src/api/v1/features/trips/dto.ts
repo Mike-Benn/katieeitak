@@ -27,3 +27,8 @@ export interface GetTripsDescriptionsDto {
   limit: number;
   cursor: TripDescriptionsCursor | null;
 }
+
+export interface GetTripDataDto {
+  userId: string;
+  tripId: string;
+}

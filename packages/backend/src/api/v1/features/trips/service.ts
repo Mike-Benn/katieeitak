@@ -2,6 +2,7 @@ import type { TripRepository } from '@/api/v1/features/trips/repository.js';
 import type {
   CompleteTripDto,
   CreateTripByUserIdDto,
+  GetTripDataDto,
   GetTripsDescriptionsDto,
   MarkPlateSeenDto,
   UnmarkPlateSeenDto,
@@ -30,6 +31,10 @@ interface GetTripDescriptionsParams {
   data: GetTripsDescriptionsDto;
 }
 
+interface GetTripDataParams {
+  data: GetTripDataDto;
+}
+
 export class TripService {
   private tripRepository: TripRepository;
   constructor(tripRepository: TripRepository) {
@@ -44,6 +49,19 @@ export class TripService {
   public createTripByUserId = async ({ userId, data }: CreateTripByUserIdParams) => {
     const newTrip = await this.tripRepository.createTripByUserId({ userId, data });
     return newTrip;
+  };
+
+  public getTripData = async ({ data }: GetTripDataParams) => {
+    const trip = await this.tripRepository.verifyTripOwnership({
+      userId: data.userId,
+      tripId: data.tripId,
+    });
+    const plateList = await this.tripRepository.getTripData({ tripId: data.tripId });
+    return {
+      plateList,
+      tripId: trip.id,
+      title: trip.title,
+    };
   };
 
   public completeTrip = async ({ data }: CompleteTripParams) => {
