@@ -2,18 +2,28 @@ import { PageWrapper } from '@/components/PageWrapper';
 import { useCurrentTrip } from '@/hooks/queries/useCurrentTrip';
 import { LicensePlatesList } from '@/components/Lists/LicensePlatesList';
 import { Tabs } from '@base-ui/react';
-import { useSearch } from '@tanstack/react-router';
+import { useSearch, useNavigate } from '@tanstack/react-router';
 
 export function LicensePlatesDashboard() {
   const currentTripQuery = useCurrentTrip();
   const { view } = useSearch({ from: '/MainLayout/license-plates' });
+  const navigate = useNavigate({ from: '/license-plates' });
 
   return (
     <PageWrapper className="p-6 gap-6">
       <div>
         <h1 className="text-2xl font-bold font-serif">Trips</h1>
       </div>
-      <Tabs.Root className="w-full flex-1 flex flex-col" defaultValue={view}>
+      <Tabs.Root
+        className="w-full flex-1 flex flex-col"
+        value={view}
+        onValueChange={(val: 'current' | 'past') => {
+          void navigate({
+            search: (prev) => ({ ...prev, view: val }),
+            replace: true,
+          });
+        }}
+      >
         <div className="flex flex-col gap-1">
           <Tabs.List className="relative flex flex-row gap-3">
             <Tabs.Tab
