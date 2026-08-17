@@ -1,13 +1,43 @@
 import { PageWrapper } from '@/components/PageWrapper';
-import { useCurrentTrip } from '@/hooks/queries/useCurrentTrip';
+import { useTripDescriptions } from '@/hooks/queries/useTripDescriptions';
 import { LicensePlatesList } from '@/components/Lists/LicensePlatesList';
 import { Tabs } from '@base-ui/react';
 import { useSearch, useNavigate } from '@tanstack/react-router';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
+import { PlateRaceDescriptionsList } from '@/components/Lists/PlateRaceDescriptionsList';
+import { LoadMoreButton } from '@/components/Buttons/LoadMoreButton';
+import { SvgSpinner } from '@/components/Loading/SvgSpinner';
 
 export function LicensePlatesDashboard() {
-  const currentTripQuery = useCurrentTrip();
   const { view } = useSearch({ from: '/MainLayout/license-plates' });
+  const currentTripDescriptionsQuery = useTripDescriptions({
+    status: 'current',
+    enabled: 'current' === view,
+  });
+  const pastTripDescriptionsQuery = useTripDescriptions({
+    status: 'past',
+    enabled: 'past' === view,
+  });
   const navigate = useNavigate({ from: '/license-plates' });
+  useEffect(() => {
+    if (
+      currentTripDescriptionsQuery.isFetchNextPageError ||
+      pastTripDescriptionsQuery.isFetchNextPageError
+    ) {
+      toast.error('Failed to load more results, please try again.');
+    }
+  }, [
+    currentTripDescriptionsQuery.isFetchNextPageError,
+    pastTripDescriptionsQuery.isFetchNextPageError,
+  ]);
+  const isCurrentGlobalFetch =
+    currentTripDescriptionsQuery.isFetching && !currentTripDescriptionsQuery.isFetchingNextPage;
+
+  const isPastGlobalFetch =
+    pastTripDescriptionsQuery.isFetching && !pastTripDescriptionsQuery.isFetchingNextPage;
+  const isPastGlobalFetchError =
+    pastTripDescriptionsQuery.isError && !pastTripDescriptionsQuery.isFetchNextPageError;
 
   return (
     <PageWrapper className="p-6 gap-6">
@@ -41,16 +71,42 @@ export function LicensePlatesDashboard() {
           </Tabs.List>
         </div>
         <div className="flex flex-col flex-1">
-          <Tabs.Panel value="current" className="flex flex-col flex-1 pt-2">
-            {!currentTripQuery.isFetching && !currentTripQuery.isPending && (
-              <LicensePlatesList currentTrip={currentTripQuery.data} />
+          <Tabs.Panel value="current" className="flex flex-col flex-1 pt-6">
+            {currentTripDescriptionsQuery.data && !isCurrentGlobalFetch && (
+              <PlateRaceDescriptionsList
+                plateRaceDescriptionsResponse={currentTripDescriptionsQuery.data}
+                hasNextPage={currentTripDescriptionsQuery.hasNextPage}
+                listType="current"
+              />
+            )}
+            {isCurrentGlobalFetch && (
+              <div className="flex-1 flex flex-col justify-center items-center">
+                <SvgSpinner />
+              </div>
             )}
           </Tabs.Panel>
-          <Tabs.Panel value="past" className="flex flex-col flex-1">
-            <p>TODO</p>
+          <Tabs.Panel value="past" className="flex flex-col flex-1 pt-6">
+            {pastTripDescriptionsQuery.data && !isPastGlobalFetch && (
+              <PlateRaceDescriptionsList
+                plateRaceDescriptionsResponse={pastTripDescriptionsQuery.data}
+                hasNextPage={pastTripDescriptionsQuery.hasNextPage}
+                listType="past"
+              />
+            )}
+            {isPastGlobalFetch && (
+              <div className="flex-1 flex flex-col justify-center items-center">
+                <SvgSpinner />
+              </div>
+            )}
           </Tabs.Panel>
         </div>
       </Tabs.Root>
     </PageWrapper>
   );
 }
+
+/*
+{!currentTripQuery.isFetching && !currentTripQuery.isPending && (
+              <LicensePlatesList currentTrip={currentTripQuery.data} />
+            )}
+*/
