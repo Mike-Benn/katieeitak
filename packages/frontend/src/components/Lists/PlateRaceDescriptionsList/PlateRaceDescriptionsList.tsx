@@ -4,6 +4,7 @@ import type { InfiniteData } from '@tanstack/react-query';
 import { Ghost } from 'lucide-react';
 import React from 'react';
 import { PlateRaceDescriptionCard } from '@/components/Cards/PlateRace/PlateRaceDescriptionCard';
+import { Link } from '@tanstack/react-router';
 
 interface PlateRaceDescriptionsListProps {
   plateRaceDescriptionsResponse: InfiniteData<
@@ -47,10 +48,13 @@ export function PlateRaceDescriptionsList({
         // eslint-disable-next-line react/no-array-index-key
         <React.Fragment key={index}>
           {page.tripDescriptions.map((plateRaceDescription) => (
-            <PlateRaceDescriptionCard
+            <Link
+              to="/license-plates/$id"
               key={plateRaceDescription.id}
-              plateRaceDescription={plateRaceDescription}
-            />
+              params={{ id: plateRaceDescription.id }}
+            >
+              <PlateRaceDescriptionCard plateRaceDescription={plateRaceDescription} />
+            </Link>
           ))}
         </React.Fragment>
       ))}
