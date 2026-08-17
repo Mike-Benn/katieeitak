@@ -11,6 +11,7 @@ import { BooksSearch } from '@/pages/Books/BooksSearch';
 import { BookProfile } from '@/pages/Books/BookProfile';
 import { LicensePlatesDashboard } from '@/pages/LicensePlates/LicensePlatesDashboard';
 import { z } from 'zod';
+import { PlateRaceProfile } from '@/pages/LicensePlates/PlateRaceProfile';
 const rootRoute = createRootRoute({
   component: Root,
 });
@@ -89,6 +90,12 @@ const licensePlatesDashboardRoute = createRoute({
   validateSearch: licensePlateDashboardViewSchema,
 });
 
+const plateRaceProfileRoute = createRoute({
+  getParentRoute: () => mainLayoutRoute,
+  path: '/license-plates/$id',
+  component: PlateRaceProfile,
+});
+
 // Misc routes
 
 const errorRoute = createRoute({
@@ -107,6 +114,7 @@ const protectedRouteTree = mainLayoutRoute.addChildren([
   booksSearchRoute,
   bookProfileRoute,
   licensePlatesDashboardRoute,
+  plateRaceProfileRoute,
 ]);
 const routeTree = rootRoute.addChildren([protectedRouteTree, errorRoute]);
 
@@ -117,3 +125,6 @@ declare module '@tanstack/react-router' {
     router: typeof router;
   }
 }
+
+import type { RegisteredRouter } from '@tanstack/react-router';
+export type AppRoutePath = keyof RegisteredRouter['routesByPath'];
