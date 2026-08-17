@@ -57,10 +57,17 @@ export class TripService {
       tripId: data.tripId,
     });
     const plateList = await this.tripRepository.getTripData({ tripId: data.tripId });
+    const count = plateList.reduce((accumulator, plate) => {
+      if (plate.date_seen) {
+        accumulator += 1;
+      }
+      return accumulator;
+    }, 0);
     return {
       plateList,
       tripId: trip.id,
       title: trip.title,
+      count,
     };
   };
 
