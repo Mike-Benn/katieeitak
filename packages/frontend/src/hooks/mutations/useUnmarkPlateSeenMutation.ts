@@ -1,9 +1,13 @@
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { api } from '@/api/api';
 import { toast } from 'sonner';
-import type { GetCurrentTripByUserIdResponse } from '@katieeitak/shared';
+import type { GetTripDataResponse } from '@katieeitak/shared';
 
-export function useUnmarkPlateSeenMutation() {
+interface UseUnmarkPlateSeenMutationParams {
+  tripId: string;
+}
+
+export function useUnmarkPlateSeenMutation({ tripId }: UseUnmarkPlateSeenMutationParams) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.unmarkPlateSeen,
@@ -11,10 +15,11 @@ export function useUnmarkPlateSeenMutation() {
       toast.error('There was an error unmarking plate, please try again.');
     },
     onSuccess: async (data) => {
-      queryClient.setQueryData<GetCurrentTripByUserIdResponse>(['current-trip'], (old) => {
+      queryClient.setQueryData<GetTripDataResponse>(['tripData', tripId], (old) => {
         if (!old) return old;
         return {
           ...old,
+          count: old.count - 1,
           plateList: old.plateList.map((plate) => {
             if (plate.id !== data.plate_id) return plate;
             return {
