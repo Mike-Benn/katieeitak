@@ -116,6 +116,7 @@ export const GetTripDataResponseSchema = z
     plateList: z.array(GetTripDataQueryResultSchema),
     tripId: z.string(),
     title: z.string(),
+    count: z.number().int().nonnegative().max(51),
   })
   .nullable();
 
