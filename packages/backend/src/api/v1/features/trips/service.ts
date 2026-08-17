@@ -2,15 +2,12 @@ import type { TripRepository } from '@/api/v1/features/trips/repository.js';
 import type {
   CompleteTripDto,
   CreateTripByUserIdDto,
+  GetTripsDescriptionsDto,
   MarkPlateSeenDto,
   UnmarkPlateSeenDto,
 } from '@/api/v1/features/trips/dto.js';
 import { AppError } from '@/api/v1/errors/AppError.js';
 import { ERROR_MESSAGES, ERROR_NAMES, SAFE_ERROR_MESSAGES } from '@/api/v1/constants/errors.js';
-
-interface GetCurrentTripByUserIdParams {
-  userId: string;
-}
 
 interface CreateTripByUserIdParams {
   userId: string;
@@ -29,23 +26,19 @@ interface UnmarkPlateSeenParams {
   data: UnmarkPlateSeenDto;
 }
 
+interface GetTripDescriptionsParams {
+  data: GetTripsDescriptionsDto;
+}
+
 export class TripService {
   private tripRepository: TripRepository;
   constructor(tripRepository: TripRepository) {
     this.tripRepository = tripRepository;
   }
 
-  public getCurrentTripByUserId = async ({ userId }: GetCurrentTripByUserIdParams) => {
-    const trip = await this.tripRepository.getCurrentTripByUserId({ userId });
-    if (!trip) {
-      return null;
-    }
-    const plateList = await this.tripRepository.getTripPlateListByTripId({ tripId: trip.id });
-    return {
-      plateList,
-      tripId: trip.id,
-      title: trip.title,
-    };
+  public getTripDescriptions = async ({ data }: GetTripDescriptionsParams) => {
+    const trips = await this.tripRepository.getTripDescriptions({ data });
+    return trips;
   };
 
   public createTripByUserId = async ({ userId, data }: CreateTripByUserIdParams) => {

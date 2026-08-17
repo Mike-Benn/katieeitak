@@ -5,10 +5,11 @@ import {
   type CompleteTripResponse,
   CreateTripByUserIdRequestBodySchema,
   type CreateTripByUserIdResponse,
-  type GetCurrentTripByUserIdResponse,
+  GetTripDescriptionsRequestQuerySchema,
   MarkPlateSeenRequestBodySchema,
   type MarkPlateSeenResponse,
   type UnmarkPlateSeenResponse,
+  type GetTripDescriptionsResponse,
 } from '@katieeitak/shared';
 import { parseValue } from '@/utils/parseValue/parseValue.js';
 import { ResourceIdSchema } from '@/api/v1/requests/types.js';
@@ -20,12 +21,25 @@ export class TripController {
     this.tripService = tripService;
   }
 
-  public getCurrentTripByUserId = async (_: Request, res: Response) => {
+  public getTripDescriptions = async (req: Request, res: Response) => {
     const userId = res.locals.userId as string;
-    const currentTrip = await this.tripService.getCurrentTripByUserId({ userId });
+    const parsedParams = parseValue({
+      schema: GetTripDescriptionsRequestQuerySchema,
+      value: req.query,
+      message: 'Invalid query parameters.',
+    });
+    const cursor =
+      parsedParams.cursorDate && parsedParams.cursorId
+        ? { date: parsedParams.cursorDate, id: parsedParams.cursorId }
+        : null;
+    const data = { userId, status: parsedParams.status, limit: parsedParams.limit, cursor };
+    const result = await this.tripService.getTripDescriptions({ data });
     return res.status(200).json(
-      ApiResponse.success<GetCurrentTripByUserIdResponse>({
-        data: currentTrip,
+      ApiResponse.success<GetTripDescriptionsResponse>({
+        data: {
+          tripDescriptions: result.items,
+          nextCursor: result.nextCursor,
+        },
       }),
     );
   };

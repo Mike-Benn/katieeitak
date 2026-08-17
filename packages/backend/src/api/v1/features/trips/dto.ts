@@ -1,3 +1,5 @@
+import type { TripDescriptionsCursor, TripStatus } from '@katieeitak/shared';
+
 export interface CreateTripByUserIdDto {
   title: string;
 }
@@ -17,4 +19,11 @@ export interface UnmarkPlateSeenDto {
 export interface CompleteTripDto {
   userId: string;
   tripId: string;
+}
+
+export interface GetTripsDescriptionsDto {
+  userId: string;
+  status: TripStatus;
+  limit: number;
+  cursor: TripDescriptionsCursor | null;
 }

@@ -34,11 +34,66 @@ export const MasterTripSchema = z.object({
 
 export type MasterTrip = z.infer<typeof MasterTripSchema>;
 
-export const GetCurrentTripIdByUserIdQueryResultSchema = MasterTripSchema.pick({
+export const TripStatusSchema = z.enum(['current', 'past']);
+
+export type TripStatus = z.infer<typeof TripStatusSchema>;
+
+export const TripDescriptionsCursorSchema = z.object({
+  date: z.string(),
+  id: z.string(),
+});
+
+export type TripDescriptionsCursor = z.infer<typeof TripDescriptionsCursorSchema>;
+
+export const GetTripDescriptionsRequestQuerySchema = z
+  .object({
+    cursorDate: z.iso.datetime().optional(),
+    cursorId: z
+      .string()
+      .regex(/^\d+$/, {
+        message: 'Invalid ID format. Expected a numeric database ID.',
+      })
+      .optional(),
+    status: TripStatusSchema,
+    limit: z.coerce.number().int().positive().max(5).default(5),
+  })
+  .refine((data) => (data.cursorDate === null) === (data.cursorId === null), {
+    message: 'cursorDate and cursorId must be provided together',
+  });
+
+export type GetTripDescriptionsRequestQuery = z.infer<typeof GetTripDescriptionsRequestQuerySchema>;
+
+export const GetTripDescriptionsQueryResultSchema = MasterTripSchema.pick({
   id: true,
-  user_id: true,
   title: true,
   created_at: true,
+  date_concluded: true,
+}).extend({
+  plates_seen_count: z.number().int().nonnegative(),
+});
+
+export type GetTripDescriptionsQueryResult = z.infer<typeof GetTripDescriptionsQueryResultSchema>;
+
+export const PlateRaceDescriptionSchema = MasterTripSchema.pick({
+  id: true,
+  created_at: true,
+  date_concluded: true,
+  title: true,
+}).extend({
+  plates_seen_count: z.number().int().nonnegative(),
+});
+
+export type PlateRaceDescription = z.infer<typeof PlateRaceDescriptionSchema>;
+
+export const GetTripDescriptionsResponseSchema = z.object({
+  tripDescriptions: z.array(PlateRaceDescriptionSchema),
+  nextCursor: TripDescriptionsCursorSchema.nullable(),
+});
+
+export type GetTripDescriptionsResponse = z.infer<typeof GetTripDescriptionsResponseSchema>;
+
+export const GetCurrentTripIdByUserIdQueryResultSchema = MasterTripSchema.pick({
+  id: true,
 });
 
 export type GetCurrentTripIdByUserIdQueryResult = z.infer<

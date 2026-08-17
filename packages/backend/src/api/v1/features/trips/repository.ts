@@ -1,28 +1,25 @@
 import { type Pool, type PoolClient } from 'pg';
 import {
+  type GetTripDescriptionsQueryResult,
   type CompleteTripQueryResult,
   type CreateTripByUserIdQueryResult,
-  type GetCurrentTripIdByUserIdQueryResult,
   type GetTripPlateListByTripIdQueryResult,
   type MarkPlateSeenQueryResult,
   type UnmarkPlateSeenQueryResult,
+  type GetCurrentTripIdByUserIdQueryResult,
 } from '@katieeitak/shared';
 import { AppError } from '@/api/v1/errors/AppError.js';
 import { ERROR_MESSAGES, ERROR_NAMES, SAFE_ERROR_MESSAGES } from '@/api/v1/constants/errors.js';
 import {
   type CompleteTripDto,
   type CreateTripByUserIdDto,
+  type GetTripsDescriptionsDto,
   type MarkPlateSeenDto,
   type UnmarkPlateSeenDto,
 } from '@/api/v1/features/trips/dto.js';
 
-interface GetCurrentTripByUserIdParams {
-  userId: string;
-  client?: PoolClient;
-}
-
-interface GetTripPlateListByTripIdParams {
-  tripId: string;
+interface GetTripsPlateListsByTripIdsParams {
+  tripIds: string[];
   client?: PoolClient;
 }
 
@@ -47,28 +44,85 @@ interface CompleteTripParams {
   client?: PoolClient;
 }
 
+interface GetTripsDescriptionsParams {
+  client?: PoolClient;
+  data: GetTripsDescriptionsDto;
+}
+
+interface GetCurrentTripByUserIdParams {
+  client?: PoolClient;
+  userId: string;
+}
+
 export class TripRepository {
   private pool: Pool;
   constructor(pool: Pool) {
     this.pool = pool;
   }
 
-  public getCurrentTripByUserId = async ({ userId, client }: GetCurrentTripByUserIdParams) => {
+  public getTripDescriptions = async ({ client, data }: GetTripsDescriptionsParams) => {
+    const connection = client ?? this.pool;
+    const values: unknown[] = [data.userId];
+    let cursorClause = ``;
+
+    if (data.cursor) {
+      values.push(data.cursor.date, data.cursor.id);
+      cursorClause = ' AND (t.date_concluded, t.id) > ($2, $3)';
+    }
+
+    values.push(data.limit + 1);
+
+    const statusClause =
+      data.status === 'current'
+        ? ' AND t.date_concluded IS NULL'
+        : ' AND t.date_concluded IS NOT NULL';
+
+    const query = `
+    SELECT 
+      t.id, 
+      t.title, 
+      t.created_at, 
+      t.date_concluded,
+      COUNT(sp.trip_id)::int AS plates_seen_count
+    FROM trips t
+    LEFT JOIN seen_plates sp ON t.id = sp.trip_id
+    WHERE t.user_id = $1 ${statusClause} ${cursorClause}
+    GROUP BY t.id
+    ORDER BY t.date_concluded ASC, t.id ASC
+    LIMIT $${values.length}
+  `;
+
+    const { rows } = await connection.query<GetTripDescriptionsQueryResult>(query, values);
+    const hasMore = rows.length > data.limit;
+    const items = hasMore ? rows.slice(0, data.limit) : rows;
+    const last = items[items.length - 1];
+
+    return {
+      items,
+      nextCursor: hasMore && last ? { date: last.date_concluded, id: last.id } : null,
+    };
+  };
+
+  public getCurrentTripByUserId = async ({ client, userId }: GetCurrentTripByUserIdParams) => {
     const connection = client ?? this.pool;
     const values = [userId];
     const query = `
-        SELECT id, user_id, title, created_at
-        FROM trips
-        WHERE user_id = $1 AND trips.date_concluded IS NULL
-        LIMIT 1
+      SELECT id
+      FROM trips
+      WHERE user_id = $1 AND date_concluded IS NULL
+      LIMIT 1
     `;
     const { rows } = await connection.query<GetCurrentTripIdByUserIdQueryResult>(query, values);
     return rows[0];
   };
 
-  public getTripPlateListByTripId = async ({ tripId, client }: GetTripPlateListByTripIdParams) => {
+  public getTripPlateListByTripId = async ({
+    tripIds,
+    client,
+  }: GetTripsPlateListsByTripIdsParams) => {
     const connection = client ?? this.pool;
-    const values = [tripId];
+    const values = [tripIds];
+
     const query = `
         SELECT p.id, p.name, p.nickname, p.plate_url, sp.date_seen
         FROM plates AS p
