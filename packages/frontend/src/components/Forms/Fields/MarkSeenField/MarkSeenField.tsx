@@ -10,8 +10,8 @@ interface MarkSeenFieldProps {
 }
 
 export function MarkSeenField({ timeSeen, plateId, tripId }: MarkSeenFieldProps) {
-  const markPlateMutation = useMarkPlateSeenMutation();
-  const unmarkPlateMutation = useUnmarkPlateSeenMutation();
+  const markPlateMutation = useMarkPlateSeenMutation({ tripId });
+  const unmarkPlateMutation = useUnmarkPlateSeenMutation({ tripId });
 
   const isChecked = timeSeen !== null;
   const isPending = markPlateMutation.isPending || unmarkPlateMutation.isPending;
