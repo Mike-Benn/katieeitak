@@ -78,10 +78,15 @@ const bookProfileRoute = createRoute({
 
 // License plates
 
+const licensePlateDashboardViewSchema = z.object({
+  view: z.enum(['current', 'past']).default('current').catch('current'),
+});
+
 const licensePlatesDashboardRoute = createRoute({
   getParentRoute: () => mainLayoutRoute,
   path: '/license-plates',
   component: LicensePlatesDashboard,
+  validateSearch: licensePlateDashboardViewSchema,
 });
 
 // Misc routes
