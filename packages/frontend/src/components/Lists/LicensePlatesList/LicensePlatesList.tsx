@@ -22,6 +22,7 @@ export function LicensePlatesList({ tripData }: LicensePlatesListProps) {
         title={tripData.trip.title}
         plateCount={tripData.count}
         tripId={tripData.trip.id}
+        dateConcluded={tripData.trip.date_concluded}
       />
       <div className="flex flex-col gap-3">
         {tripData.plateList.map((licensePlate) => (

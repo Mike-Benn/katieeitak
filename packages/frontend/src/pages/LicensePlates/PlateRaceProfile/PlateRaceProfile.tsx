@@ -17,7 +17,6 @@ export function PlateRaceProfile() {
   ) {
     return <MissingResourcePage backTo="/license-plates" />;
   }
-
   return (
     <PageWrapper className="p-6 gap-6">
       {!tripQuery.isFetching && <LicensePlatesList tripData={tripQuery.data} />}

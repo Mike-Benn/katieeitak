@@ -1,8 +1,6 @@
 import { useCompleteTripMutation } from '@/hooks/mutations/useCompleteTripMutation';
 import { useState } from 'react';
 import { AlertDialog, Button } from '@base-ui/react';
-import { Check } from 'lucide-react';
-import { toast } from 'sonner';
 
 interface CompleteTripAlertProps {
   tripId: string;
@@ -10,7 +8,7 @@ interface CompleteTripAlertProps {
 }
 
 export function CompleteTripAlert({ tripId, className = '' }: CompleteTripAlertProps) {
-  const { mutate } = useCompleteTripMutation();
+  const { mutate } = useCompleteTripMutation({ tripId });
   const [open, setOpen] = useState(false);
 
   return (
@@ -22,7 +20,6 @@ export function CompleteTripAlert({ tripId, className = '' }: CompleteTripAlertP
     >
       <div className={className}>
         <AlertDialog.Trigger className="flex flex-row items-center gap-1">
-          <Check size={16} />
           <span className="text-xs font-bold">Complete</span>
         </AlertDialog.Trigger>
       </div>
@@ -49,15 +46,7 @@ export function CompleteTripAlert({ tripId, className = '' }: CompleteTripAlertP
               <Button
                 className="bg-green-800 text-white text-sm font-semibold rounded-sm px-3 py-1"
                 onClick={() => {
-                  mutate(
-                    { tripId },
-                    {
-                      onSuccess: () => {
-                        setOpen(false);
-                        toast.success('Trip completed successfully.');
-                      },
-                    },
-                  );
+                  mutate({ tripId });
                 }}
               >
                 Complete
