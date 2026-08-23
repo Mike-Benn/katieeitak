@@ -19,12 +19,15 @@ import {
   type UncompleteAnxietyEventByIdResponse,
   type DeleteAnxietyEventByIdResponse,
   type AnxietyEventOccurrenceType,
-  type GetCurrentTripByUserIdResponse,
   type CreateTripByUserIdRequestBody,
   type CreateTripByUserIdResponse,
   type MarkPlateSeenResponse,
   type UnmarkPlateSeenResponse,
   type CompleteTripResponse,
+  type TripDescriptionsCursor,
+  type GetTripDataResponse,
+  type GetCurrentTripDescriptionResponse,
+  type GetPastTripDescriptionsResponse,
 } from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
@@ -75,10 +78,6 @@ interface DeleteAnxietyEventByIdParams {
   id: string;
 }
 
-interface GetCurrentTripByUserIdParams {
-  signal: AbortSignal;
-}
-
 interface CreateTripByUserIdParams {
   body: CreateTripByUserIdRequestBody;
 }
@@ -95,6 +94,20 @@ interface UnmarkPlateSeenParams {
 
 interface CompleteTripParams {
   tripId: string;
+}
+
+interface GetTripDataParams {
+  tripId: string;
+  signal: AbortSignal;
+}
+
+interface GetCurrentTripDescriptionParams {
+  signal: AbortSignal;
+}
+
+interface GetPastTripDescriptionsParams {
+  signal: AbortSignal;
+  pageParam: TripDescriptionsCursor | null;
 }
 
 // TODO - Error handling
@@ -208,18 +221,17 @@ export const api = {
     );
     return response.data.data;
   },
-  getCurrentTripByUserId: async ({ signal }: GetCurrentTripByUserIdParams) => {
-    const response = await apiClient.get<SuccessResponse<GetCurrentTripByUserIdResponse>>(
-      `/trips`,
-      { signal },
-    );
-    return response.data.data;
-  },
   createTripByUserId: async ({ body }: CreateTripByUserIdParams) => {
     const response = await apiClient.post<SuccessResponse<CreateTripByUserIdResponse>>(
       `/trips`,
       body,
     );
+    return response.data.data;
+  },
+  getTripData: async ({ tripId, signal }: GetTripDataParams) => {
+    const response = await apiClient.get<SuccessResponse<GetTripDataResponse>>(`/trips/${tripId}`, {
+      signal,
+    });
     return response.data.data;
   },
 
@@ -243,6 +255,25 @@ export const api = {
       SuccessResponse<CompleteTripResponse>,
       AxiosResponse<SuccessResponse<CompleteTripResponse>>
     >(`/trips/${tripId}/complete`);
+    return response.data.data;
+  },
+  getPastTripDescriptions: async ({ pageParam, signal }: GetPastTripDescriptionsParams) => {
+    const params = new URLSearchParams({ limit: '5' });
+    if (pageParam) {
+      params.set('cursorDate', pageParam.date);
+      params.set('cursorId', pageParam.id);
+    }
+    const response = await apiClient.get<SuccessResponse<GetPastTripDescriptionsResponse>>(
+      `/trips/past?${params}`,
+      { signal },
+    );
+    return response.data.data;
+  },
+  getCurrentTripDescription: async ({ signal }: GetCurrentTripDescriptionParams) => {
+    const response = await apiClient.get<SuccessResponse<GetCurrentTripDescriptionResponse>>(
+      '/trips/current',
+      { signal },
+    );
     return response.data.data;
   },
 };

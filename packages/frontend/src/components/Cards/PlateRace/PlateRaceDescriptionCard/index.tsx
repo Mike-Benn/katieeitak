@@ -1,0 +1,1 @@
+export { PlateRaceDescriptionCard } from './PlateRaceDescriptionCard';

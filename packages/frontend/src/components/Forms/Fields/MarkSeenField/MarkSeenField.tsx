@@ -7,11 +7,12 @@ interface MarkSeenFieldProps {
   timeSeen: string | null;
   plateId: number;
   tripId: string;
+  isDisabled: boolean;
 }
 
-export function MarkSeenField({ timeSeen, plateId, tripId }: MarkSeenFieldProps) {
-  const markPlateMutation = useMarkPlateSeenMutation();
-  const unmarkPlateMutation = useUnmarkPlateSeenMutation();
+export function MarkSeenField({ timeSeen, plateId, tripId, isDisabled }: MarkSeenFieldProps) {
+  const markPlateMutation = useMarkPlateSeenMutation({ tripId });
+  const unmarkPlateMutation = useUnmarkPlateSeenMutation({ tripId });
 
   const isChecked = timeSeen !== null;
   const isPending = markPlateMutation.isPending || unmarkPlateMutation.isPending;
@@ -19,7 +20,7 @@ export function MarkSeenField({ timeSeen, plateId, tripId }: MarkSeenFieldProps)
   return (
     <Checkbox.Root
       checked={isChecked}
-      disabled={isPending}
+      disabled={isPending || isDisabled}
       onCheckedChange={() => {
         if (isChecked) {
           unmarkPlateMutation.mutate({ plateId, tripId });

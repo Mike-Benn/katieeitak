@@ -46,7 +46,7 @@ export const GetAnxietyEventsRequestQuerySchema = z
     cursorId: z
       .string()
       .regex(/^\d+$/, {
-        message: 'Invalid ID format. Expcted a numeric database ID.',
+        message: 'Invalid ID format. Expected a numeric database ID.',
       })
       .optional(),
     status: AnxietyEventStatusSchema,

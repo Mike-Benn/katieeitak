@@ -2,10 +2,14 @@ import { type Pool, type PoolClient } from 'pg';
 import {
   type CompleteTripQueryResult,
   type CreateTripByUserIdQueryResult,
-  type GetCurrentTripIdByUserIdQueryResult,
-  type GetTripPlateListByTripIdQueryResult,
+  type GetTripDataQueryResult,
   type MarkPlateSeenQueryResult,
   type UnmarkPlateSeenQueryResult,
+  type GetCurrentTripIdByUserIdQueryResult,
+  type GetTripByTripIdAndUserIdQueryResult,
+  type GetCurrentTripDescriptionQueryResult,
+  type TripDescriptionsCursor,
+  type GetPastTripDescriptionsQueryResult,
 } from '@katieeitak/shared';
 import { AppError } from '@/api/v1/errors/AppError.js';
 import { ERROR_MESSAGES, ERROR_NAMES, SAFE_ERROR_MESSAGES } from '@/api/v1/constants/errors.js';
@@ -15,16 +19,6 @@ import {
   type MarkPlateSeenDto,
   type UnmarkPlateSeenDto,
 } from '@/api/v1/features/trips/dto.js';
-
-interface GetCurrentTripByUserIdParams {
-  userId: string;
-  client?: PoolClient;
-}
-
-interface GetTripPlateListByTripIdParams {
-  tripId: string;
-  client?: PoolClient;
-}
 
 interface CreateTripByUserIdParams {
   userId: string;
@@ -47,36 +41,150 @@ interface CompleteTripParams {
   client?: PoolClient;
 }
 
+interface GetCurrentTripByUserIdParams {
+  client?: PoolClient;
+  userId: string;
+}
+
+interface GetTripDataParams {
+  client?: PoolClient;
+  tripId: string;
+}
+
+interface GetTripByTripIdAndUserIdParams {
+  client?: PoolClient;
+  userId: string;
+  tripId: string;
+}
+
+interface GetCurrentTripDescription {
+  client?: PoolClient;
+  userId: string;
+}
+
+interface GetPastTripDescriptionsParams {
+  limit: number;
+  client?: PoolClient;
+  userId: string;
+  cursor: TripDescriptionsCursor | null;
+}
+
 export class TripRepository {
   private pool: Pool;
   constructor(pool: Pool) {
     this.pool = pool;
   }
 
-  public getCurrentTripByUserId = async ({ userId, client }: GetCurrentTripByUserIdParams) => {
+  public getCurrentTripDescription = async ({ client, userId }: GetCurrentTripDescription) => {
     const connection = client ?? this.pool;
     const values = [userId];
     const query = `
-        SELECT id, user_id, title, created_at
-        FROM trips
-        WHERE user_id = $1 AND trips.date_concluded IS NULL
-        LIMIT 1
+    SELECT 
+      t.id, 
+      t.title, 
+      t.created_at, 
+      t.date_concluded,
+      COUNT(sp.trip_id)::int AS plates_seen_count
+    FROM trips t
+    LEFT JOIN seen_plates sp ON t.id = sp.trip_id
+    WHERE t.user_id = $1 AND t.date_concluded IS NULL
+    GROUP BY t.id`;
+    const { rows } = await connection.query<GetCurrentTripDescriptionQueryResult>(query, values);
+    return rows[0] || null;
+  };
+
+  public getPastTripDescriptions = async ({
+    client,
+    limit,
+    userId,
+    cursor,
+  }: GetPastTripDescriptionsParams) => {
+    const connection = client ?? this.pool;
+    const values: unknown[] = [userId];
+    let cursorClause = '';
+
+    if (cursor) {
+      values.push(cursor.date, cursor.id);
+      cursorClause = `AND (date_trunc('milliseconds', t.date_concluded), t.id) > (date_trunc('milliseconds', $2::timestamptz), $3)`;
+    }
+
+    values.push(limit + 1);
+
+    const query = `
+      SELECT 
+        t.id, 
+        t.title, 
+        t.created_at, 
+        date_trunc('milliseconds', t.date_concluded) AS date_concluded,
+        COUNT(sp.trip_id)::int AS plates_seen_count
+      FROM trips t
+      LEFT JOIN seen_plates sp ON t.id = sp.trip_id
+      WHERE t.user_id = $1 AND t.date_concluded IS NOT NULL ${cursorClause}
+      GROUP BY t.id
+      ORDER BY date_trunc('milliseconds', t.date_concluded) ASC, t.id ASC
+      LIMIT $${values.length}
+    `;
+
+    const { rows } = await connection.query<GetPastTripDescriptionsQueryResult>(query, values);
+    const hasMore = rows.length > limit;
+    const items = hasMore ? rows.slice(0, limit) : rows;
+    const last = items[items.length - 1];
+
+    return {
+      items,
+      nextCursor: hasMore && last ? { date: last.date_concluded, id: last.id } : null,
+    };
+  };
+
+  public getCurrentTripByUserId = async ({ client, userId }: GetCurrentTripByUserIdParams) => {
+    const connection = client ?? this.pool;
+    const values = [userId];
+    const query = `
+      SELECT id
+      FROM trips
+      WHERE user_id = $1 AND date_concluded IS NULL
+      LIMIT 1
     `;
     const { rows } = await connection.query<GetCurrentTripIdByUserIdQueryResult>(query, values);
     return rows[0];
   };
 
-  public getTripPlateListByTripId = async ({ tripId, client }: GetTripPlateListByTripIdParams) => {
+  public getTripData = async ({ tripId, client }: GetTripDataParams) => {
     const connection = client ?? this.pool;
     const values = [tripId];
     const query = `
-        SELECT p.id, p.name, p.nickname, p.plate_url, sp.date_seen
-        FROM plates AS p
-        LEFT JOIN seen_plates AS sp
-        ON p.id = sp.plate_id AND sp.trip_id = $1
+      SELECT p.id, p.name, p.nickname, p.plate_url, sp.date_seen
+      FROM plates AS p
+      LEFT JOIN seen_plates AS sp
+      ON p.id = sp.plate_id AND sp.trip_id = $1
     `;
-    const { rows } = await connection.query<GetTripPlateListByTripIdQueryResult>(query, values);
+    const { rows } = await connection.query<GetTripDataQueryResult>(query, values);
     return rows;
+  };
+  public getTripByTripIdAndUserId = async ({
+    userId,
+    tripId,
+    client,
+  }: GetTripByTripIdAndUserIdParams) => {
+    const connection = client ?? this.pool;
+    const values = [userId, tripId];
+    const query = `
+      SELECT id, title, created_at, date_concluded
+      FROM trips
+      WHERE user_id = $1 AND id = $2
+    `;
+    const { rows } = await connection.query<GetTripByTripIdAndUserIdQueryResult>(query, values);
+    if (rows[0]) {
+      return rows[0];
+    } else {
+      throw new AppError({
+        message: ERROR_MESSAGES.RESOURCE_NOT_FOUND,
+        isOperational: true,
+        statusCode: 404,
+        name: ERROR_NAMES.RESOURCE_NOT_FOUND,
+        safeMessage: SAFE_ERROR_MESSAGES.RESOURCE_NOT_FOUND,
+      });
+    }
   };
 
   public createTripByUserId = async ({ userId, data, client }: CreateTripByUserIdParams) => {

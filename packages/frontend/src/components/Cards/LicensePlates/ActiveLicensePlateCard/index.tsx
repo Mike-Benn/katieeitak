@@ -1,0 +1,1 @@
+export { ActiveLicensePlateCard } from './ActiveLicensePlateCard';

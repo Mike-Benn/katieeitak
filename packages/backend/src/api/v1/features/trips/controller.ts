@@ -5,10 +5,13 @@ import {
   type CompleteTripResponse,
   CreateTripByUserIdRequestBodySchema,
   type CreateTripByUserIdResponse,
-  type GetCurrentTripByUserIdResponse,
   MarkPlateSeenRequestBodySchema,
   type MarkPlateSeenResponse,
   type UnmarkPlateSeenResponse,
+  type GetTripDataResponse,
+  type GetCurrentTripDescriptionResponse,
+  GetPastTripDescriptionsRequestQuerySchema,
+  type GetPastTripDescriptionsResponse,
 } from '@katieeitak/shared';
 import { parseValue } from '@/utils/parseValue/parseValue.js';
 import { ResourceIdSchema } from '@/api/v1/requests/types.js';
@@ -20,12 +23,38 @@ export class TripController {
     this.tripService = tripService;
   }
 
-  public getCurrentTripByUserId = async (_: Request, res: Response) => {
+  public getPastTripDescriptions = async (req: Request, res: Response) => {
     const userId = res.locals.userId as string;
-    const currentTrip = await this.tripService.getCurrentTripByUserId({ userId });
+    const parsedParams = parseValue({
+      schema: GetPastTripDescriptionsRequestQuerySchema,
+      value: req.query,
+      message: 'Invalid query parameters.',
+    });
+    const cursor =
+      parsedParams.cursorDate && parsedParams.cursorId
+        ? { date: parsedParams.cursorDate, id: parsedParams.cursorId }
+        : null;
+    const data = { userId, limit: parsedParams.limit, cursor };
+    const result = await this.tripService.getPastTripDescriptions({ data });
     return res.status(200).json(
-      ApiResponse.success<GetCurrentTripByUserIdResponse>({
-        data: currentTrip,
+      ApiResponse.success<GetPastTripDescriptionsResponse>({
+        data: {
+          tripDescriptions: result.items,
+          nextCursor: result.nextCursor,
+        },
+      }),
+    );
+  };
+
+  public getCurrentTripDescription = async (_: Request, res: Response) => {
+    const userId = res.locals.userId as string;
+    const data = {
+      userId,
+    };
+    const tripDescription = await this.tripService.getCurrentTripDescription({ data });
+    return res.status(200).json(
+      ApiResponse.success<GetCurrentTripDescriptionResponse>({
+        data: tripDescription,
       }),
     );
   };
@@ -44,6 +73,26 @@ export class TripController {
     return res.status(201).json(
       ApiResponse.success<CreateTripByUserIdResponse>({
         data: newTrip,
+      }),
+    );
+  };
+
+  public getTripData = async (req: Request, res: Response) => {
+    const userId = res.locals.userId as string;
+    const { id } = req.params;
+    const parsedId = parseValue({
+      schema: ResourceIdSchema,
+      value: id,
+      message: ERROR_MESSAGES.INVALID_ID_PATH_PARAMETER_FORMAT,
+    });
+    const data = {
+      tripId: parsedId,
+      userId,
+    };
+    const trip = await this.tripService.getTripData({ data });
+    return res.status(200).json(
+      ApiResponse.success<GetTripDataResponse>({
+        data: trip,
       }),
     );
   };
