@@ -102,23 +102,26 @@ export class TripRepository {
     const connection = client ?? this.pool;
     const values: unknown[] = [userId];
     let cursorClause = '';
+
     if (cursor) {
       values.push(cursor.date, cursor.id);
-      cursorClause = 'AND (t.date_concluded, t.id) > ($2, $3)';
+      cursorClause = `AND (date_trunc('milliseconds', t.date_concluded), t.id) > (date_trunc('milliseconds', $2::timestamptz), $3)`;
     }
+
     values.push(limit + 1);
+
     const query = `
       SELECT 
         t.id, 
         t.title, 
         t.created_at, 
-        t.date_concluded,
+        date_trunc('milliseconds', t.date_concluded) AS date_concluded,
         COUNT(sp.trip_id)::int AS plates_seen_count
       FROM trips t
       LEFT JOIN seen_plates sp ON t.id = sp.trip_id
       WHERE t.user_id = $1 AND t.date_concluded IS NOT NULL ${cursorClause}
       GROUP BY t.id
-      ORDER BY t.date_concluded ASC, t.id ASC
+      ORDER BY date_trunc('milliseconds', t.date_concluded) ASC, t.id ASC
       LIMIT $${values.length}
     `;
 
