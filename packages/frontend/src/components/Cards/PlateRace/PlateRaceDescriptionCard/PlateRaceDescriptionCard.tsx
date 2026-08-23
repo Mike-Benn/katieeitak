@@ -1,30 +1,20 @@
 import type { PlateRaceDescription } from '@katieeitak/shared';
-import { format, isValid, parseISO } from 'date-fns';
 import { Play, Flag } from 'lucide-react';
+import { createReadableDate } from '@/utils/createReadableDate';
 
 interface PlateRaceDescriptionCardProps {
   plateRaceDescription: PlateRaceDescription;
 }
 
 export function PlateRaceDescriptionCard({ plateRaceDescription }: PlateRaceDescriptionCardProps) {
-  let createdAtString: string;
-  let dateConcludedString: string;
-  if (!plateRaceDescription.created_at) {
-    createdAtString = 'Unknown';
-  } else {
-    const parsedCreatedAtDate = parseISO(plateRaceDescription.created_at);
-    createdAtString = isValid(parsedCreatedAtDate)
-      ? format(parsedCreatedAtDate, 'MM/dd/yy')
-      : 'Unknown';
-  }
-  if (!plateRaceDescription.date_concluded) {
-    dateConcludedString = 'N/A';
-  } else {
-    const parsedDateConcludedDate = parseISO(plateRaceDescription.date_concluded);
-    dateConcludedString = isValid(parsedDateConcludedDate)
-      ? format(parsedDateConcludedDate, 'MM/dd/yy')
-      : 'N/A';
-  }
+  const createdAtString = createReadableDate({
+    dateString: plateRaceDescription.created_at,
+    dateStyle: 'MM/dd/yy',
+  });
+  const dateConcludedString = createReadableDate({
+    dateString: plateRaceDescription.date_concluded,
+    dateStyle: 'MM/dd/yy',
+  });
   const plateCountPercent =
     plateRaceDescription.plates_seen_count &&
     plateRaceDescription.plates_seen_count >= 0 &&
