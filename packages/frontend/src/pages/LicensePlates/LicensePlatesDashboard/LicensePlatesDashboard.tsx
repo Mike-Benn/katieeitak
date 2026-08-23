@@ -1,38 +1,31 @@
 import { PageWrapper } from '@/components/PageWrapper';
-import { useTripDescriptions } from '@/hooks/queries/useTripDescriptions';
+import { usePastTripDescriptions } from '@/hooks/queries/usePastTripDescriptions';
 import { LicensePlatesList } from '@/components/Lists/LicensePlatesList';
 import { Tabs } from '@base-ui/react';
 import { useSearch, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
-import { PlateRaceDescriptionsList } from '@/components/Lists/PlateRaceDescriptionsList';
+import { PastPlateRaceDescriptionsList } from '@/components/Lists/PastPlateRaceDescriptionsList';
 import { LoadMoreButton } from '@/components/Buttons/LoadMoreButton';
 import { SvgSpinner } from '@/components/Loading/SvgSpinner';
+import { useCurrentTripDescription } from '@/hooks/queries/useCurrentTripDescription';
+import { CurrentPlateRaceDescriptionList } from '@/components/Lists/CurrentPlateRaceDescriptionList';
 
 export function LicensePlatesDashboard() {
   const { view } = useSearch({ from: '/MainLayout/license-plates' });
-  const currentTripDescriptionsQuery = useTripDescriptions({
-    status: 'current',
-    enabled: 'current' === view,
+  const currentTripDescriptionQuery = useCurrentTripDescription({ enabled: view === 'current' });
+
+  const pastTripDescriptionsQuery = usePastTripDescriptions({
+    enabled: view === 'past',
   });
-  const pastTripDescriptionsQuery = useTripDescriptions({
-    status: 'past',
-    enabled: 'past' === view,
-  });
+
   const navigate = useNavigate({ from: '/license-plates' });
   useEffect(() => {
-    if (
-      currentTripDescriptionsQuery.isFetchNextPageError ||
-      pastTripDescriptionsQuery.isFetchNextPageError
-    ) {
+    if (pastTripDescriptionsQuery.isFetchNextPageError) {
       toast.error('Failed to load more results, please try again.');
     }
-  }, [
-    currentTripDescriptionsQuery.isFetchNextPageError,
-    pastTripDescriptionsQuery.isFetchNextPageError,
-  ]);
-  const isCurrentGlobalFetch =
-    currentTripDescriptionsQuery.isFetching && !currentTripDescriptionsQuery.isFetchingNextPage;
+  }, [pastTripDescriptionsQuery.isFetchNextPageError]);
+  const isCurrentGlobalFetch = currentTripDescriptionQuery.isLoading;
 
   const isPastGlobalFetch =
     pastTripDescriptionsQuery.isFetching && !pastTripDescriptionsQuery.isFetchingNextPage;
@@ -42,7 +35,7 @@ export function LicensePlatesDashboard() {
   return (
     <PageWrapper className="p-6 gap-6">
       <div>
-        <h1 className="text-2xl font-bold font-serif">Trips</h1>
+        <h1 className="text-2xl font-bold font-serif">Plate Race</h1>
       </div>
       <Tabs.Root
         className="w-full flex-1 flex flex-col"
@@ -72,11 +65,9 @@ export function LicensePlatesDashboard() {
         </div>
         <div className="flex flex-col flex-1">
           <Tabs.Panel value="current" className="flex flex-col flex-1 pt-6">
-            {currentTripDescriptionsQuery.data && !isCurrentGlobalFetch && (
-              <PlateRaceDescriptionsList
-                plateRaceDescriptionsResponse={currentTripDescriptionsQuery.data}
-                hasNextPage={currentTripDescriptionsQuery.hasNextPage}
-                listType="current"
+            {currentTripDescriptionQuery.data && !isCurrentGlobalFetch && (
+              <CurrentPlateRaceDescriptionList
+                plateRaceDescription={currentTripDescriptionQuery.data}
               />
             )}
             {isCurrentGlobalFetch && (
@@ -87,10 +78,9 @@ export function LicensePlatesDashboard() {
           </Tabs.Panel>
           <Tabs.Panel value="past" className="flex flex-col flex-1 pt-6">
             {pastTripDescriptionsQuery.data && !isPastGlobalFetch && (
-              <PlateRaceDescriptionsList
-                plateRaceDescriptionsResponse={pastTripDescriptionsQuery.data}
+              <PastPlateRaceDescriptionsList
+                pastPlateRaceDescriptionsResponse={pastTripDescriptionsQuery.data}
                 hasNextPage={pastTripDescriptionsQuery.hasNextPage}
-                listType="past"
               />
             )}
             {isPastGlobalFetch && (

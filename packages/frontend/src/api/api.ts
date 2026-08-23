@@ -25,9 +25,9 @@ import {
   type UnmarkPlateSeenResponse,
   type CompleteTripResponse,
   type TripDescriptionsCursor,
-  type TripStatus,
-  type GetTripDescriptionsResponse,
   type GetTripDataResponse,
+  type GetCurrentTripDescriptionResponse,
+  type GetPastTripDescriptionsResponse,
 } from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
@@ -96,15 +96,18 @@ interface CompleteTripParams {
   tripId: string;
 }
 
-interface GetTripDescriptionsParams {
-  pageParam: TripDescriptionsCursor | null;
-  status: TripStatus;
-  signal: AbortSignal;
-}
-
 interface GetTripDataParams {
   tripId: string;
   signal: AbortSignal;
+}
+
+interface GetCurrentTripDescriptionParams {
+  signal: AbortSignal;
+}
+
+interface GetPastTripDescriptionsParams {
+  signal: AbortSignal;
+  pageParam: TripDescriptionsCursor | null;
 }
 
 // TODO - Error handling
@@ -254,15 +257,21 @@ export const api = {
     >(`/trips/${tripId}/complete`);
     return response.data.data;
   },
-  getTripDescriptions: async ({ pageParam, status, signal }: GetTripDescriptionsParams) => {
+  getPastTripDescriptions: async ({ pageParam, signal }: GetPastTripDescriptionsParams) => {
     const params = new URLSearchParams({ limit: '5' });
     if (pageParam) {
       params.set('cursorDate', pageParam.date);
       params.set('cursorId', pageParam.id);
     }
-    params.set('status', status);
-    const response = await apiClient.get<SuccessResponse<GetTripDescriptionsResponse>>(
-      `/trips?${params}`,
+    const response = await apiClient.get<SuccessResponse<GetPastTripDescriptionsResponse>>(
+      `/trips/past?${params}`,
+      { signal },
+    );
+    return response.data.data;
+  },
+  getCurrentTripDescription: async ({ signal }: GetCurrentTripDescriptionParams) => {
+    const response = await apiClient.get<SuccessResponse<GetCurrentTripDescriptionResponse>>(
+      '/trips/current',
       { signal },
     );
     return response.data.data;

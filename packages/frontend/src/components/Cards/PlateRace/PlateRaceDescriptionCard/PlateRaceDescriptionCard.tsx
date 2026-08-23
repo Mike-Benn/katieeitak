@@ -60,12 +60,14 @@ export function PlateRaceDescriptionCard({ plateRaceDescription }: PlateRaceDesc
           </div>
           <span className="text-slate-500 text-sm">{createdAtString}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="p-1 bg-red-100 rounded-full">
-            <Flag size={16} className="text-red-500 rounded-full" />
+        {plateRaceDescription.date_concluded && (
+          <div className="flex items-center gap-2">
+            <div className="p-1 bg-red-100 rounded-full">
+              <Flag size={16} className="text-red-500 rounded-full" />
+            </div>
+            <span className="text-slate-500 text-sm">{dateConcludedString}</span>
           </div>
-          <span className="text-slate-500 text-sm">{dateConcludedString}</span>
-        </div>
+        )}
       </div>
     </div>
   );

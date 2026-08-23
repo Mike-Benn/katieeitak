@@ -5,12 +5,13 @@ import {
   type CompleteTripResponse,
   CreateTripByUserIdRequestBodySchema,
   type CreateTripByUserIdResponse,
-  GetTripDescriptionsRequestQuerySchema,
   MarkPlateSeenRequestBodySchema,
   type MarkPlateSeenResponse,
   type UnmarkPlateSeenResponse,
-  type GetTripDescriptionsResponse,
   type GetTripDataResponse,
+  type GetCurrentTripDescriptionResponse,
+  GetPastTripDescriptionsRequestQuerySchema,
+  type GetPastTripDescriptionsResponse,
 } from '@katieeitak/shared';
 import { parseValue } from '@/utils/parseValue/parseValue.js';
 import { ResourceIdSchema } from '@/api/v1/requests/types.js';
@@ -22,10 +23,10 @@ export class TripController {
     this.tripService = tripService;
   }
 
-  public getTripDescriptions = async (req: Request, res: Response) => {
+  public getPastTripDescriptions = async (req: Request, res: Response) => {
     const userId = res.locals.userId as string;
     const parsedParams = parseValue({
-      schema: GetTripDescriptionsRequestQuerySchema,
+      schema: GetPastTripDescriptionsRequestQuerySchema,
       value: req.query,
       message: 'Invalid query parameters.',
     });
@@ -33,14 +34,27 @@ export class TripController {
       parsedParams.cursorDate && parsedParams.cursorId
         ? { date: parsedParams.cursorDate, id: parsedParams.cursorId }
         : null;
-    const data = { userId, status: parsedParams.status, limit: parsedParams.limit, cursor };
-    const result = await this.tripService.getTripDescriptions({ data });
+    const data = { userId, limit: parsedParams.limit, cursor };
+    const result = await this.tripService.getPastTripDescriptions({ data });
     return res.status(200).json(
-      ApiResponse.success<GetTripDescriptionsResponse>({
+      ApiResponse.success<GetPastTripDescriptionsResponse>({
         data: {
           tripDescriptions: result.items,
           nextCursor: result.nextCursor,
         },
+      }),
+    );
+  };
+
+  public getCurrentTripDescription = async (_: Request, res: Response) => {
+    const userId = res.locals.userId as string;
+    const data = {
+      userId,
+    };
+    const tripDescription = await this.tripService.getCurrentTripDescription({ data });
+    return res.status(200).json(
+      ApiResponse.success<GetCurrentTripDescriptionResponse>({
+        data: tripDescription,
       }),
     );
   };

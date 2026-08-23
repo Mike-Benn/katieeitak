@@ -11,7 +11,8 @@ const tripService = new TripService(tripRepository);
 const tripController = new TripController(tripService);
 const tripRouter = Router();
 
-tripRouter.get('/', validateToken, setupLocals, tripController.getTripDescriptions);
+tripRouter.get('/past', validateToken, setupLocals, tripController.getPastTripDescriptions);
+tripRouter.get('/current', validateToken, setupLocals, tripController.getCurrentTripDescription);
 tripRouter.get('/:id', validateToken, setupLocals, tripController.getTripData);
 tripRouter.post('/', validateToken, setupLocals, tripController.createTripByUserId);
 tripRouter.patch('/:id/complete', validateToken, setupLocals, tripController.completeTrip);

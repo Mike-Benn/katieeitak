@@ -27,7 +27,7 @@ export const MasterTripSchema = z.object({
   id: z.string(),
   user_id: z.string(),
   title: z.string(),
-  date_concluded: z.iso.datetime(),
+  date_concluded: z.iso.datetime().nullable(),
   created_at: z.iso.datetime(),
   updated_at: z.iso.datetime(),
 });
@@ -38,6 +38,10 @@ export const TripStatusSchema = z.enum(['current', 'past']);
 
 export type TripStatus = z.infer<typeof TripStatusSchema>;
 
+export const PlatesSeenCountSchema = z.number().int().nonnegative().max(51);
+
+export type PlatesSeenCount = z.infer<typeof PlatesSeenCountSchema>;
+
 export const TripDescriptionsCursorSchema = z.object({
   date: z.string(),
   id: z.string(),
@@ -45,34 +49,14 @@ export const TripDescriptionsCursorSchema = z.object({
 
 export type TripDescriptionsCursor = z.infer<typeof TripDescriptionsCursorSchema>;
 
-export const GetTripDescriptionsRequestQuerySchema = z
-  .object({
-    cursorDate: z.iso.datetime().optional(),
-    cursorId: z
-      .string()
-      .regex(/^\d+$/, {
-        message: 'Invalid ID format. Expected a numeric database ID.',
-      })
-      .optional(),
-    status: TripStatusSchema,
-    limit: z.coerce.number().int().positive().max(5).default(5),
-  })
-  .refine((data) => (data.cursorDate === null) === (data.cursorId === null), {
-    message: 'cursorDate and cursorId must be provided together',
-  });
-
-export type GetTripDescriptionsRequestQuery = z.infer<typeof GetTripDescriptionsRequestQuerySchema>;
-
-export const GetTripDescriptionsQueryResultSchema = MasterTripSchema.pick({
+export const GetCurrentTripDescriptionQueryResultSchema = MasterTripSchema.pick({
   id: true,
   title: true,
   created_at: true,
   date_concluded: true,
 }).extend({
-  plates_seen_count: z.number().int().nonnegative(),
+  plates_seen_count: PlatesSeenCountSchema,
 });
-
-export type GetTripDescriptionsQueryResult = z.infer<typeof GetTripDescriptionsQueryResultSchema>;
 
 export const PlateRaceDescriptionSchema = MasterTripSchema.pick({
   id: true,
@@ -85,12 +69,63 @@ export const PlateRaceDescriptionSchema = MasterTripSchema.pick({
 
 export type PlateRaceDescription = z.infer<typeof PlateRaceDescriptionSchema>;
 
-export const GetTripDescriptionsResponseSchema = z.object({
+export type GetCurrentTripDescriptionQueryResult = z.infer<
+  typeof GetCurrentTripDescriptionQueryResultSchema
+>;
+
+export const GetCurrentTripDescriptionResponseSchema = MasterTripSchema.pick({
+  id: true,
+  title: true,
+  created_at: true,
+  date_concluded: true,
+})
+  .extend({
+    plates_seen_count: PlatesSeenCountSchema,
+  })
+  .nullable();
+
+export type GetCurrentTripDescriptionResponse = z.infer<
+  typeof GetCurrentTripDescriptionResponseSchema
+>;
+
+export const GetPastTripDescriptionsQueryResultSchema = MasterTripSchema.pick({
+  id: true,
+  title: true,
+  created_at: true,
+}).extend({
+  plates_seen_count: PlatesSeenCountSchema,
+  date_concluded: MasterTripSchema.shape.date_concluded.unwrap(),
+});
+
+export type GetPastTripDescriptionsQueryResult = z.infer<
+  typeof GetPastTripDescriptionsQueryResultSchema
+>;
+
+export const GetPastTripDescriptionsResponseSchema = z.object({
   tripDescriptions: z.array(PlateRaceDescriptionSchema),
   nextCursor: TripDescriptionsCursorSchema.nullable(),
 });
 
-export type GetTripDescriptionsResponse = z.infer<typeof GetTripDescriptionsResponseSchema>;
+export type GetPastTripDescriptionsResponse = z.infer<typeof GetPastTripDescriptionsResponseSchema>;
+
+export const GetPastTripDescriptionsRequestQuerySchema = z
+  .object({
+    cursorDate: z.iso.datetime().optional(),
+    cursorId: z
+      .string()
+      .regex(/^\d+$/, {
+        message: 'Invalid ID format. Expected a numeric database ID.',
+      })
+      .optional(),
+    limit: z.coerce.number().int().positive().max(5).default(5),
+  })
+  .refine((data) => (data.cursorDate === null) === (data.cursorId === null), {
+    message: 'cursorDate and cursorId must be provided together',
+  });
+
+export type GetPastTripDescriptionsRequestQuery = z.infer<
+  typeof GetPastTripDescriptionsRequestQuerySchema
+>;
 
 export const GetCurrentTripIdByUserIdQueryResultSchema = MasterTripSchema.pick({
   id: true,
@@ -113,9 +148,13 @@ export type GetTripDataQueryResult = z.infer<typeof GetTripDataQueryResultSchema
 
 export const GetTripDataResponseSchema = z
   .object({
+    trip: MasterTripSchema.pick({
+      id: true,
+      title: true,
+      created_at: true,
+      date_concluded: true,
+    }),
     plateList: z.array(GetTripDataQueryResultSchema),
-    tripId: z.string(),
-    title: z.string(),
     count: z.number().int().nonnegative().max(51),
   })
   .nullable();
@@ -198,9 +237,13 @@ export const UnmarkPlateSeenResponseSchema = MasterSeenPlateSchema.pick({
 
 export type UnmarkPlateSeenResponse = z.infer<typeof UnmarkPlateSeenResponseSchema>;
 
-export const VerifyTripOwnershipQueryResultSchema = MasterTripSchema.pick({
+export const GetTripByTripIdAndUserIdQueryResultSchema = MasterTripSchema.pick({
   id: true,
   title: true,
+  created_at: true,
+  date_concluded: true,
 });
 
-export type VerifyTripOwnershipQueryResult = z.infer<typeof VerifyTripOwnershipQueryResultSchema>;
+export type GetTripByTripIdAndUserIdQueryResult = z.infer<
+  typeof GetTripByTripIdAndUserIdQueryResultSchema
+>;

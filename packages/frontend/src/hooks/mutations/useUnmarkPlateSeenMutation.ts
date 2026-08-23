@@ -1,7 +1,7 @@
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { api } from '@/api/api';
 import { toast } from 'sonner';
-import type { GetTripDataResponse } from '@katieeitak/shared';
+import type { GetCurrentTripDescriptionResponse, GetTripDataResponse } from '@katieeitak/shared';
 
 interface UseUnmarkPlateSeenMutationParams {
   tripId: string;
@@ -29,6 +29,16 @@ export function useUnmarkPlateSeenMutation({ tripId }: UseUnmarkPlateSeenMutatio
           }),
         };
       });
+      queryClient.setQueryData<GetCurrentTripDescriptionResponse>(
+        ['current-trip-description'],
+        (old) => {
+          if (!old) return old;
+          return {
+            ...old,
+            plates_seen_count: old.plates_seen_count - 1,
+          };
+        },
+      );
     },
   });
 }

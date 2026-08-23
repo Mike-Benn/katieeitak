@@ -5,10 +5,10 @@ import { NewTripDialog } from '@/components/Dialogs/NewTripDialog';
 import { LicensePlateListHeader } from '@/components/Headers/LicensePlateListHeader';
 
 interface LicensePlatesListProps {
-  currentTrip?: GetTripDataResponse;
+  tripData?: GetTripDataResponse;
 }
-export function LicensePlatesList({ currentTrip }: LicensePlatesListProps) {
-  if (!currentTrip)
+export function LicensePlatesList({ tripData }: LicensePlatesListProps) {
+  if (!tripData)
     return (
       <div className="flex-1 flex flex-col justify-center items-center gap-2">
         <Ghost size={42} color="black" />
@@ -19,16 +19,16 @@ export function LicensePlatesList({ currentTrip }: LicensePlatesListProps) {
   return (
     <div className="flex flex-col gap-6">
       <LicensePlateListHeader
-        title={currentTrip.title}
-        plateCount={currentTrip.count}
-        tripId={currentTrip.tripId}
+        title={tripData.trip.title}
+        plateCount={tripData.count}
+        tripId={tripData.trip.id}
       />
       <div className="flex flex-col gap-3">
-        {currentTrip.plateList.map((licensePlate) => (
+        {tripData.plateList.map((licensePlate) => (
           <LicensePlateCard
             key={licensePlate.id}
             licensePlate={licensePlate}
-            tripId={currentTrip.tripId}
+            tripId={tripData.trip.id}
           />
         ))}
       </div>

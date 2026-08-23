@@ -1,5 +1,8 @@
 import { api } from '@/api/api';
-import { type GetTripDataResponse } from '@katieeitak/shared';
+import {
+  type GetCurrentTripDescriptionResponse,
+  type GetTripDataResponse,
+} from '@katieeitak/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
@@ -29,6 +32,16 @@ export function useMarkPlateSeenMutation({ tripId }: UseMarkPlateSeenMutationPar
           }),
         };
       });
+      queryClient.setQueryData<GetCurrentTripDescriptionResponse>(
+        ['current-trip-description'],
+        (old) => {
+          if (!old) return old;
+          return {
+            ...old,
+            plates_seen_count: old.plates_seen_count + 1,
+          };
+        },
+      );
     },
   });
 }

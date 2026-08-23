@@ -1,20 +1,21 @@
 import { type Pool, type PoolClient } from 'pg';
 import {
-  type GetTripDescriptionsQueryResult,
   type CompleteTripQueryResult,
   type CreateTripByUserIdQueryResult,
   type GetTripDataQueryResult,
   type MarkPlateSeenQueryResult,
   type UnmarkPlateSeenQueryResult,
   type GetCurrentTripIdByUserIdQueryResult,
-  type VerifyTripOwnershipQueryResult,
+  type GetTripByTripIdAndUserIdQueryResult,
+  type GetCurrentTripDescriptionQueryResult,
+  type TripDescriptionsCursor,
+  type GetPastTripDescriptionsQueryResult,
 } from '@katieeitak/shared';
 import { AppError } from '@/api/v1/errors/AppError.js';
 import { ERROR_MESSAGES, ERROR_NAMES, SAFE_ERROR_MESSAGES } from '@/api/v1/constants/errors.js';
 import {
   type CompleteTripDto,
   type CreateTripByUserIdDto,
-  type GetTripsDescriptionsDto,
   type MarkPlateSeenDto,
   type UnmarkPlateSeenDto,
 } from '@/api/v1/features/trips/dto.js';
@@ -40,11 +41,6 @@ interface CompleteTripParams {
   client?: PoolClient;
 }
 
-interface GetTripsDescriptionsParams {
-  client?: PoolClient;
-  data: GetTripsDescriptionsDto;
-}
-
 interface GetCurrentTripByUserIdParams {
   client?: PoolClient;
   userId: string;
@@ -55,10 +51,22 @@ interface GetTripDataParams {
   tripId: string;
 }
 
-interface VerifyTripOwnershipParams {
+interface GetTripByTripIdAndUserIdParams {
   client?: PoolClient;
   userId: string;
   tripId: string;
+}
+
+interface GetCurrentTripDescription {
+  client?: PoolClient;
+  userId: string;
+}
+
+interface GetPastTripDescriptionsParams {
+  limit: number;
+  client?: PoolClient;
+  userId: string;
+  cursor: TripDescriptionsCursor | null;
 }
 
 export class TripRepository {
@@ -67,23 +75,9 @@ export class TripRepository {
     this.pool = pool;
   }
 
-  public getTripDescriptions = async ({ client, data }: GetTripsDescriptionsParams) => {
+  public getCurrentTripDescription = async ({ client, userId }: GetCurrentTripDescription) => {
     const connection = client ?? this.pool;
-    const values: unknown[] = [data.userId];
-    let cursorClause = ``;
-
-    if (data.cursor) {
-      values.push(data.cursor.date, data.cursor.id);
-      cursorClause = ' AND (t.date_concluded, t.id) > ($2, $3)';
-    }
-
-    values.push(data.limit + 1);
-
-    const statusClause =
-      data.status === 'current'
-        ? ' AND t.date_concluded IS NULL'
-        : ' AND t.date_concluded IS NOT NULL';
-
+    const values = [userId];
     const query = `
     SELECT 
       t.id, 
@@ -93,15 +87,44 @@ export class TripRepository {
       COUNT(sp.trip_id)::int AS plates_seen_count
     FROM trips t
     LEFT JOIN seen_plates sp ON t.id = sp.trip_id
-    WHERE t.user_id = $1 ${statusClause} ${cursorClause}
-    GROUP BY t.id
-    ORDER BY t.date_concluded ASC, t.id ASC
-    LIMIT $${values.length}
-  `;
+    WHERE t.user_id = $1 AND t.date_concluded IS NULL
+    GROUP BY t.id`;
+    const { rows } = await connection.query<GetCurrentTripDescriptionQueryResult>(query, values);
+    return rows[0] || null;
+  };
 
-    const { rows } = await connection.query<GetTripDescriptionsQueryResult>(query, values);
-    const hasMore = rows.length > data.limit;
-    const items = hasMore ? rows.slice(0, data.limit) : rows;
+  public getPastTripDescriptions = async ({
+    client,
+    limit,
+    userId,
+    cursor,
+  }: GetPastTripDescriptionsParams) => {
+    const connection = client ?? this.pool;
+    const values: unknown[] = [userId];
+    let cursorClause = '';
+    if (cursor) {
+      values.push(cursor.date, cursor.id);
+      cursorClause = 'AND (t.date_concluded, t.id) > ($2, $3)';
+    }
+    values.push(limit + 1);
+    const query = `
+      SELECT 
+        t.id, 
+        t.title, 
+        t.created_at, 
+        t.date_concluded,
+        COUNT(sp.trip_id)::int AS plates_seen_count
+      FROM trips t
+      LEFT JOIN seen_plates sp ON t.id = sp.trip_id
+      WHERE t.user_id = $1 AND t.date_concluded IS NOT NULL ${cursorClause}
+      GROUP BY t.id
+      ORDER BY t.date_concluded ASC, t.id ASC
+      LIMIT $${values.length}
+    `;
+
+    const { rows } = await connection.query<GetPastTripDescriptionsQueryResult>(query, values);
+    const hasMore = rows.length > limit;
+    const items = hasMore ? rows.slice(0, limit) : rows;
     const last = items[items.length - 1];
 
     return {
@@ -135,16 +158,19 @@ export class TripRepository {
     const { rows } = await connection.query<GetTripDataQueryResult>(query, values);
     return rows;
   };
-
-  public verifyTripOwnership = async ({ userId, tripId, client }: VerifyTripOwnershipParams) => {
+  public getTripByTripIdAndUserId = async ({
+    userId,
+    tripId,
+    client,
+  }: GetTripByTripIdAndUserIdParams) => {
     const connection = client ?? this.pool;
     const values = [userId, tripId];
     const query = `
-        SELECT id, title
-        FROM trips
-        WHERE user_id = $1 AND id = $2
+      SELECT id, title, created_at, date_concluded
+      FROM trips
+      WHERE user_id = $1 AND id = $2
     `;
-    const { rows } = await connection.query<VerifyTripOwnershipQueryResult>(query, values);
+    const { rows } = await connection.query<GetTripByTripIdAndUserIdQueryResult>(query, values);
     if (rows[0]) {
       return rows[0];
     } else {

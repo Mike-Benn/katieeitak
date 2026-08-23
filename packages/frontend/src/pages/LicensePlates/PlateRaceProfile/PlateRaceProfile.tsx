@@ -20,7 +20,7 @@ export function PlateRaceProfile() {
 
   return (
     <PageWrapper className="p-6 gap-6">
-      {!tripQuery.isFetching && <LicensePlatesList currentTrip={tripQuery.data} />}
+      {!tripQuery.isFetching && <LicensePlatesList tripData={tripQuery.data} />}
     </PageWrapper>
   );
 }

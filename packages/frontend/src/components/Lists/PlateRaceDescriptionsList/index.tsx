@@ -1,1 +1,0 @@
-export { PlateRaceDescriptionsList } from './PlateRaceDescriptionsList';

@@ -1,4 +1,4 @@
-import type { TripDescriptionsCursor, TripStatus } from '@katieeitak/shared';
+import type { TripDescriptionsCursor } from '@katieeitak/shared';
 
 export interface CreateTripByUserIdDto {
   title: string;
@@ -21,9 +21,8 @@ export interface CompleteTripDto {
   tripId: string;
 }
 
-export interface GetTripsDescriptionsDto {
+export interface GetPastTripsDescriptionsDto {
   userId: string;
-  status: TripStatus;
   limit: number;
   cursor: TripDescriptionsCursor | null;
 }
@@ -31,4 +30,8 @@ export interface GetTripsDescriptionsDto {
 export interface GetTripDataDto {
   userId: string;
   tripId: string;
+}
+
+export interface GetCurrentTripDescriptionDto {
+  userId: string;
 }

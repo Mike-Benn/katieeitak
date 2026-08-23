@@ -2,8 +2,9 @@ import type { TripRepository } from '@/api/v1/features/trips/repository.js';
 import type {
   CompleteTripDto,
   CreateTripByUserIdDto,
+  GetCurrentTripDescriptionDto,
+  GetPastTripsDescriptionsDto,
   GetTripDataDto,
-  GetTripsDescriptionsDto,
   MarkPlateSeenDto,
   UnmarkPlateSeenDto,
 } from '@/api/v1/features/trips/dto.js';
@@ -27,12 +28,16 @@ interface UnmarkPlateSeenParams {
   data: UnmarkPlateSeenDto;
 }
 
-interface GetTripDescriptionsParams {
-  data: GetTripsDescriptionsDto;
-}
-
 interface GetTripDataParams {
   data: GetTripDataDto;
+}
+
+interface GetCurrentTripDescriptionParams {
+  data: GetCurrentTripDescriptionDto;
+}
+
+interface GetPastTripDescriptionsParams {
+  data: GetPastTripsDescriptionsDto;
 }
 
 export class TripService {
@@ -41,9 +46,20 @@ export class TripService {
     this.tripRepository = tripRepository;
   }
 
-  public getTripDescriptions = async ({ data }: GetTripDescriptionsParams) => {
-    const trips = await this.tripRepository.getTripDescriptions({ data });
-    return trips;
+  public getCurrentTripDescription = async ({ data }: GetCurrentTripDescriptionParams) => {
+    const tripDescription = await this.tripRepository.getCurrentTripDescription({
+      userId: data.userId,
+    });
+    return tripDescription;
+  };
+
+  public getPastTripDescriptions = async ({ data }: GetPastTripDescriptionsParams) => {
+    const tripDescriptions = await this.tripRepository.getPastTripDescriptions({
+      limit: data.limit,
+      userId: data.userId,
+      cursor: data.cursor,
+    });
+    return tripDescriptions;
   };
 
   public createTripByUserId = async ({ userId, data }: CreateTripByUserIdParams) => {
@@ -52,7 +68,7 @@ export class TripService {
   };
 
   public getTripData = async ({ data }: GetTripDataParams) => {
-    const trip = await this.tripRepository.verifyTripOwnership({
+    const trip = await this.tripRepository.getTripByTripIdAndUserId({
       userId: data.userId,
       tripId: data.tripId,
     });
@@ -65,9 +81,8 @@ export class TripService {
     }, 0);
     return {
       plateList,
-      tripId: trip.id,
-      title: trip.title,
       count,
+      trip,
     };
   };
 
