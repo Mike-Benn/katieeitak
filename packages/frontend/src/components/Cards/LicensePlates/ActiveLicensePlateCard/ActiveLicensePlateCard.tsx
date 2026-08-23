@@ -3,12 +3,12 @@ import { Separator } from '@base-ui/react';
 import { MarkSeenField } from '@/components/Forms/Fields/MarkSeenField';
 import { format, parseISO, isValid } from 'date-fns';
 
-interface LicensePlateCardProps {
+interface ActiveLicensePlateCardProps {
   licensePlate: LicensePlate;
   tripId: string;
 }
 
-export function LicensePlateCard({ licensePlate, tripId }: LicensePlateCardProps) {
+export function ActiveLicensePlateCard({ licensePlate, tripId }: ActiveLicensePlateCardProps) {
   let dateString: string;
   if (!licensePlate.date_seen) {
     dateString = 'N/A';
@@ -34,6 +34,7 @@ export function LicensePlateCard({ licensePlate, tripId }: LicensePlateCardProps
             timeSeen={licensePlate.date_seen}
             plateId={licensePlate.id}
             tripId={tripId}
+            isDisabled={false}
           />
         </div>
       </div>

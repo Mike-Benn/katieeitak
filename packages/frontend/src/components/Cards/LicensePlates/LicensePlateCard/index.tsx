@@ -1,1 +1,0 @@
-export { LicensePlateCard } from './LicensePlateCard';
