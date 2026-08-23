@@ -31,7 +31,6 @@ export function LicensePlatesDashboard() {
     pastTripDescriptionsQuery.isFetching && !pastTripDescriptionsQuery.isFetchingNextPage;
   const isPastGlobalFetchError =
     pastTripDescriptionsQuery.isError && !pastTripDescriptionsQuery.isFetchNextPageError;
-
   return (
     <PageWrapper className="p-6 gap-6">
       <div>
@@ -65,7 +64,7 @@ export function LicensePlatesDashboard() {
         </div>
         <div className="flex flex-col flex-1">
           <Tabs.Panel value="current" className="flex flex-col flex-1 pt-6">
-            {currentTripDescriptionQuery.data && !isCurrentGlobalFetch && (
+            {!isCurrentGlobalFetch && (
               <CurrentPlateRaceDescriptionList
                 plateRaceDescription={currentTripDescriptionQuery.data}
               />

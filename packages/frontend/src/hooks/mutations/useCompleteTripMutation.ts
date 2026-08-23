@@ -10,7 +10,7 @@ export function useCompleteTripMutation() {
       toast.error('There was an error completing trip, please try again.');
     },
     onSuccess: async () => {
-      await queryClient.resetQueries({ queryKey: ['current-trip-descriptions'] });
+      await queryClient.resetQueries({ queryKey: ['current-trip-description'] });
       await queryClient.resetQueries({ queryKey: ['past-trip-descriptions'] });
       await queryClient.resetQueries({ queryKey: ['current-trip-data'] });
       await queryClient.resetQueries({ queryKey: ['past-trip-data'] });

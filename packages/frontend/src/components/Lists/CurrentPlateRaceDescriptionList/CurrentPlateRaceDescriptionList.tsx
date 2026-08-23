@@ -5,7 +5,7 @@ import { Link } from '@tanstack/react-router';
 import { PlateRaceDescriptionCard } from '@/components/Cards/PlateRace/PlateRaceDescriptionCard';
 
 interface CurrentPlateRaceDescriptionListParams {
-  plateRaceDescription: GetCurrentTripDescriptionResponse;
+  plateRaceDescription: GetCurrentTripDescriptionResponse | undefined;
 }
 
 export function CurrentPlateRaceDescriptionList({
