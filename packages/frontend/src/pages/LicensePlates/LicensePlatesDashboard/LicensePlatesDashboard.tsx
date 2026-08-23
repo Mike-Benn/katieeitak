@@ -1,6 +1,5 @@
 import { PageWrapper } from '@/components/PageWrapper';
 import { usePastTripDescriptions } from '@/hooks/queries/usePastTripDescriptions';
-import { LicensePlatesList } from '@/components/Lists/LicensePlatesList';
 import { Tabs } from '@base-ui/react';
 import { useSearch, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
@@ -75,7 +74,7 @@ export function LicensePlatesDashboard() {
               </div>
             )}
           </Tabs.Panel>
-          <Tabs.Panel value="past" className="flex flex-col flex-1 pt-6">
+          <Tabs.Panel value="past" className="flex flex-col flex-1 pt-6 gap-6">
             {pastTripDescriptionsQuery.data && !isPastGlobalFetch && (
               <PastPlateRaceDescriptionsList
                 pastPlateRaceDescriptionsResponse={pastTripDescriptionsQuery.data}
@@ -87,15 +86,17 @@ export function LicensePlatesDashboard() {
                 <SvgSpinner />
               </div>
             )}
+            {!isPastGlobalFetch &&
+              !isPastGlobalFetchError &&
+              pastTripDescriptionsQuery.hasNextPage && (
+                <LoadMoreButton
+                  isFetchingNextPage={pastTripDescriptionsQuery.isFetchingNextPage}
+                  onClick={() => void pastTripDescriptionsQuery.fetchNextPage()}
+                />
+              )}
           </Tabs.Panel>
         </div>
       </Tabs.Root>
     </PageWrapper>
   );
 }
-
-/*
-{!currentTripQuery.isFetching && !currentTripQuery.isPending && (
-              <LicensePlatesList currentTrip={currentTripQuery.data} />
-            )}
-*/
