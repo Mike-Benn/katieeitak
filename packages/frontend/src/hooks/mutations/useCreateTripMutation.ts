@@ -10,7 +10,7 @@ export function useCreateTripMutation() {
       toast.error('There was an error creating new trip, please try again.');
     },
     onSuccess: async () => {
-      await queryClient.resetQueries({ queryKey: ['current-trip-descriptions'] });
+      await queryClient.resetQueries({ queryKey: ['current-trip-description'] });
     },
   });
 }
