@@ -2,12 +2,15 @@
 
 html {
   box-sizing: border-box;
-  background-color: rgb(236, 238, 241);
+  background-color: #e6ebe6;
 }
 
 body {
   font-family: sans-serif;
   min-width: 320px;
+  max-width: 650px;
+  margin: 0 auto;
+  background-color: rgb(236, 238, 241);
 }
 
 #root {
@@ -16,6 +19,15 @@ body {
 
 :root {
   --nav-height: 67px;
+}
+
+@media (min-width: 651px) {
+  body {
+    box-shadow:
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    min-height: 100vh;
+  }
 }
 
 @layer components {
