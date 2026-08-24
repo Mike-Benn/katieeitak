@@ -97,6 +97,14 @@ const plateRaceProfileRoute = createRoute({
   component: PlateRaceProfile,
 });
 
+// America routes
+
+const americaDashboardRoute = createRoute({
+  getParentRoute: () => mainLayoutRoute,
+  path: '/america',
+  component: AmericaDashboard,
+});
+
 // Misc routes
 
 const errorRoute = createRoute({
@@ -116,6 +124,7 @@ const protectedRouteTree = mainLayoutRoute.addChildren([
   bookProfileRoute,
   plateRaceDashboardRoute,
   plateRaceProfileRoute,
+  americaDashboardRoute,
 ]);
 const routeTree = rootRoute.addChildren([protectedRouteTree, errorRoute]);
 
@@ -128,4 +137,5 @@ declare module '@tanstack/react-router' {
 }
 
 import type { RegisteredRouter } from '@tanstack/react-router';
+import { AmericaDashboard } from '@/pages/America/AmericaDashboard';
 export type AppRoutePath = keyof RegisteredRouter['routesByPath'];
