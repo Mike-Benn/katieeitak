@@ -6,13 +6,13 @@ export interface CreatePlateRaceByUserIdDto {
 
 export interface MarkPlateSeenDto {
   userId: string;
-  plateId: number;
+  stateId: number;
   plateRaceId: string;
 }
 
 export interface UnmarkPlateSeenDto {
   userId: string;
-  plateId: string;
+  stateId: string;
   plateRaceId: string;
 }
 
