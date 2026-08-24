@@ -1,0 +1,1 @@
+export { PlateRacesDashboard } from './PlateRacesDashboard';

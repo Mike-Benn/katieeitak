@@ -1,5 +1,6 @@
 import { PageWrapper } from '@/components/PageWrapper';
-import { usePastTripDescriptions } from '@/hooks/queries/usePastTripDescriptions';
+import { usePastPlateRaceDescriptions } from '@/hooks/queries/usePastPlateRaceDescriptions';
+import { useCurrentPlateRaceDescription } from '@/hooks/queries/useCurrentPlateRaceDescription';
 import { Tabs } from '@base-ui/react';
 import { useSearch, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
@@ -7,29 +8,30 @@ import { toast } from 'sonner';
 import { PastPlateRaceDescriptionsList } from '@/components/Lists/PastPlateRaceDescriptionsList';
 import { LoadMoreButton } from '@/components/Buttons/LoadMoreButton';
 import { SvgSpinner } from '@/components/Loading/SvgSpinner';
-import { useCurrentTripDescription } from '@/hooks/queries/useCurrentTripDescription';
 import { CurrentPlateRaceDescriptionList } from '@/components/Lists/CurrentPlateRaceDescriptionList';
 
-export function LicensePlatesDashboard() {
-  const { view } = useSearch({ from: '/MainLayout/license-plates' });
-  const currentTripDescriptionQuery = useCurrentTripDescription({ enabled: view === 'current' });
+export function PlateRacesDashboard() {
+  const { view } = useSearch({ from: '/MainLayout/plate-races' });
+  const currentPlateRaceDescriptionQuery = useCurrentPlateRaceDescription({
+    enabled: view === 'current',
+  });
 
-  const pastTripDescriptionsQuery = usePastTripDescriptions({
+  const pastPlateRaceDescriptionsQuery = usePastPlateRaceDescriptions({
     enabled: view === 'past',
   });
 
-  const navigate = useNavigate({ from: '/license-plates' });
+  const navigate = useNavigate({ from: '/plate-races' });
   useEffect(() => {
-    if (pastTripDescriptionsQuery.isFetchNextPageError) {
+    if (pastPlateRaceDescriptionsQuery.isFetchNextPageError) {
       toast.error('Failed to load more results, please try again.');
     }
-  }, [pastTripDescriptionsQuery.isFetchNextPageError]);
-  const isCurrentGlobalFetch = currentTripDescriptionQuery.isLoading;
+  }, [pastPlateRaceDescriptionsQuery.isFetchNextPageError]);
+  const isCurrentGlobalFetch = currentPlateRaceDescriptionQuery.isLoading;
 
   const isPastGlobalFetch =
-    pastTripDescriptionsQuery.isFetching && !pastTripDescriptionsQuery.isFetchingNextPage;
+    pastPlateRaceDescriptionsQuery.isFetching && !pastPlateRaceDescriptionsQuery.isFetchingNextPage;
   const isPastGlobalFetchError =
-    pastTripDescriptionsQuery.isError && !pastTripDescriptionsQuery.isFetchNextPageError;
+    pastPlateRaceDescriptionsQuery.isError && !pastPlateRaceDescriptionsQuery.isFetchNextPageError;
   return (
     <PageWrapper className="p-6 gap-6">
       <div>
@@ -65,7 +67,7 @@ export function LicensePlatesDashboard() {
           <Tabs.Panel value="current" className="flex flex-col flex-1 pt-6">
             {!isCurrentGlobalFetch && (
               <CurrentPlateRaceDescriptionList
-                plateRaceDescription={currentTripDescriptionQuery.data}
+                plateRaceDescription={currentPlateRaceDescriptionQuery.data}
               />
             )}
             {isCurrentGlobalFetch && (
@@ -75,10 +77,10 @@ export function LicensePlatesDashboard() {
             )}
           </Tabs.Panel>
           <Tabs.Panel value="past" className="flex flex-col flex-1 pt-6 gap-6">
-            {pastTripDescriptionsQuery.data && !isPastGlobalFetch && (
+            {pastPlateRaceDescriptionsQuery.data && !isPastGlobalFetch && (
               <PastPlateRaceDescriptionsList
-                pastPlateRaceDescriptionsResponse={pastTripDescriptionsQuery.data}
-                hasNextPage={pastTripDescriptionsQuery.hasNextPage}
+                pastPlateRaceDescriptionsResponse={pastPlateRaceDescriptionsQuery.data}
+                hasNextPage={pastPlateRaceDescriptionsQuery.hasNextPage}
               />
             )}
             {isPastGlobalFetch && (
@@ -88,10 +90,10 @@ export function LicensePlatesDashboard() {
             )}
             {!isPastGlobalFetch &&
               !isPastGlobalFetchError &&
-              pastTripDescriptionsQuery.hasNextPage && (
+              pastPlateRaceDescriptionsQuery.hasNextPage && (
                 <LoadMoreButton
-                  isFetchingNextPage={pastTripDescriptionsQuery.isFetchingNextPage}
-                  onClick={() => void pastTripDescriptionsQuery.fetchNextPage()}
+                  isFetchingNextPage={pastPlateRaceDescriptionsQuery.isFetchingNextPage}
+                  onClick={() => void pastPlateRaceDescriptionsQuery.fetchNextPage()}
                 />
               )}
           </Tabs.Panel>

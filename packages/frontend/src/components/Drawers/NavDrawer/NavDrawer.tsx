@@ -67,12 +67,12 @@ export function NavDrawer() {
                     </li>
                     <li>
                       <Link
-                        to="/license-plates"
+                        to="/plate-races"
                         onClick={handleLinkClick}
                         className="nav-drawer-link visited:text-inherit"
                       >
                         <Car />
-                        <span>Trips</span>
+                        <span>Plate races</span>
                       </Link>
                     </li>
                   </div>

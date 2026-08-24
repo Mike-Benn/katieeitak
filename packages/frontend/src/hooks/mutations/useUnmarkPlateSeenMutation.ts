@@ -1,13 +1,16 @@
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { api } from '@/api/api';
 import { toast } from 'sonner';
-import type { GetCurrentTripDescriptionResponse, GetTripDataResponse } from '@katieeitak/shared';
+import type {
+  GetCurrentPlateRaceDescriptionResponse,
+  GetPlateRaceDataResponse,
+} from '@katieeitak/shared';
 
 interface UseUnmarkPlateSeenMutationParams {
-  tripId: string;
+  plateRaceId: string;
 }
 
-export function useUnmarkPlateSeenMutation({ tripId }: UseUnmarkPlateSeenMutationParams) {
+export function useUnmarkPlateSeenMutation({ plateRaceId }: UseUnmarkPlateSeenMutationParams) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.unmarkPlateSeen,
@@ -15,7 +18,7 @@ export function useUnmarkPlateSeenMutation({ tripId }: UseUnmarkPlateSeenMutatio
       toast.error('There was an error unmarking plate, please try again.');
     },
     onSuccess: async (data) => {
-      queryClient.setQueryData<GetTripDataResponse>(['tripData', tripId], (old) => {
+      queryClient.setQueryData<GetPlateRaceDataResponse>(['plateRaceData', plateRaceId], (old) => {
         if (!old) return old;
         return {
           ...old,
@@ -29,8 +32,8 @@ export function useUnmarkPlateSeenMutation({ tripId }: UseUnmarkPlateSeenMutatio
           }),
         };
       });
-      queryClient.setQueryData<GetCurrentTripDescriptionResponse>(
-        ['current-trip-description'],
+      queryClient.setQueryData<GetCurrentPlateRaceDescriptionResponse>(
+        ['current-plate-race-description'],
         (old) => {
           if (!old) return old;
           return {

@@ -28,11 +28,11 @@ export function HomePage() {
           <span className="font-semibold text-lg">Books</span>
         </Link>
         <Link
-          to="/license-plates"
+          to="/plate-races"
           className="no-underline visited:text-inherit flex flex-col bg-white aspect-square justify-center items-center shadow-md rounded-2xl p-6 gap-2"
         >
           <Car size={36} />
-          <span className="font-semibold text-lg text-center">Trips</span>
+          <span className="font-semibold text-lg text-center">Plate races</span>
         </Link>
       </div>
     </PageWrapper>
