@@ -1,28 +1,28 @@
 import { type Pool, type PoolClient } from 'pg';
 import {
-  type CompleteTripQueryResult,
-  type CreateTripByUserIdQueryResult,
-  type GetTripDataQueryResult,
+  type PlateRaceDescriptionsCursor,
   type MarkPlateSeenQueryResult,
   type UnmarkPlateSeenQueryResult,
-  type GetCurrentTripIdByUserIdQueryResult,
-  type GetTripByTripIdAndUserIdQueryResult,
-  type GetCurrentTripDescriptionQueryResult,
-  type TripDescriptionsCursor,
-  type GetPastTripDescriptionsQueryResult,
+  type GetCurrentPlateRaceDescriptionQueryResult,
+  type GetPastPlateRaceDescriptionsQueryResult,
+  type GetCurrentPlateRaceIdByUserIdQueryResult,
+  type GetPlateRaceDataQueryResult,
+  type GetPlateRaceByPlateRaceIdAndUserIdQueryResult,
+  type CreatePlateRaceByUserIdQueryResult,
+  type CompletePlateRaceQueryResult,
 } from '@katieeitak/shared';
 import { AppError } from '@/api/v1/errors/AppError.js';
 import { ERROR_MESSAGES, ERROR_NAMES, SAFE_ERROR_MESSAGES } from '@/api/v1/constants/errors.js';
 import {
-  type CompleteTripDto,
-  type CreateTripByUserIdDto,
+  type CompletePlateRaceDto,
+  type CreatePlateRaceByUserIdDto,
   type MarkPlateSeenDto,
   type UnmarkPlateSeenDto,
-} from '@/api/v1/features/trips/dto.js';
+} from '@/api/v1/features/plate-races/dto.js';
 
-interface CreateTripByUserIdParams {
+interface CreatePlateRaceByUserIdParams {
   userId: string;
-  data: CreateTripByUserIdDto;
+  data: CreatePlateRaceByUserIdDto;
   client?: PoolClient;
 }
 
@@ -36,96 +36,102 @@ interface UnmarkPlateSeenParams {
   client?: PoolClient;
 }
 
-interface CompleteTripParams {
-  data: CompleteTripDto;
+interface CompletePlateRaceParams {
+  data: CompletePlateRaceDto;
   client?: PoolClient;
 }
 
-interface GetCurrentTripByUserIdParams {
-  client?: PoolClient;
-  userId: string;
-}
-
-interface GetTripDataParams {
-  client?: PoolClient;
-  tripId: string;
-}
-
-interface GetTripByTripIdAndUserIdParams {
-  client?: PoolClient;
-  userId: string;
-  tripId: string;
-}
-
-interface GetCurrentTripDescription {
+interface GetCurrentPlateRaceByUserIdParams {
   client?: PoolClient;
   userId: string;
 }
 
-interface GetPastTripDescriptionsParams {
+interface GetPlateRaceDataParams {
+  client?: PoolClient;
+  plateRaceId: string;
+}
+
+interface GetPlateRaceByPlateRaceIdAndUserIdParams {
+  client?: PoolClient;
+  userId: string;
+  plateRaceId: string;
+}
+
+interface GetCurrentPlateRaceDescription {
+  client?: PoolClient;
+  userId: string;
+}
+
+interface GetPastPlateRaceDescriptionsParams {
   limit: number;
   client?: PoolClient;
   userId: string;
-  cursor: TripDescriptionsCursor | null;
+  cursor: PlateRaceDescriptionsCursor | null;
 }
 
-export class TripRepository {
+export class PlateRaceRepository {
   private pool: Pool;
   constructor(pool: Pool) {
     this.pool = pool;
   }
 
-  public getCurrentTripDescription = async ({ client, userId }: GetCurrentTripDescription) => {
+  public getCurrentPlateRaceDescription = async ({
+    client,
+    userId,
+  }: GetCurrentPlateRaceDescription) => {
     const connection = client ?? this.pool;
     const values = [userId];
     const query = `
     SELECT 
-      t.id, 
-      t.title, 
-      t.created_at, 
-      t.date_concluded,
-      COUNT(sp.trip_id)::int AS plates_seen_count
-    FROM trips t
-    LEFT JOIN seen_plates sp ON t.id = sp.trip_id
-    WHERE t.user_id = $1 AND t.date_concluded IS NULL
-    GROUP BY t.id`;
-    const { rows } = await connection.query<GetCurrentTripDescriptionQueryResult>(query, values);
+      pr.id, 
+      pr.title, 
+      pr.created_at, 
+      pr.date_concluded,
+      COUNT(sp.plate_race_id)::int AS plates_seen_count
+    FROM plate_races pr
+    LEFT JOIN seen_plates sp ON pr.id = sp.plate_race_id
+    WHERE pr.user_id = $1 AND pr.date_concluded IS NULL
+    GROUP BY pr.id`;
+    const { rows } = await connection.query<GetCurrentPlateRaceDescriptionQueryResult>(
+      query,
+      values,
+    );
     return rows[0] || null;
   };
 
-  public getPastTripDescriptions = async ({
+  public getPastPlateRaceDescriptions = async ({
     client,
     limit,
     userId,
     cursor,
-  }: GetPastTripDescriptionsParams) => {
+  }: GetPastPlateRaceDescriptionsParams) => {
     const connection = client ?? this.pool;
     const values: unknown[] = [userId];
     let cursorClause = '';
 
     if (cursor) {
       values.push(cursor.date, cursor.id);
-      cursorClause = `AND (date_trunc('milliseconds', t.date_concluded), t.id) > (date_trunc('milliseconds', $2::timestamptz), $3)`;
+      cursorClause = `AND (date_trunc('milliseconds', pr.date_concluded), pr.id) > (date_trunc('milliseconds', $2::timestamptz), $3)`;
     }
 
     values.push(limit + 1);
 
     const query = `
       SELECT 
-        t.id, 
-        t.title, 
-        t.created_at, 
-        date_trunc('milliseconds', t.date_concluded) AS date_concluded,
-        COUNT(sp.trip_id)::int AS plates_seen_count
-      FROM trips t
-      LEFT JOIN seen_plates sp ON t.id = sp.trip_id
-      WHERE t.user_id = $1 AND t.date_concluded IS NOT NULL ${cursorClause}
-      GROUP BY t.id
-      ORDER BY date_trunc('milliseconds', t.date_concluded) ASC, t.id ASC
+        pr.id, 
+        pr.title, 
+        pr.created_at, 
+        date_trunc('milliseconds', pr.date_concluded) AS date_concluded,
+        COUNT(sp.plate_race_id)::int AS plates_seen_count
+      FROM plate_races pr
+      LEFT JOIN seen_plates sp ON pr.id = sp.plate_race_id
+      WHERE pr.user_id = $1 AND pr.date_concluded IS NOT NULL ${cursorClause}
+      GROUP BY pr.id
+      ORDER BY date_trunc('milliseconds', pr.date_concluded) ASC, pr.id ASC
       LIMIT $${values.length}
     `;
 
-    const { rows } = await connection.query<GetPastTripDescriptionsQueryResult>(query, values);
+    const { rows } = await connection.query<GetPastPlateRaceDescriptionsQueryResult>(query, values);
     const hasMore = rows.length > limit;
     const items = hasMore ? rows.slice(0, limit) : rows;
     const last = items[items.length - 1];
@@ -136,44 +142,53 @@ export class TripRepository {
     };
   };
 
-  public getCurrentTripByUserId = async ({ client, userId }: GetCurrentTripByUserIdParams) => {
+  public getCurrentPlateRaceByUserId = async ({
+    client,
+    userId,
+  }: GetCurrentPlateRaceByUserIdParams) => {
     const connection = client ?? this.pool;
     const values = [userId];
     const query = `
       SELECT id
-      FROM trips
+      FROM plate_races
       WHERE user_id = $1 AND date_concluded IS NULL
       LIMIT 1
     `;
-    const { rows } = await connection.query<GetCurrentTripIdByUserIdQueryResult>(query, values);
+    const { rows } = await connection.query<GetCurrentPlateRaceIdByUserIdQueryResult>(
+      query,
+      values,
+    );
     return rows[0];
   };
 
-  public getTripData = async ({ tripId, client }: GetTripDataParams) => {
+  public getPlateRaceData = async ({ plateRaceId, client }: GetPlateRaceDataParams) => {
     const connection = client ?? this.pool;
-    const values = [tripId];
+    const values = [plateRaceId];
     const query = `
       SELECT p.id, p.name, p.nickname, p.plate_url, sp.date_seen
       FROM plates AS p
       LEFT JOIN seen_plates AS sp
-      ON p.id = sp.plate_id AND sp.trip_id = $1
+      ON p.id = sp.plate_id AND sp.plate_race_id = $1
     `;
-    const { rows } = await connection.query<GetTripDataQueryResult>(query, values);
+    const { rows } = await connection.query<GetPlateRaceDataQueryResult>(query, values);
     return rows;
   };
-  public getTripByTripIdAndUserId = async ({
+  public getPlateRaceByPlateRaceIdAndUserId = async ({
     userId,
-    tripId,
+    plateRaceId,
     client,
-  }: GetTripByTripIdAndUserIdParams) => {
+  }: GetPlateRaceByPlateRaceIdAndUserIdParams) => {
     const connection = client ?? this.pool;
-    const values = [userId, tripId];
+    const values = [userId, plateRaceId];
     const query = `
       SELECT id, title, created_at, date_concluded
-      FROM trips
+      FROM plate_races
       WHERE user_id = $1 AND id = $2
     `;
-    const { rows } = await connection.query<GetTripByTripIdAndUserIdQueryResult>(query, values);
+    const { rows } = await connection.query<GetPlateRaceByPlateRaceIdAndUserIdQueryResult>(
+      query,
+      values,
+    );
     if (rows[0]) {
       return rows[0];
     } else {
@@ -187,40 +202,44 @@ export class TripRepository {
     }
   };
 
-  public createTripByUserId = async ({ userId, data, client }: CreateTripByUserIdParams) => {
+  public createPlateRaceByUserId = async ({
+    userId,
+    data,
+    client,
+  }: CreatePlateRaceByUserIdParams) => {
     const connection = client ?? this.pool;
     const values = [userId, data.title];
     const query = `
-        INSERT INTO trips (user_id, title)
+        INSERT INTO plate_races (user_id, title)
         VALUES ($1, $2)
         RETURNING id, title
     `;
-    const { rows } = await connection.query<CreateTripByUserIdQueryResult>(query, values);
-    const newTrip = rows[0];
-    if (!newTrip) {
+    const { rows } = await connection.query<CreatePlateRaceByUserIdQueryResult>(query, values);
+    const newPlateRace = rows[0];
+    if (!newPlateRace) {
       throw new AppError({
-        message: 'Create trip returned undefined result, impossible state.',
+        message: 'Create plate race returned undefined result, impossible state.',
         isOperational: false,
         statusCode: 500,
         name: ERROR_NAMES.DB_QUERY_ERROR,
         safeMessage: 'Internal Server Error',
       });
     }
-    return newTrip;
+    return newPlateRace;
   };
 
-  public completeTrip = async ({ data, client }: CompleteTripParams) => {
+  public completePlateRace = async ({ data, client }: CompletePlateRaceParams) => {
     const connection = client ?? this.pool;
-    const values = [data.userId, data.tripId];
+    const values = [data.userId, data.plateRaceId];
     const query = `
-      UPDATE trips
+      UPDATE plate_races
       SET date_concluded = NOW()
       WHERE user_id = $1 AND id = $2
       RETURNING id
     `;
-    const { rows } = await connection.query<CompleteTripQueryResult>(query, values);
-    const completedTrip = rows[0];
-    if (!completedTrip) {
+    const { rows } = await connection.query<CompletePlateRaceQueryResult>(query, values);
+    const completedPlateRace = rows[0];
+    if (!completedPlateRace) {
       throw new AppError({
         message: ERROR_MESSAGES.RESOURCE_NOT_FOUND,
         isOperational: true,
@@ -229,14 +248,14 @@ export class TripRepository {
         safeMessage: SAFE_ERROR_MESSAGES.RESOURCE_NOT_FOUND,
       });
     }
-    return completedTrip;
+    return completedPlateRace;
   };
 
   public markPlateSeen = async ({ data, client }: MarkPlateSeenParams) => {
     const connection = client ?? this.pool;
-    const values = [data.plateId, data.tripId];
+    const values = [data.plateId, data.plateRaceId];
     const query = `
-      INSERT INTO seen_plates (plate_id, trip_id)
+      INSERT INTO seen_plates (plate_id, plate_race_id)
       VALUES ($1, $2)
       RETURNING id, plate_id, date_seen
     `;
@@ -255,11 +274,11 @@ export class TripRepository {
 
   public unmarkPlateSeen = async ({ data, client }: UnmarkPlateSeenParams) => {
     const connection = client ?? this.pool;
-    const values = [data.plateId, data.tripId];
+    const values = [data.plateId, data.plateRaceId];
     const query = `
       DELETE 
       FROM seen_plates
-      WHERE plate_id = $1 AND trip_id = $2
+      WHERE plate_id = $1 AND plate_race_id = $2
       RETURNING plate_id
     `;
     const { rows } = await connection.query<UnmarkPlateSeenQueryResult>(query, values);

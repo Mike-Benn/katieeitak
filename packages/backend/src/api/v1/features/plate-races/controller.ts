@@ -1,32 +1,32 @@
-import { type TripService } from '@/api/v1/features/trips/service.js';
+import type { PlateRaceService } from '@/api/v1/features/plate-races/service.js';
 import type { Request, Response } from 'express';
 import { ApiResponse } from '@/api/v1/responses/ApiResponse.js';
 import {
-  type CompleteTripResponse,
-  CreateTripByUserIdRequestBodySchema,
-  type CreateTripByUserIdResponse,
+  CreatePlateRaceByUserIdRequestBodySchema,
+  GetPastPlateRaceDescriptionsRequestQuerySchema,
   MarkPlateSeenRequestBodySchema,
+  type CompletePlateRaceResponse,
+  type CreatePlateRaceByUserIdResponse,
+  type GetCurrentPlateRaceDescriptionResponse,
+  type GetPastPlateRaceDescriptionsResponse,
+  type GetPlateRaceDataResponse,
   type MarkPlateSeenResponse,
   type UnmarkPlateSeenResponse,
-  type GetTripDataResponse,
-  type GetCurrentTripDescriptionResponse,
-  GetPastTripDescriptionsRequestQuerySchema,
-  type GetPastTripDescriptionsResponse,
 } from '@katieeitak/shared';
 import { parseValue } from '@/utils/parseValue/parseValue.js';
 import { ResourceIdSchema } from '@/api/v1/requests/types.js';
 import { ERROR_MESSAGES } from '@/api/v1/constants/errors.js';
 
-export class TripController {
-  private tripService: TripService;
-  constructor(tripService: TripService) {
-    this.tripService = tripService;
+export class PlateRaceController {
+  private plateRaceService: PlateRaceService;
+  constructor(plateRaceService: PlateRaceService) {
+    this.plateRaceService = plateRaceService;
   }
 
-  public getPastTripDescriptions = async (req: Request, res: Response) => {
+  public getPastPlateRaceDescriptions = async (req: Request, res: Response) => {
     const userId = res.locals.userId as string;
     const parsedParams = parseValue({
-      schema: GetPastTripDescriptionsRequestQuerySchema,
+      schema: GetPastPlateRaceDescriptionsRequestQuerySchema,
       value: req.query,
       message: 'Invalid query parameters.',
     });
@@ -35,49 +35,51 @@ export class TripController {
         ? { date: parsedParams.cursorDate, id: parsedParams.cursorId }
         : null;
     const data = { userId, limit: parsedParams.limit, cursor };
-    const result = await this.tripService.getPastTripDescriptions({ data });
+    const result = await this.plateRaceService.getPastPlateRaceDescriptions({ data });
     return res.status(200).json(
-      ApiResponse.success<GetPastTripDescriptionsResponse>({
+      ApiResponse.success<GetPastPlateRaceDescriptionsResponse>({
         data: {
-          tripDescriptions: result.items,
+          plateRaceDescriptions: result.items,
           nextCursor: result.nextCursor,
         },
       }),
     );
   };
 
-  public getCurrentTripDescription = async (_: Request, res: Response) => {
+  public getCurrentPlateRaceDescription = async (_: Request, res: Response) => {
     const userId = res.locals.userId as string;
     const data = {
       userId,
     };
-    const tripDescription = await this.tripService.getCurrentTripDescription({ data });
+    const plateRaceDescription = await this.plateRaceService.getCurrentPlateRaceDescription({
+      data,
+    });
     return res.status(200).json(
-      ApiResponse.success<GetCurrentTripDescriptionResponse>({
-        data: tripDescription,
+      ApiResponse.success<GetCurrentPlateRaceDescriptionResponse>({
+        data: plateRaceDescription,
       }),
     );
   };
 
-  public createTripByUserId = async (req: Request, res: Response) => {
+  public createPlateRaceByUserId = async (req: Request, res: Response) => {
     const userId = res.locals.userId as string;
     const body = parseValue({
-      schema: CreateTripByUserIdRequestBodySchema,
+      schema: CreatePlateRaceByUserIdRequestBodySchema,
       value: req.body,
       message: 'Incorrect request payload format, must include a title.',
     });
     const data = {
       title: body.title,
     };
-    const newTrip = await this.tripService.createTripByUserId({ userId, data });
+    const newPlateRace = await this.plateRaceService.createPlateRaceByUserId({ userId, data });
     return res.status(201).json(
-      ApiResponse.success<CreateTripByUserIdResponse>({
-        data: newTrip,
+      ApiResponse.success<CreatePlateRaceByUserIdResponse>({
+        data: newPlateRace,
       }),
     );
   };
 
-  public getTripData = async (req: Request, res: Response) => {
+  public getPlateRaceData = async (req: Request, res: Response) => {
     const userId = res.locals.userId as string;
     const { id } = req.params;
     const parsedId = parseValue({
@@ -86,18 +88,18 @@ export class TripController {
       message: ERROR_MESSAGES.INVALID_ID_PATH_PARAMETER_FORMAT,
     });
     const data = {
-      tripId: parsedId,
+      plateRaceId: parsedId,
       userId,
     };
-    const trip = await this.tripService.getTripData({ data });
+    const plateRace = await this.plateRaceService.getPlateRaceData({ data });
     return res.status(200).json(
-      ApiResponse.success<GetTripDataResponse>({
-        data: trip,
+      ApiResponse.success<GetPlateRaceDataResponse>({
+        data: plateRace,
       }),
     );
   };
 
-  public completeTrip = async (req: Request, res: Response) => {
+  public completePlateRace = async (req: Request, res: Response) => {
     const userId = res.locals.userId as string;
     const { id } = req.params;
     const parsedId = parseValue({
@@ -106,23 +108,23 @@ export class TripController {
       message: ERROR_MESSAGES.INVALID_ID_PATH_PARAMETER_FORMAT,
     });
     const data = {
-      tripId: parsedId,
+      plateRaceId: parsedId,
       userId,
     };
-    const completedTrip = await this.tripService.completeTrip({ data });
+    const completedPlateRace = await this.plateRaceService.completePlateRace({ data });
     return res.status(200).json(
-      ApiResponse.success<CompleteTripResponse>({
-        data: completedTrip,
+      ApiResponse.success<CompletePlateRaceResponse>({
+        data: completedPlateRace,
       }),
     );
   };
 
   public markPlateSeen = async (req: Request, res: Response) => {
     const userId = res.locals.userId as string;
-    const { tripId } = req.params;
-    const parsedTripId = parseValue({
+    const { id } = req.params;
+    const parsedPlateRaceId = parseValue({
       schema: ResourceIdSchema,
-      value: tripId,
+      value: id,
       message: ERROR_MESSAGES.INVALID_ID_PATH_PARAMETER_FORMAT,
     });
     const parsedBody = parseValue({
@@ -133,10 +135,10 @@ export class TripController {
 
     const data = {
       userId,
-      tripId: parsedTripId,
+      plateRaceId: parsedPlateRaceId,
       plateId: parsedBody.plateId,
     };
-    const markedPlate = await this.tripService.markPlateSeen({ data });
+    const markedPlate = await this.plateRaceService.markPlateSeen({ data });
     return res.status(201).json(
       ApiResponse.success<MarkPlateSeenResponse>({
         data: markedPlate,
@@ -146,10 +148,10 @@ export class TripController {
 
   public unmarkPlateSeen = async (req: Request, res: Response) => {
     const userId = res.locals.userId as string;
-    const { tripId, plateId } = req.params;
-    const parsedTripId = parseValue({
+    const { id, plateId } = req.params;
+    const parsedPlateRaceId = parseValue({
       schema: ResourceIdSchema,
-      value: tripId,
+      value: id,
       message: ERROR_MESSAGES.INVALID_ID_PATH_PARAMETER_FORMAT,
     });
     const parsedPlateId = parseValue({
@@ -159,10 +161,10 @@ export class TripController {
     });
     const data = {
       userId,
-      tripId: parsedTripId,
+      plateRaceId: parsedPlateRaceId,
       plateId: parsedPlateId,
     };
-    const unmarkedPlate = await this.tripService.unmarkPlateSeen({ data });
+    const unmarkedPlate = await this.plateRaceService.unmarkPlateSeen({ data });
     return res.status(200).json(
       ApiResponse.success<UnmarkPlateSeenResponse>({
         data: unmarkedPlate,
