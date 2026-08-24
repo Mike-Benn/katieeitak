@@ -130,13 +130,13 @@ export class PlateRaceController {
     const parsedBody = parseValue({
       schema: MarkPlateSeenRequestBodySchema,
       value: req.body,
-      message: 'Incorrect request payload format, must include a plate ID.',
+      message: 'Incorrect request payload format, must include a state ID.',
     });
 
     const data = {
       userId,
       plateRaceId: parsedPlateRaceId,
-      plateId: parsedBody.plateId,
+      stateId: parsedBody.stateId,
     };
     const markedPlate = await this.plateRaceService.markPlateSeen({ data });
     return res.status(201).json(
@@ -148,21 +148,21 @@ export class PlateRaceController {
 
   public unmarkPlateSeen = async (req: Request, res: Response) => {
     const userId = res.locals.userId as string;
-    const { id, plateId } = req.params;
+    const { id, stateId } = req.params;
     const parsedPlateRaceId = parseValue({
       schema: ResourceIdSchema,
       value: id,
       message: ERROR_MESSAGES.INVALID_ID_PATH_PARAMETER_FORMAT,
     });
-    const parsedPlateId = parseValue({
+    const parsedStateId = parseValue({
       schema: ResourceIdSchema,
-      value: plateId,
+      value: stateId,
       message: ERROR_MESSAGES.INVALID_ID_PATH_PARAMETER_FORMAT,
     });
     const data = {
       userId,
       plateRaceId: parsedPlateRaceId,
-      plateId: parsedPlateId,
+      stateId: parsedStateId,
     };
     const unmarkedPlate = await this.plateRaceService.unmarkPlateSeen({ data });
     return res.status(200).json(

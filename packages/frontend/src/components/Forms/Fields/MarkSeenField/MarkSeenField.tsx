@@ -23,9 +23,9 @@ export function MarkSeenField({ timeSeen, plateId, plateRaceId, isDisabled }: Ma
       disabled={isPending || isDisabled}
       onCheckedChange={() => {
         if (isChecked) {
-          unmarkPlateMutation.mutate({ plateId, plateRaceId });
+          unmarkPlateMutation.mutate({ stateId: plateId, plateRaceId });
         } else {
-          markPlateMutation.mutate({ plateId, plateRaceId });
+          markPlateMutation.mutate({ stateId: plateId, plateRaceId });
         }
       }}
       className="
