@@ -1,17 +1,17 @@
-import { CompleteTripAlert } from '@/components/Alerts/CompleteTripAlert';
+import { CompletePlateRaceAlert } from '@/components/Alerts/CompletePlateRaceAlert';
 import { Check } from 'lucide-react';
 import { createReadableDate } from '@/utils/createReadableDate';
 interface LicensePlateListHeaderProps {
   title: string;
   plateCount: number;
-  tripId: string;
+  plateRaceId: string;
   dateConcluded: string | null;
 }
 
 export function LicensePlateListHeader({
   title,
   plateCount,
-  tripId,
+  plateRaceId,
   dateConcluded,
 }: LicensePlateListHeaderProps) {
   return (
@@ -24,8 +24,8 @@ export function LicensePlateListHeader({
             <Check size={16} strokeWidth={3} />
           </div>
         ) : (
-          <CompleteTripAlert
-            tripId={tripId}
+          <CompletePlateRaceAlert
+            plateRaceId={plateRaceId}
             className="bg-white text-mainbtn flex items-center justify-center px-3 py-1.5 rounded-lg shrink-0 transition-colors hover:bg-slate-100"
           />
         )}

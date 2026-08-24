@@ -9,9 +9,10 @@ import { NewAnxietyEventPage } from '@/pages/Anxiety/NewAnxietyEventPage';
 import { BooksDashboard } from '@/pages/Books/BooksDashboard';
 import { BooksSearch } from '@/pages/Books/BooksSearch';
 import { BookProfile } from '@/pages/Books/BookProfile';
-import { LicensePlatesDashboard } from '@/pages/LicensePlates/LicensePlatesDashboard';
 import { z } from 'zod';
-import { PlateRaceProfile } from '@/pages/LicensePlates/PlateRaceProfile';
+import { PlateRaceProfile } from '@/pages/PlateRaces/PlateRaceProfile';
+import { PlateRacesDashboard } from '@/pages/PlateRaces/PlateRacesDashboard';
+
 const rootRoute = createRootRoute({
   component: Root,
 });
@@ -77,22 +78,22 @@ const bookProfileRoute = createRoute({
   component: BookProfile,
 });
 
-// License plates
+// Plate races
 
-const licensePlateDashboardViewSchema = z.object({
+const plateRaceDashboardViewSchema = z.object({
   view: z.enum(['current', 'past']).default('current').catch('current'),
 });
 
-const licensePlatesDashboardRoute = createRoute({
+const plateRaceDashboardRoute = createRoute({
   getParentRoute: () => mainLayoutRoute,
-  path: '/license-plates',
-  component: LicensePlatesDashboard,
-  validateSearch: licensePlateDashboardViewSchema,
+  path: '/plate-races',
+  component: PlateRacesDashboard,
+  validateSearch: plateRaceDashboardViewSchema,
 });
 
 const plateRaceProfileRoute = createRoute({
   getParentRoute: () => mainLayoutRoute,
-  path: '/license-plates/$id',
+  path: '/plate-races/$id',
   component: PlateRaceProfile,
 });
 
@@ -113,7 +114,7 @@ const protectedRouteTree = mainLayoutRoute.addChildren([
   booksDashboardRoute,
   booksSearchRoute,
   bookProfileRoute,
-  licensePlatesDashboardRoute,
+  plateRaceDashboardRoute,
   plateRaceProfileRoute,
 ]);
 const routeTree = rootRoute.addChildren([protectedRouteTree, errorRoute]);

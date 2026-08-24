@@ -6,13 +6,13 @@ import { useUnmarkPlateSeenMutation } from '@/hooks/mutations/useUnmarkPlateSeen
 interface MarkSeenFieldProps {
   timeSeen: string | null;
   plateId: number;
-  tripId: string;
+  plateRaceId: string;
   isDisabled: boolean;
 }
 
-export function MarkSeenField({ timeSeen, plateId, tripId, isDisabled }: MarkSeenFieldProps) {
-  const markPlateMutation = useMarkPlateSeenMutation({ tripId });
-  const unmarkPlateMutation = useUnmarkPlateSeenMutation({ tripId });
+export function MarkSeenField({ timeSeen, plateId, plateRaceId, isDisabled }: MarkSeenFieldProps) {
+  const markPlateMutation = useMarkPlateSeenMutation({ plateRaceId });
+  const unmarkPlateMutation = useUnmarkPlateSeenMutation({ plateRaceId });
 
   const isChecked = timeSeen !== null;
   const isPending = markPlateMutation.isPending || unmarkPlateMutation.isPending;
@@ -23,9 +23,9 @@ export function MarkSeenField({ timeSeen, plateId, tripId, isDisabled }: MarkSee
       disabled={isPending || isDisabled}
       onCheckedChange={() => {
         if (isChecked) {
-          unmarkPlateMutation.mutate({ plateId, tripId });
+          unmarkPlateMutation.mutate({ plateId, plateRaceId });
         } else {
-          markPlateMutation.mutate({ plateId, tripId });
+          markPlateMutation.mutate({ plateId, plateRaceId });
         }
       }}
       className="

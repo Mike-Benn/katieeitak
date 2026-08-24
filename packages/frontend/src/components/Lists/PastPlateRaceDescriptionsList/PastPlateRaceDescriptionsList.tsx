@@ -1,4 +1,7 @@
-import type { TripDescriptionsCursor, GetPastTripDescriptionsResponse } from '@katieeitak/shared';
+import type {
+  GetPastPlateRaceDescriptionsResponse,
+  PlateRaceDescriptionsCursor,
+} from '@katieeitak/shared';
 import type { InfiniteData } from '@tanstack/react-query';
 import { Ghost } from 'lucide-react';
 import React from 'react';
@@ -7,8 +10,8 @@ import { Link } from '@tanstack/react-router';
 
 interface PastPlateRaceDescriptionsListProps {
   pastPlateRaceDescriptionsResponse: InfiniteData<
-    GetPastTripDescriptionsResponse,
-    TripDescriptionsCursor | null
+    GetPastPlateRaceDescriptionsResponse,
+    PlateRaceDescriptionsCursor | null
   >;
   hasNextPage: boolean;
 }
@@ -18,7 +21,7 @@ export function PastPlateRaceDescriptionsList({
   hasNextPage,
 }: PastPlateRaceDescriptionsListProps) {
   const totalPlateRaces = pastPlateRaceDescriptionsResponse.pages.reduce(
-    (count, page) => count + page.tripDescriptions.length,
+    (count, page) => count + page.plateRaceDescriptions.length,
     0,
   );
   if (totalPlateRaces === 0 && !hasNextPage) {
@@ -34,9 +37,9 @@ export function PastPlateRaceDescriptionsList({
       {pastPlateRaceDescriptionsResponse.pages.map((page, index) => (
         // eslint-disable-next-line react/no-array-index-key
         <React.Fragment key={index}>
-          {page.tripDescriptions.map((plateRaceDescription) => (
+          {page.plateRaceDescriptions.map((plateRaceDescription) => (
             <Link
-              to="/license-plates/$id"
+              to="/plate-races/$id"
               key={plateRaceDescription.id}
               params={{ id: plateRaceDescription.id }}
             >

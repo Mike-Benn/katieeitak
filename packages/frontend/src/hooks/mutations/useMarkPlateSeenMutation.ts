@@ -1,16 +1,16 @@
 import { api } from '@/api/api';
 import {
-  type GetCurrentTripDescriptionResponse,
-  type GetTripDataResponse,
+  type GetCurrentPlateRaceDescriptionResponse,
+  type GetPlateRaceDataResponse,
 } from '@katieeitak/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 interface UseMarkPlateSeenMutationParams {
-  tripId: string;
+  plateRaceId: string;
 }
 
-export function useMarkPlateSeenMutation({ tripId }: UseMarkPlateSeenMutationParams) {
+export function useMarkPlateSeenMutation({ plateRaceId }: UseMarkPlateSeenMutationParams) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: api.markPlateSeen,
@@ -18,7 +18,7 @@ export function useMarkPlateSeenMutation({ tripId }: UseMarkPlateSeenMutationPar
       toast.error('There was an error marking plate, please try again.');
     },
     onSuccess: async (data) => {
-      queryClient.setQueryData<GetTripDataResponse>(['tripData', tripId], (old) => {
+      queryClient.setQueryData<GetPlateRaceDataResponse>(['plateRaceData', plateRaceId], (old) => {
         if (!old) return old;
         return {
           ...old,
@@ -32,8 +32,8 @@ export function useMarkPlateSeenMutation({ tripId }: UseMarkPlateSeenMutationPar
           }),
         };
       });
-      queryClient.setQueryData<GetCurrentTripDescriptionResponse>(
-        ['current-trip-description'],
+      queryClient.setQueryData<GetCurrentPlateRaceDescriptionResponse>(
+        ['current-plate-race-description'],
         (old) => {
           if (!old) return old;
           return {

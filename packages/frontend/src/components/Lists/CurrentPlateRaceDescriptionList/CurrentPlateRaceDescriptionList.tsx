@@ -1,11 +1,11 @@
-import type { GetCurrentTripDescriptionResponse } from '@katieeitak/shared';
+import type { GetCurrentPlateRaceDescriptionResponse } from '@katieeitak/shared';
 import { Ghost } from 'lucide-react';
-import { NewTripDialog } from '@/components/Dialogs/NewTripDialog';
+import { NewPlateRaceDialog } from '@/components/Dialogs/NewPlateRaceDialog';
 import { Link } from '@tanstack/react-router';
 import { PlateRaceDescriptionCard } from '@/components/Cards/PlateRace/PlateRaceDescriptionCard';
 
 interface CurrentPlateRaceDescriptionListParams {
-  plateRaceDescription: GetCurrentTripDescriptionResponse | undefined;
+  plateRaceDescription: GetCurrentPlateRaceDescriptionResponse | undefined;
 }
 
 export function CurrentPlateRaceDescriptionList({
@@ -16,14 +16,14 @@ export function CurrentPlateRaceDescriptionList({
       <div className="flex-1 flex flex-col justify-center items-center gap-2">
         <Ghost size={42} color="black" />
         <span className="font-semibold">No active plate race</span>
-        <NewTripDialog />
+        <NewPlateRaceDialog />
       </div>
     );
   }
   return (
     <div className="flex flex-col gap-6">
       <Link
-        to="/license-plates/$id"
+        to="/plate-races/$id"
         key={plateRaceDescription.id}
         params={{ id: plateRaceDescription.id }}
       >

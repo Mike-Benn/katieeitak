@@ -1,14 +1,17 @@
-import { useCompleteTripMutation } from '@/hooks/mutations/useCompleteTripMutation';
+import { useCompletePlateRaceMutation } from '@/hooks/mutations/useCompletePlateRaceMutation';
 import { useState } from 'react';
 import { AlertDialog, Button } from '@base-ui/react';
 
-interface CompleteTripAlertProps {
-  tripId: string;
+interface CompletePlateRaceAlertProps {
+  plateRaceId: string;
   className?: string;
 }
 
-export function CompleteTripAlert({ tripId, className = '' }: CompleteTripAlertProps) {
-  const { mutate } = useCompleteTripMutation({ tripId });
+export function CompletePlateRaceAlert({
+  plateRaceId,
+  className = '',
+}: CompletePlateRaceAlertProps) {
+  const { mutate } = useCompletePlateRaceMutation({ plateRaceId });
   const [open, setOpen] = useState(false);
 
   return (
@@ -28,9 +31,9 @@ export function CompleteTripAlert({ tripId, className = '' }: CompleteTripAlertP
         <AlertDialog.Popup className="fixed top-1/2 left-1/2 w-96 max-w-[calc(100vw-4.5rem)] max-h-[90dvh] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg bg-gray-50 text-gray-900 outline-1 outline-gray-200 transition-all duration-150 data-ending-style:scale-90 data-ending-style:opacity-0 data-starting-style:scale-90 data-starting-style:opacity-0 dark:outline-gray-300">
           <div className="flex flex-col gap-4 px-6 py-4 shrink-0">
             <div className="flex flex-col">
-              <h2 className="text-md font-semibold">Complete trip?</h2>
+              <h2 className="text-md font-semibold">Complete plate race?</h2>
               <span className="text-sm text-gray-400">
-                You cannot edit a trip once it's completed.
+                You cannot edit a plate race once it's completed.
               </span>
             </div>
 
@@ -46,7 +49,7 @@ export function CompleteTripAlert({ tripId, className = '' }: CompleteTripAlertP
               <Button
                 className="bg-green-800 text-white text-sm font-semibold rounded-sm px-3 py-1"
                 onClick={() => {
-                  mutate({ tripId });
+                  mutate({ plateRaceId });
                 }}
               >
                 Complete

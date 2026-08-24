@@ -19,15 +19,15 @@ import {
   type UncompleteAnxietyEventByIdResponse,
   type DeleteAnxietyEventByIdResponse,
   type AnxietyEventOccurrenceType,
-  type CreateTripByUserIdRequestBody,
-  type CreateTripByUserIdResponse,
   type MarkPlateSeenResponse,
   type UnmarkPlateSeenResponse,
-  type CompleteTripResponse,
-  type TripDescriptionsCursor,
-  type GetTripDataResponse,
-  type GetCurrentTripDescriptionResponse,
-  type GetPastTripDescriptionsResponse,
+  type CreatePlateRaceByUserIdRequestBody,
+  type PlateRaceDescriptionsCursor,
+  type CreatePlateRaceByUserIdResponse,
+  type GetPlateRaceDataResponse,
+  type CompletePlateRaceResponse,
+  type GetPastPlateRaceDescriptionsResponse,
+  type GetCurrentPlateRaceDescriptionResponse,
 } from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
@@ -78,36 +78,36 @@ interface DeleteAnxietyEventByIdParams {
   id: string;
 }
 
-interface CreateTripByUserIdParams {
-  body: CreateTripByUserIdRequestBody;
+interface CreatePlateRaceByUserIdParams {
+  body: CreatePlateRaceByUserIdRequestBody;
 }
 
 interface MarkPlateSeenParams {
-  tripId: string;
+  plateRaceId: string;
   plateId: number;
 }
 
 interface UnmarkPlateSeenParams {
-  tripId: string;
+  plateRaceId: string;
   plateId: number;
 }
 
-interface CompleteTripParams {
-  tripId: string;
+interface CompletePlateRaceParams {
+  plateRaceId: string;
 }
 
-interface GetTripDataParams {
-  tripId: string;
+interface GetPlateRaceDataParams {
+  plateRaceId: string;
   signal: AbortSignal;
 }
 
-interface GetCurrentTripDescriptionParams {
+interface GetCurrentPlateRaceDescriptionParams {
   signal: AbortSignal;
 }
 
-interface GetPastTripDescriptionsParams {
+interface GetPastPlateRaceDescriptionsParams {
   signal: AbortSignal;
-  pageParam: TripDescriptionsCursor | null;
+  pageParam: PlateRaceDescriptionsCursor | null;
 }
 
 // TODO - Error handling
@@ -221,57 +221,63 @@ export const api = {
     );
     return response.data.data;
   },
-  createTripByUserId: async ({ body }: CreateTripByUserIdParams) => {
-    const response = await apiClient.post<SuccessResponse<CreateTripByUserIdResponse>>(
-      `/trips`,
+  createPlateRaceByUserId: async ({ body }: CreatePlateRaceByUserIdParams) => {
+    const response = await apiClient.post<SuccessResponse<CreatePlateRaceByUserIdResponse>>(
+      `/plate-races`,
       body,
     );
     return response.data.data;
   },
-  getTripData: async ({ tripId, signal }: GetTripDataParams) => {
-    const response = await apiClient.get<SuccessResponse<GetTripDataResponse>>(`/trips/${tripId}`, {
-      signal,
-    });
+  getPlateRaceData: async ({ plateRaceId, signal }: GetPlateRaceDataParams) => {
+    const response = await apiClient.get<SuccessResponse<GetPlateRaceDataResponse>>(
+      `/plate-races/${plateRaceId}`,
+      {
+        signal,
+      },
+    );
     return response.data.data;
   },
 
-  markPlateSeen: async ({ plateId, tripId }: MarkPlateSeenParams) => {
+  markPlateSeen: async ({ plateId, plateRaceId }: MarkPlateSeenParams) => {
     const response = await apiClient.post<SuccessResponse<MarkPlateSeenResponse>>(
-      `/trips/${tripId}/seen-plates/`,
+      `/plate-races/${plateRaceId}/seen-plates/`,
       {
         plateId,
       },
     );
     return response.data.data;
   },
-  unmarkPlateSeen: async ({ plateId, tripId }: UnmarkPlateSeenParams) => {
+  unmarkPlateSeen: async ({ plateId, plateRaceId }: UnmarkPlateSeenParams) => {
     const response = await apiClient.delete<SuccessResponse<UnmarkPlateSeenResponse>>(
-      `/trips/${tripId}/seen-plates/${plateId}`,
+      `/plate-races/${plateRaceId}/seen-plates/${plateId}`,
     );
     return response.data.data;
   },
-  completeTrip: async ({ tripId }: CompleteTripParams) => {
+  completePlateRace: async ({ plateRaceId }: CompletePlateRaceParams) => {
     const response = await apiClient.patch<
-      SuccessResponse<CompleteTripResponse>,
-      AxiosResponse<SuccessResponse<CompleteTripResponse>>
-    >(`/trips/${tripId}/complete`);
+      SuccessResponse<CompletePlateRaceResponse>,
+      AxiosResponse<SuccessResponse<CompletePlateRaceResponse>>
+    >(`/plate-races/${plateRaceId}/complete`);
     return response.data.data;
   },
-  getPastTripDescriptions: async ({ pageParam, signal }: GetPastTripDescriptionsParams) => {
+  getPastPlateRaceDescriptions: async ({
+    pageParam,
+    signal,
+  }: GetPastPlateRaceDescriptionsParams) => {
     const params = new URLSearchParams({ limit: '5' });
     if (pageParam) {
       params.set('cursorDate', pageParam.date);
       params.set('cursorId', pageParam.id);
     }
-    const response = await apiClient.get<SuccessResponse<GetPastTripDescriptionsResponse>>(
-      `/trips/past?${params}`,
+    const response = await apiClient.get<SuccessResponse<GetPastPlateRaceDescriptionsResponse>>(
+      `/plate-races/past?${params}`,
       { signal },
     );
     return response.data.data;
   },
-  getCurrentTripDescription: async ({ signal }: GetCurrentTripDescriptionParams) => {
-    const response = await apiClient.get<SuccessResponse<GetCurrentTripDescriptionResponse>>(
-      '/trips/current',
+  getCurrentPlateRaceDescription: async ({ signal }: GetCurrentPlateRaceDescriptionParams) => {
+    const response = await apiClient.get<SuccessResponse<GetCurrentPlateRaceDescriptionResponse>>(
+      '/plate-races/current',
       { signal },
     );
     return response.data.data;

@@ -5,10 +5,10 @@ import { format, parseISO, isValid } from 'date-fns';
 
 interface ActiveLicensePlateCardProps {
   licensePlate: LicensePlate;
-  tripId: string;
+  plateRaceId: string;
 }
 
-export function ActiveLicensePlateCard({ licensePlate, tripId }: ActiveLicensePlateCardProps) {
+export function ActiveLicensePlateCard({ licensePlate, plateRaceId }: ActiveLicensePlateCardProps) {
   let dateString: string;
   if (!licensePlate.date_seen) {
     dateString = 'N/A';
@@ -33,7 +33,7 @@ export function ActiveLicensePlateCard({ licensePlate, tripId }: ActiveLicensePl
           <MarkSeenField
             timeSeen={licensePlate.date_seen}
             plateId={licensePlate.id}
-            tripId={tripId}
+            plateRaceId={plateRaceId}
             isDisabled={false}
           />
         </div>
