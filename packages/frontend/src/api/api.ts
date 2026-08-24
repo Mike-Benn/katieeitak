@@ -84,12 +84,12 @@ interface CreatePlateRaceByUserIdParams {
 
 interface MarkPlateSeenParams {
   plateRaceId: string;
-  plateId: number;
+  stateId: number;
 }
 
 interface UnmarkPlateSeenParams {
   plateRaceId: string;
-  plateId: number;
+  stateId: number;
 }
 
 interface CompletePlateRaceParams {
@@ -238,18 +238,18 @@ export const api = {
     return response.data.data;
   },
 
-  markPlateSeen: async ({ plateId, plateRaceId }: MarkPlateSeenParams) => {
+  markPlateSeen: async ({ stateId, plateRaceId }: MarkPlateSeenParams) => {
     const response = await apiClient.post<SuccessResponse<MarkPlateSeenResponse>>(
       `/plate-races/${plateRaceId}/seen-plates/`,
       {
-        plateId,
+        stateId,
       },
     );
     return response.data.data;
   },
-  unmarkPlateSeen: async ({ plateId, plateRaceId }: UnmarkPlateSeenParams) => {
+  unmarkPlateSeen: async ({ stateId, plateRaceId }: UnmarkPlateSeenParams) => {
     const response = await apiClient.delete<SuccessResponse<UnmarkPlateSeenResponse>>(
-      `/plate-races/${plateRaceId}/seen-plates/${plateId}`,
+      `/plate-races/${plateRaceId}/seen-plates/${stateId}`,
     );
     return response.data.data;
   },

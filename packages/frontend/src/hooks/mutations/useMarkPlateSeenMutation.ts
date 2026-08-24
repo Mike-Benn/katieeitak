@@ -24,7 +24,7 @@ export function useMarkPlateSeenMutation({ plateRaceId }: UseMarkPlateSeenMutati
           ...old,
           count: old.count + 1,
           plateList: old.plateList.map((plate) => {
-            if (plate.id !== data.plate_id) return plate;
+            if (plate.id !== data.state_id) return plate;
             return {
               ...plate,
               date_seen: data.date_seen,

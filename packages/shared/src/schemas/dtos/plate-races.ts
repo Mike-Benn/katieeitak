@@ -15,7 +15,7 @@ export type MasterPlate = z.infer<typeof MasterPlateSchema>;
 // seen_plates
 export const MasterSeenPlateSchema = z.object({
   id: z.string(),
-  plate_id: z.number().int(),
+  state_id: z.number().int(),
   plate_race_id: z.string(),
   date_seen: z.iso.datetime(),
 });
@@ -219,7 +219,7 @@ export type CompletePlateRaceResponse = z.infer<typeof CompletePlateRaceResponse
 
 export const MarkPlateSeenQueryResultSchema = MasterSeenPlateSchema.pick({
   id: true,
-  plate_id: true,
+  state_id: true,
   date_seen: true,
 });
 
@@ -227,25 +227,25 @@ export type MarkPlateSeenQueryResult = z.infer<typeof MarkPlateSeenQueryResultSc
 
 export const MarkPlateSeenResponseSchema = MasterSeenPlateSchema.pick({
   id: true,
-  plate_id: true,
+  state_id: true,
   date_seen: true,
 });
 
 export type MarkPlateSeenResponse = z.infer<typeof MarkPlateSeenResponseSchema>;
 
 export const MarkPlateSeenRequestBodySchema = z.object({
-  plateId: z.number().int(),
+  stateId: z.number().int(),
 });
 export type MarkPlateSeenRequestBody = z.infer<typeof MarkPlateSeenRequestBodySchema>;
 
 export const UnmarkPlateSeenQueryResultSchema = MasterSeenPlateSchema.pick({
-  plate_id: true,
+  state_id: true,
 });
 
 export type UnmarkPlateSeenQueryResult = z.infer<typeof UnmarkPlateSeenQueryResultSchema>;
 
 export const UnmarkPlateSeenResponseSchema = MasterSeenPlateSchema.pick({
-  plate_id: true,
+  state_id: true,
 });
 
 export type UnmarkPlateSeenResponse = z.infer<typeof UnmarkPlateSeenResponseSchema>;

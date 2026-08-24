@@ -38,7 +38,7 @@ plateRaceRouter.post(
   plateRaceController.markPlateSeen,
 );
 plateRaceRouter.delete(
-  '/:id/seen-plates/:plateId',
+  '/:id/seen-plates/:stateId',
   validateToken,
   setupLocals,
   plateRaceController.unmarkPlateSeen,

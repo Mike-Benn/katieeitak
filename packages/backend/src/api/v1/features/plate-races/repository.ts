@@ -165,10 +165,10 @@ export class PlateRaceRepository {
     const connection = client ?? this.pool;
     const values = [plateRaceId];
     const query = `
-      SELECT p.id, p.name, p.nickname, p.plate_url, sp.date_seen
-      FROM plates AS p
+      SELECT s.id, s.name, s.nickname, s.plate_url, sp.date_seen
+      FROM states AS s
       LEFT JOIN seen_plates AS sp
-      ON p.id = sp.plate_id AND sp.plate_race_id = $1
+      ON s.id = sp.state_id AND sp.plate_race_id = $1
     `;
     const { rows } = await connection.query<GetPlateRaceDataQueryResult>(query, values);
     return rows;
@@ -253,11 +253,11 @@ export class PlateRaceRepository {
 
   public markPlateSeen = async ({ data, client }: MarkPlateSeenParams) => {
     const connection = client ?? this.pool;
-    const values = [data.plateId, data.plateRaceId];
+    const values = [data.stateId, data.plateRaceId];
     const query = `
-      INSERT INTO seen_plates (plate_id, plate_race_id)
+      INSERT INTO seen_plates (state_id, plate_race_id)
       VALUES ($1, $2)
-      RETURNING id, plate_id, date_seen
+      RETURNING id, state_id, date_seen
     `;
     const { rows } = await connection.query<MarkPlateSeenQueryResult>(query, values);
     if (!rows[0]) {
@@ -274,12 +274,12 @@ export class PlateRaceRepository {
 
   public unmarkPlateSeen = async ({ data, client }: UnmarkPlateSeenParams) => {
     const connection = client ?? this.pool;
-    const values = [data.plateId, data.plateRaceId];
+    const values = [data.stateId, data.plateRaceId];
     const query = `
       DELETE 
       FROM seen_plates
-      WHERE plate_id = $1 AND plate_race_id = $2
-      RETURNING plate_id
+      WHERE state_id = $1 AND plate_race_id = $2
+      RETURNING state_id
     `;
     const { rows } = await connection.query<UnmarkPlateSeenQueryResult>(query, values);
     if (!rows[0]) {
