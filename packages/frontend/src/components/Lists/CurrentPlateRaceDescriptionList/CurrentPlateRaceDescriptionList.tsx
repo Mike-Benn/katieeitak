@@ -23,7 +23,7 @@ export function CurrentPlateRaceDescriptionList({
   return (
     <div className="flex flex-col gap-6">
       <Link
-        to="/plate-races/$id"
+        to="/america/plate-race/$id"
         key={plateRaceDescription.id}
         params={{ id: plateRaceDescription.id }}
       >
