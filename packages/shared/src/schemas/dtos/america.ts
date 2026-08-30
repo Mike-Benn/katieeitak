@@ -1,27 +1,29 @@
 import { z } from 'zod';
 
-// plates
-export const MasterPlateSchema = z.object({
+// states
+export const MasterStateSchema = z.object({
   id: z.number().int(),
   name: z.string(),
   nickname: z.string(),
   plate_url: z.string(),
+  flag_url: z.string(),
   created_at: z.iso.datetime(),
   updated_at: z.iso.datetime(),
 });
 
-export type MasterPlate = z.infer<typeof MasterPlateSchema>;
+export type MasterState = z.infer<typeof MasterStateSchema>;
 
-// seen_plates
-export const MasterSeenPlateSchema = z.object({
-  id: z.string(),
-  state_id: z.number().int(),
-  plate_race_id: z.string(),
-  date_seen: z.iso.datetime(),
+export const StateSchema = MasterStateSchema.pick({
+  id: true,
+  name: true,
+  nickname: true,
+  flag_url: true,
+}).extend({
+  state_date_seen: z.iso.datetime().nullable(),
+  capitol_date_seen: z.iso.datetime().nullable(),
 });
 
-export type MasterSeenPlate = z.infer<typeof MasterSeenPlateSchema>;
-
+export type State = z.infer<typeof StateSchema>;
 // plate races
 export const MasterPlateRaceSchema = z.object({
   id: z.string(),
@@ -33,6 +35,40 @@ export const MasterPlateRaceSchema = z.object({
 });
 
 export type MasterPlateRace = z.infer<typeof MasterPlateRaceSchema>;
+
+// seen_plates
+export const MasterSeenPlateSchema = z.object({
+  id: z.string(),
+  state_id: z.number().int(),
+  plate_race_id: z.string(),
+  date_seen: z.iso.datetime(),
+});
+
+export type MasterSeenPlate = z.infer<typeof MasterSeenPlateSchema>;
+
+// seen_states
+
+export const MasterSeenStateSchema = z.object({
+  id: z.string(),
+  state_id: z.number().int(),
+  user_id: z.string(),
+  date_seen: z.iso.datetime(),
+});
+
+export type MasterSeenState = z.infer<typeof MasterSeenStateSchema>;
+
+// seen_capitols
+
+export const MasterSeenCapitolSchema = z.object({
+  id: z.string(),
+  state_id: z.number().int(),
+  user_id: z.string(),
+  date_seen: z.iso.datetime(),
+});
+
+export type MasterSeenCapitol = z.infer<typeof MasterSeenCapitolSchema>;
+
+/**********************************************************************************************/
 
 export const PlatesSeenCountSchema = z.number().int().nonnegative().max(51);
 
@@ -133,7 +169,7 @@ export type GetCurrentPlateRaceIdByUserIdQueryResult = z.infer<
   typeof GetCurrentPlateRaceIdByUserIdQueryResultSchema
 >;
 
-export const GetPlateRaceDataQueryResultSchema = MasterPlateSchema.pick({
+export const GetPlateRaceDataQueryResultSchema = MasterStateSchema.pick({
   id: true,
   name: true,
   nickname: true,
@@ -170,7 +206,7 @@ export type GetPlateRaceByPlateRaceIdAndUserIdQueryResult = z.infer<
   typeof GetPlateRaceByPlateRaceIdAndUserIdQueryResultSchema
 >;
 
-export const LicensePlateSchema = MasterPlateSchema.pick({
+export const LicensePlateSchema = MasterStateSchema.pick({
   id: true,
   name: true,
   nickname: true,
@@ -234,7 +270,7 @@ export const MarkPlateSeenResponseSchema = MasterSeenPlateSchema.pick({
 export type MarkPlateSeenResponse = z.infer<typeof MarkPlateSeenResponseSchema>;
 
 export const MarkPlateSeenRequestBodySchema = z.object({
-  stateId: z.number().int(),
+  stateId: z.number().int().nonnegative(),
 });
 export type MarkPlateSeenRequestBody = z.infer<typeof MarkPlateSeenRequestBodySchema>;
 
@@ -249,3 +285,87 @@ export const UnmarkPlateSeenResponseSchema = MasterSeenPlateSchema.pick({
 });
 
 export type UnmarkPlateSeenResponse = z.infer<typeof UnmarkPlateSeenResponseSchema>;
+
+export const GetStatesSeenQueryResultSchema = MasterStateSchema.pick({
+  id: true,
+  name: true,
+  nickname: true,
+  flag_url: true,
+}).extend({
+  state_date_seen: z.iso.datetime().nullable(),
+  capitol_date_seen: z.iso.datetime().nullable(),
+});
+
+export type GetStatesSeenQueryResult = z.infer<typeof GetStatesSeenQueryResultSchema>;
+
+export const GetStatesSeenResponseSchema = z.array(GetStatesSeenQueryResultSchema);
+
+export type GetStatesSeenResponse = z.infer<typeof GetStatesSeenResponseSchema>;
+
+export const MarkStateSeenRequestBodySchema = z.object({
+  stateId: z.number().int().nonnegative(),
+});
+
+export type MarkStateSeenRequestBody = z.infer<typeof MarkStateSeenRequestBodySchema>;
+
+export const MarkStateSeenQueryResultSchema = MasterSeenStateSchema.pick({
+  id: true,
+  state_id: true,
+  date_seen: true,
+});
+
+export type MarkStateSeenQueryResult = z.infer<typeof MarkStateSeenQueryResultSchema>;
+
+export const MarkStateSeenResponseSchema = MasterSeenStateSchema.pick({
+  id: true,
+  state_id: true,
+  date_seen: true,
+});
+
+export type MarkStateSeenResponse = z.infer<typeof MarkStateSeenResponseSchema>;
+
+export const UnmarkStateSeenQueryResultSchema = MasterSeenStateSchema.pick({
+  state_id: true,
+});
+
+export type UnmarkStateSeenQueryResult = z.infer<typeof UnmarkStateSeenQueryResultSchema>;
+
+export const UnmarkStateSeenResponseSchema = MasterSeenStateSchema.pick({
+  state_id: true,
+});
+
+export type UnmarkStateSeenResponse = z.infer<typeof UnmarkStateSeenResponseSchema>;
+
+export const MarkCapitolSeenRequestBodySchema = z.object({
+  stateId: z.number().int().nonnegative(),
+});
+
+export type MarkCapitolSeenRequestBody = z.infer<typeof MarkCapitolSeenRequestBodySchema>;
+
+export const MarkCapitolSeenQueryResultSchema = MasterSeenCapitolSchema.pick({
+  id: true,
+  state_id: true,
+  date_seen: true,
+});
+
+export type MarkCapitolSeenQueryResult = z.infer<typeof MarkCapitolSeenQueryResultSchema>;
+
+export const MarkCapitolSeenResponseSchema = MasterSeenCapitolSchema.pick({
+  id: true,
+  state_id: true,
+  date_seen: true,
+});
+
+export type MarkCapitolSeenResponse = z.infer<typeof MarkCapitolSeenResponseSchema>;
+
+export const UnmarkCapitolSeenQueryResultSchema = MasterSeenCapitolSchema.pick({
+  state_id: true,
+});
+
+export type UnmarkCapitolSeenQueryResult = z.infer<typeof UnmarkCapitolSeenQueryResultSchema>;
+
+export const UnmarkCapitolSeenResponseSchema = MasterSeenCapitolSchema.pick({
+  state_id: true,
+});
+
+export type UnmarkCapitolSeenResponse = z.infer<typeof UnmarkCapitolSeenResponseSchema>;
