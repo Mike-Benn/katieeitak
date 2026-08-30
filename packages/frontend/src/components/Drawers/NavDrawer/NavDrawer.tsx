@@ -1,13 +1,15 @@
 import { Drawer, Button } from '@base-ui/react';
-import { Menu, House, BadgeDollarSign, Leaf, LogOut, BookMarked, Car } from 'lucide-react';
+import { Menu, House, BadgeDollarSign, Leaf, LogOut, BookMarked, Plane } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import styles from './NavDrawer.module.css';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useQueryClient } from '@tanstack/react-query';
 
 export function NavDrawer() {
   const [open, setOpen] = useState(false);
   const { logout } = useAuth0();
+  const queryClient = useQueryClient();
   const handleLinkClick = () => {
     setOpen(false);
   };
@@ -67,23 +69,24 @@ export function NavDrawer() {
                     </li>
                     <li>
                       <Link
-                        to="/plate-races"
+                        to="/america"
                         onClick={handleLinkClick}
                         className="nav-drawer-link visited:text-inherit"
                       >
-                        <Car />
-                        <span>Plate races</span>
+                        <Plane />
+                        <span>America</span>
                       </Link>
                     </li>
                   </div>
                   <li>
                     <Button
                       type="button"
-                      onClick={() =>
+                      onClick={() => {
+                        queryClient.clear();
                         void logout({
                           logoutParams: { returnTo: window.location.origin },
-                        })
-                      }
+                        });
+                      }}
                       className="nav-drawer-link"
                     >
                       <LogOut />

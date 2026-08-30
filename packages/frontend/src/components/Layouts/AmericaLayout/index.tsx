@@ -1,0 +1,1 @@
+export { AmericaLayout } from './AmericaLayout';

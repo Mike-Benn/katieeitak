@@ -39,7 +39,7 @@ export function PastPlateRaceDescriptionsList({
         <React.Fragment key={index}>
           {page.plateRaceDescriptions.map((plateRaceDescription) => (
             <Link
-              to="/plate-races/$id"
+              to="/america/plate-race/$id"
               key={plateRaceDescription.id}
               params={{ id: plateRaceDescription.id }}
             >

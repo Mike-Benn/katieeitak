@@ -1,4 +1,4 @@
-import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router';
+import { createRootRoute, createRoute, createRouter, redirect } from '@tanstack/react-router';
 import { HomePage } from '@/pages/HomePage';
 import { ErrorPage } from '@/pages/ErrorPage';
 import { Root } from '@/components/Root';
@@ -10,8 +10,10 @@ import { BooksDashboard } from '@/pages/Books/BooksDashboard';
 import { BooksSearch } from '@/pages/Books/BooksSearch';
 import { BookProfile } from '@/pages/Books/BookProfile';
 import { z } from 'zod';
-import { PlateRaceProfile } from '@/pages/PlateRaces/PlateRaceProfile';
-import { PlateRacesDashboard } from '@/pages/PlateRaces/PlateRacesDashboard';
+import { PlateRaceProfile } from '@/pages/America/PlateRaces/PlateRaceProfile';
+import { AmericaLayout } from '@/components/Layouts/AmericaLayout';
+import { StatesDashboard } from '@/pages/America/StatesDashboard';
+import { PlateRaceDashboard } from '@/pages/America/PlateRaces/PlateRaceDashboard';
 
 const rootRoute = createRootRoute({
   component: Root,
@@ -85,17 +87,49 @@ const plateRaceDashboardViewSchema = z.object({
 });
 
 const plateRaceDashboardRoute = createRoute({
-  getParentRoute: () => mainLayoutRoute,
-  path: '/plate-races',
-  component: PlateRacesDashboard,
+  getParentRoute: () => americaLayoutRoute,
+  path: '/plate-race',
+  component: PlateRaceDashboard,
   validateSearch: plateRaceDashboardViewSchema,
 });
 
 const plateRaceProfileRoute = createRoute({
-  getParentRoute: () => mainLayoutRoute,
-  path: '/plate-races/$id',
+  getParentRoute: () => americaLayoutRoute,
+  path: '/plate-race/$id',
   component: PlateRaceProfile,
 });
+
+// America routes
+
+const americaLayoutRoute = createRoute({
+  getParentRoute: () => mainLayoutRoute,
+  path: '/america',
+  component: AmericaLayout,
+});
+
+const americaIndexRoute = createRoute({
+  getParentRoute: () => americaLayoutRoute,
+  path: '/',
+  beforeLoad: () => {
+    throw redirect({
+      to: '/america/states',
+      replace: true,
+    });
+  },
+});
+
+const statesDashboardRoute = createRoute({
+  getParentRoute: () => americaLayoutRoute,
+  path: '/states',
+  component: StatesDashboard,
+});
+
+const americaRouteTree = americaLayoutRoute.addChildren([
+  americaIndexRoute,
+  statesDashboardRoute,
+  plateRaceDashboardRoute,
+  plateRaceProfileRoute,
+]);
 
 // Misc routes
 
@@ -114,8 +148,7 @@ const protectedRouteTree = mainLayoutRoute.addChildren([
   booksDashboardRoute,
   booksSearchRoute,
   bookProfileRoute,
-  plateRaceDashboardRoute,
-  plateRaceProfileRoute,
+  americaRouteTree,
 ]);
 const routeTree = rootRoute.addChildren([protectedRouteTree, errorRoute]);
 
@@ -128,4 +161,10 @@ declare module '@tanstack/react-router' {
 }
 
 import type { RegisteredRouter } from '@tanstack/react-router';
-export type AppRoutePath = keyof RegisteredRouter['routesByPath'];
+export type AppRoutePath = keyof RegisteredRouter['routesByPath'] extends infer T
+  ? T extends `${infer Base}/`
+    ? Base extends ''
+      ? '/'
+      : Base
+    : T
+  : never;

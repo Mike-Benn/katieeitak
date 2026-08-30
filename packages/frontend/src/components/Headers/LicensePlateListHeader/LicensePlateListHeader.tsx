@@ -43,7 +43,6 @@ export function LicensePlateListHeader({
           </div>
         </div>
 
-        {/* The Date tucks nicely into the bottom right corner */}
         {dateConcluded && (
           <div className="text-xs text-slate-300 font-medium pb-1">
             Finished on {createReadableDate({ dateString: dateConcluded, dateStyle: 'MM/dd/yy' })}

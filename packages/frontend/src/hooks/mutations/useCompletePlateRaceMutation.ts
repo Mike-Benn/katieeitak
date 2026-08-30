@@ -23,7 +23,7 @@ export function useCompletePlateRaceMutation({ plateRaceId }: UseCompletePlateRa
       ]);
       toast.success('Plate race completed successfully.');
       void navigate({
-        to: '/plate-races',
+        to: '/america/plate-race',
         search: {
           view: 'current',
         },
