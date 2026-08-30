@@ -148,8 +148,6 @@ const protectedRouteTree = mainLayoutRoute.addChildren([
   booksDashboardRoute,
   booksSearchRoute,
   bookProfileRoute,
-  plateRaceDashboardRoute,
-  plateRaceProfileRoute,
   americaRouteTree,
 ]);
 const routeTree = rootRoute.addChildren([protectedRouteTree, errorRoute]);
@@ -163,4 +161,10 @@ declare module '@tanstack/react-router' {
 }
 
 import type { RegisteredRouter } from '@tanstack/react-router';
-export type AppRoutePath = keyof RegisteredRouter['routesByPath'];
+export type AppRoutePath = keyof RegisteredRouter['routesByPath'] extends infer T
+  ? T extends `${infer Base}/`
+    ? Base extends ''
+      ? '/'
+      : Base
+    : T
+  : never;
