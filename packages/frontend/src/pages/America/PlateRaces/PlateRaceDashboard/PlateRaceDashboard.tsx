@@ -1,4 +1,3 @@
-import { PageWrapper } from '@/components/PageWrapper';
 import { usePastPlateRaceDescriptions } from '@/hooks/queries/usePastPlateRaceDescriptions';
 import { useCurrentPlateRaceDescription } from '@/hooks/queries/useCurrentPlateRaceDescription';
 import { Tabs } from '@base-ui/react';
@@ -9,9 +8,10 @@ import { PastPlateRaceDescriptionsList } from '@/components/Lists/PastPlateRaceD
 import { LoadMoreButton } from '@/components/Buttons/LoadMoreButton';
 import { SvgSpinner } from '@/components/Loading/SvgSpinner';
 import { CurrentPlateRaceDescriptionList } from '@/components/Lists/CurrentPlateRaceDescriptionList';
+import { Check, Clock } from 'lucide-react';
 
-export function PlateRacesDashboard() {
-  const { view } = useSearch({ from: '/MainLayout/plate-races' });
+export function PlateRaceDashboard() {
+  const { view } = useSearch({ from: '/MainLayout/america/plate-race' });
   const currentPlateRaceDescriptionQuery = useCurrentPlateRaceDescription({
     enabled: view === 'current',
   });
@@ -20,7 +20,7 @@ export function PlateRacesDashboard() {
     enabled: view === 'past',
   });
 
-  const navigate = useNavigate({ from: '/plate-races' });
+  const navigate = useNavigate({ from: '/america/plate-race' });
   useEffect(() => {
     if (pastPlateRaceDescriptionsQuery.isFetchNextPageError) {
       toast.error('Failed to load more results, please try again.');
@@ -33,10 +33,7 @@ export function PlateRacesDashboard() {
   const isPastGlobalFetchError =
     pastPlateRaceDescriptionsQuery.isError && !pastPlateRaceDescriptionsQuery.isFetchNextPageError;
   return (
-    <PageWrapper className="p-6 gap-6">
-      <div>
-        <h1 className="text-2xl font-bold font-serif">Plate Race</h1>
-      </div>
+    <div className="flex flex-col pt-6 gap-6">
       <Tabs.Root
         className="w-full flex-1 flex flex-col"
         value={view}
@@ -51,15 +48,17 @@ export function PlateRacesDashboard() {
           <Tabs.List className="relative flex flex-row gap-3">
             <Tabs.Tab
               value="current"
-              className="text-lg text-gray-400 data-active:text-black data-active:scale-110 font-semibold transition-all duration-200 ease-in-out"
+              className="px-3 py-2 rounded-2xl text-center text-sm text-gray-400 bg-darkmuted-bg data-active:bg-white data-active:text-gray-900 data-active:shadow-md transition-all duration-200 font-bold flex flex-row items-center justify-center gap-1"
             >
-              Current
+              <Clock size={16} />
+              <span>Current</span>
             </Tabs.Tab>
             <Tabs.Tab
               value="past"
-              className="text-lg text-gray-400 data-active:text-black data-active:scale-110 font-semibold transition-all duration-200 ease-in-out"
+              className="px-3 py-2 rounded-2xl text-center text-sm text-gray-400 bg-darkmuted-bg data-active:bg-white data-active:text-gray-900 data-active:shadow-md transition-all duration-200 font-bold flex flex-row items-center justify-center gap-1"
             >
-              Past
+              <Check size={16} />
+              <span>Past</span>
             </Tabs.Tab>
           </Tabs.List>
         </div>
@@ -99,6 +98,6 @@ export function PlateRacesDashboard() {
           </Tabs.Panel>
         </div>
       </Tabs.Root>
-    </PageWrapper>
+    </div>
   );
 }
