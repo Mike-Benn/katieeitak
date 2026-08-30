@@ -28,6 +28,11 @@ import {
   type CompletePlateRaceResponse,
   type GetPastPlateRaceDescriptionsResponse,
   type GetCurrentPlateRaceDescriptionResponse,
+  type GetStatesSeenResponse,
+  type MarkStateSeenResponse,
+  type MarkCapitolSeenResponse,
+  type UnmarkStateSeenResponse,
+  type UnmarkCapitolSeenResponse,
 } from '@katieeitak/shared';
 import type { SuccessResponse } from './types';
 import type { AxiosResponse } from 'axios';
@@ -108,6 +113,26 @@ interface GetCurrentPlateRaceDescriptionParams {
 interface GetPastPlateRaceDescriptionsParams {
   signal: AbortSignal;
   pageParam: PlateRaceDescriptionsCursor | null;
+}
+
+interface GetStatesSeenParams {
+  signal: AbortSignal;
+}
+
+interface MarkStateSeenParams {
+  stateId: number;
+}
+
+interface MarkCapitolSeenParams {
+  stateId: number;
+}
+
+interface UnmarkStateSeenParams {
+  stateId: number;
+}
+
+interface UnmarkCapitolSeenParams {
+  stateId: number;
 }
 
 // TODO - Error handling
@@ -247,6 +272,7 @@ export const api = {
     );
     return response.data.data;
   },
+
   unmarkPlateSeen: async ({ stateId, plateRaceId }: UnmarkPlateSeenParams) => {
     const response = await apiClient.delete<SuccessResponse<UnmarkPlateSeenResponse>>(
       `/plate-races/${plateRaceId}/seen-plates/${stateId}`,
@@ -279,6 +305,39 @@ export const api = {
     const response = await apiClient.get<SuccessResponse<GetCurrentPlateRaceDescriptionResponse>>(
       '/plate-races/current',
       { signal },
+    );
+    return response.data.data;
+  },
+  getStatesSeen: async ({ signal }: GetStatesSeenParams) => {
+    const response = await apiClient.get<SuccessResponse<GetStatesSeenResponse>>('/states/seen', {
+      signal,
+    });
+    return response.data.data;
+  },
+  markStateSeen: async ({ stateId }: MarkStateSeenParams) => {
+    const response = await apiClient.post<SuccessResponse<MarkStateSeenResponse>>('/states/seen', {
+      stateId,
+    });
+    return response.data.data;
+  },
+  markCapitolSeen: async ({ stateId }: MarkCapitolSeenParams) => {
+    const response = await apiClient.post<SuccessResponse<MarkCapitolSeenResponse>>(
+      '/states/capitols/seen',
+      {
+        stateId,
+      },
+    );
+    return response.data.data;
+  },
+  unmarkStateSeen: async ({ stateId }: UnmarkStateSeenParams) => {
+    const response = await apiClient.delete<SuccessResponse<UnmarkStateSeenResponse>>(
+      `/states/seen/${stateId}`,
+    );
+    return response.data.data;
+  },
+  unmarkCapitolSeen: async ({ stateId }: UnmarkCapitolSeenParams) => {
+    const response = await apiClient.delete<SuccessResponse<UnmarkCapitolSeenResponse>>(
+      `/states/capitols/seen/${stateId}`,
     );
     return response.data.data;
   },
