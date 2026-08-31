@@ -19,8 +19,8 @@ export const StateSchema = MasterStateSchema.pick({
   nickname: true,
   flag_url: true,
 }).extend({
-  state_date_seen: z.iso.datetime().nullable(),
-  capitol_date_seen: z.iso.datetime().nullable(),
+  state_seen_date: z.iso.datetime().nullable(),
+  capitol_seen_date: z.iso.datetime().nullable(),
 });
 
 export type State = z.infer<typeof StateSchema>;
@@ -292,8 +292,8 @@ export const GetStatesSeenQueryResultSchema = MasterStateSchema.pick({
   nickname: true,
   flag_url: true,
 }).extend({
-  state_date_seen: z.iso.datetime().nullable(),
-  capitol_date_seen: z.iso.datetime().nullable(),
+  state_seen_date: z.iso.datetime().nullable(),
+  capitol_seen_date: z.iso.datetime().nullable(),
 });
 
 export type GetStatesSeenQueryResult = z.infer<typeof GetStatesSeenQueryResultSchema>;

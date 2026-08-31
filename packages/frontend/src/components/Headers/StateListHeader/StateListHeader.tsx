@@ -9,8 +9,8 @@ export function StateListHeader({ stateList }: StateListHeaderProps) {
 
   for (let i = 0; i < stateList.length; i++) {
     const currState = stateList[i];
-    if (currState.state_date_seen) numOfMarkedStates += 1;
-    if (currState.capitol_date_seen) numOfMarkedCapitols += 1;
+    if (currState.state_seen_date) numOfMarkedStates += 1;
+    if (currState.capitol_seen_date) numOfMarkedCapitols += 1;
   }
   return (
     <div className="bg-mainbtn flex flex-col rounded-xl text-white p-4 gap-3">
