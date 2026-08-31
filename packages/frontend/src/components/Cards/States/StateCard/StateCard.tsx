@@ -30,7 +30,6 @@ export function StateCard({ state }: StateCardProps) {
       unmarkCapitolSeenMutation.mutate({ stateId: state.id });
     }
   };
-
   return (
     <>
       <div className="flex flex-col gap-6 py-3">
@@ -45,7 +44,7 @@ export function StateCard({ state }: StateCardProps) {
         <div className="grid grid-cols-2">
           <div className="flex items-center justify-center gap-2">
             <ActionCheckboxField
-              isChecked={!!state.state_date_seen}
+              isChecked={!!state.state_seen_date}
               isDisabled={false}
               isPending={markStateSeenMutation.isPending || unmarkStateSeenMutation.isPending}
               onToggle={handleStateToggle}
@@ -54,7 +53,7 @@ export function StateCard({ state }: StateCardProps) {
           </div>
           <div className="flex items-center justify-center gap-2">
             <ActionCheckboxField
-              isChecked={!!state.capitol_date_seen}
+              isChecked={!!state.capitol_seen_date}
               isDisabled={false}
               isPending={markCapitolSeenMutation.isPending || unmarkCapitolSeenMutation.isPending}
               onToggle={handleCapitolToggle}
